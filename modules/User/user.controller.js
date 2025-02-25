@@ -1,8 +1,9 @@
 import { userModel } from "../../database/Models/user.model.js";
 
 /**
+ * @param res 
  * @author  Ahmed M.Salah
- * @edit not until now  @editedBy editor
+ * @edit add param   @editedBy Fatma Mustafa
  * @returns {Promise<void>} all users
  */
 export async function getUsers(res) {
