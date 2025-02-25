@@ -22,7 +22,8 @@ export async function getUsers(res) {
  * @param {string} userId
  * @description get user by id
  * @author  Ahmed M.Salah
- * @edit not until now  @editedBy editor
+ * @edit not until now  
+ * @editedBy editor
  * @returns {Promise<void>} user
  */
 export async function getUser(userId, res) {
