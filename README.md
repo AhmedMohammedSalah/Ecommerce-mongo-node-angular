@@ -4,7 +4,7 @@ Here’s the updated `README.md` file with your table included, along with the i
 
 # **User Management API Project** 🚀
 
-![Project Banner](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3qCXDBQgVBmdOVxRsn5V7TCDFO-TzqXxRvQ&s)
+![Project Banner]<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3qCXDBQgVBmdOVxRsn5V7TCDFO-TzqXxRvQ&s"alt="Project Banner" width="600" height="200" />
 
 <!-- Replace with your image URL -->
 
