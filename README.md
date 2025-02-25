@@ -1,11 +1,6 @@
-Here’s the updated `README.md` file with your table included, along with the image, work instructions, and emojis to make it visually appealing and engaging:
-
----
-
-# **User Management API Project** 🚀
-
 ![Project Banner](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3qCXDBQgVBmdOVxRsn5V7TCDFO-TzqXxRvQ&s)
 
+# **User Management API Project** 🚀
 
 <!-- Replace with your image URL -->
 
