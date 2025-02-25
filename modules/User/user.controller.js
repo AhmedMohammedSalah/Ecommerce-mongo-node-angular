@@ -65,6 +65,7 @@ export async function addUser(user, res) {
  * @returns {Promise<void>} updated user
  */
 export async function updateUser(userId, user, res) {
+
   try {
     const updatedUser = await userModel.findByIdAndUpdate(userId, user, {
       new: true,
