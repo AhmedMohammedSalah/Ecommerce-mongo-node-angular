@@ -18,6 +18,24 @@ userRouter.get("/users/:id", async (req, res) => {
   await getUser(req.params.id, res);
 });
 
+
+/**
+ *   
+ * @description function add new user
+ * @author  rehab kamal
+ * @edit not until now 
+ *  @date 2023-02-22
+ *  @returns {object} user object
+ 
+ *  
+ */
+userRouter.addUser( async (req, res) => {
+  await addUser(req.body, res);
+  });
+
+
+
+
 userRouter.delete("/users/:id", async (req, res) => {
   await deleteUser(req.params.id, res);
 });
