@@ -1,0 +1,180 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 800">
+  <!-- Background -->
+  <rect width="900" height="800" fill="#f8f9fa"/>
+  
+  <!-- Title -->
+  <text x="450" y="40" font-family="Arial" font-size="24" text-anchor="middle" font-weight="bold">E-commerce Platform MongoDB ERD</text>
+  
+  <!-- Users Collection -->
+  <rect x="50" y="80" width="200" height="220" fill="#d1e7dd" stroke="#0d6efd" stroke-width="2" rx="5"/>
+  <text x="150" y="100" font-family="Arial" font-size="16" text-anchor="middle" font-weight="bold">Users</text>
+  <line x1="50" y1="110" x2="250" y2="110" stroke="#0d6efd" stroke-width="2"/>
+  <text x="60" y="130" font-family="Arial" font-size="12">_id: ObjectId</text>
+  <text x="60" y="150" font-family="Arial" font-size="12">email: String</text>
+  <text x="60" y="170" font-family="Arial" font-size="12">phone: String</text>
+  <text x="60" y="190" font-family="Arial" font-size="12">password: String</text>
+  <text x="60" y="210" font-family="Arial" font-size="12">name: String</text>
+  <text x="60" y="230" font-family="Arial" font-size="12">address: Object</text>
+  <text x="60" y="250" font-family="Arial" font-size="12">role: String (enum)</text>
+  <text x="60" y="270" font-family="Arial" font-size="12">isVerified: Boolean</text>
+  <text x="60" y="290" font-family="Arial" font-size="12">createdAt: Date</text>
+  
+  <!-- Profile Collection -->
+  <rect x="50" y="330" width="200" height="170" fill="#d1e7dd" stroke="#0d6efd" stroke-width="2" rx="5"/>
+  <text x="150" y="350" font-family="Arial" font-size="16" text-anchor="middle" font-weight="bold">Profiles</text>
+  <line x1="50" y1="360" x2="250" y2="360" stroke="#0d6efd" stroke-width="2"/>
+  <text x="60" y="380" font-family="Arial" font-size="12">_id: ObjectId</text>
+  <text x="60" y="400" font-family="Arial" font-size="12">userId: ObjectId (ref: Users)</text>
+  <text x="60" y="420" font-family="Arial" font-size="12">paymentMethods: Array</text>
+  <text x="60" y="440" font-family="Arial" font-size="12">wishlist: Array[ObjectId]</text>
+  <text x="60" y="460" font-family="Arial" font-size="12">loyaltyPoints: Number</text>
+  <text x="60" y="480" font-family="Arial" font-size="12">preferredLanguage: String</text>
+  <text x="60" y="500" font-family="Arial" font-size="12">notifications: Object</text>
+  
+  <!-- Categories Collection -->
+  <rect x="650" y="80" width="200" height="120" fill="#cfe2ff" stroke="#0d6efd" stroke-width="2" rx="5"/>
+  <text x="750" y="100" font-family="Arial" font-size="16" text-anchor="middle" font-weight="bold">Categories</text>
+  <line x1="650" y1="110" x2="850" y2="110" stroke="#0d6efd" stroke-width="2"/>
+  <text x="660" y="130" font-family="Arial" font-size="12">_id: ObjectId</text>
+  <text x="660" y="150" font-family="Arial" font-size="12">name: String</text>
+  <text x="660" y="170" font-family="Arial" font-size="12">description: String</text>
+  <text x="660" y="190" font-family="Arial" font-size="12">parentId: ObjectId (ref: self)</text>
+  
+  <!-- Products Collection -->
+  <rect x="650" y="230" width="200" height="240" fill="#cfe2ff" stroke="#0d6efd" stroke-width="2" rx="5"/>
+  <text x="750" y="250" font-family="Arial" font-size="16" text-anchor="middle" font-weight="bold">Products</text>
+  <line x1="650" y1="260" x2="850" y2="260" stroke="#0d6efd" stroke-width="2"/>
+  <text x="660" y="280" font-family="Arial" font-size="12">_id: ObjectId</text>
+  <text x="660" y="300" font-family="Arial" font-size="12">name: String</text>
+  <text x="660" y="320" font-family="Arial" font-size="12">description: String</text>
+  <text x="660" y="340" font-family="Arial" font-size="12">price: Number</text>
+  <text x="660" y="360" font-family="Arial" font-size="12">images: Array[String]</text>
+  <text x="660" y="380" font-family="Arial" font-size="12">categoryId: ObjectId (ref)</text>
+  <text x="660" y="400" font-family="Arial" font-size="12">sellerId: ObjectId (ref)</text>
+  <text x="660" y="420" font-family="Arial" font-size="12">stockQuantity: Number</text>
+  <text x="660" y="440" font-family="Arial" font-size="12">rating: Number</text>
+  <text x="660" y="460" font-family="Arial" font-size="12">createdAt: Date</text>
+  
+  <!-- Carts Collection -->
+  <rect x="350" y="80" width="200" height="160" fill="#f8d7da" stroke="#0d6efd" stroke-width="2" rx="5"/>
+  <text x="450" y="100" font-family="Arial" font-size="16" text-anchor="middle" font-weight="bold">Carts</text>
+  <line x1="350" y1="110" x2="550" y2="110" stroke="#0d6efd" stroke-width="2"/>
+  <text x="360" y="130" font-family="Arial" font-size="12">_id: ObjectId</text>
+  <text x="360" y="150" font-family="Arial" font-size="12">userId: ObjectId (ref) || null</text>
+  <text x="360" y="170" font-family="Arial" font-size="12">sessionId: String (for guests)</text>
+  <text x="360" y="190" font-family="Arial" font-size="12">items: Array</text>
+  <text x="360" y="210" font-family="Arial" font-size="12">promoCode: String</text>
+  <text x="360" y="230" font-family="Arial" font-size="12">createdAt: Date</text>
+  
+  <!-- Orders Collection -->
+  <rect x="350" y="270" width="200" height="200" fill="#f8d7da" stroke="#0d6efd" stroke-width="2" rx="5"/>
+  <text x="450" y="290" font-family="Arial" font-size="16" text-anchor="middle" font-weight="bold">Orders</text>
+  <line x1="350" y1="300" x2="550" y2="300" stroke="#0d6efd" stroke-width="2"/>
+  <text x="360" y="320" font-family="Arial" font-size="12">_id: ObjectId</text>
+  <text x="360" y="340" font-family="Arial" font-size="12">userId: ObjectId (ref) || null</text>
+  <text x="360" y="360" font-family="Arial" font-size="12">items: Array</text>
+  <text x="360" y="380" font-family="Arial" font-size="12">shippingAddress: Object</text>
+  <text x="360" y="400" font-family="Arial" font-size="12">paymentMethod: String</text>
+  <text x="360" y="420" font-family="Arial" font-size="12">paymentId: String</text>
+  <text x="360" y="440" font-family="Arial" font-size="12">status: String (enum)</text>
+  <text x="360" y="460" font-family="Arial" font-size="12">total: Number</text>
+  <text x="360" y="480" font-family="Arial" font-size="12">createdAt: Date</text>
+  
+  <!-- Reviews Collection -->
+  <rect x="350" y="500" width="200" height="160" fill="#fff3cd" stroke="#0d6efd" stroke-width="2" rx="5"/>
+  <text x="450" y="520" font-family="Arial" font-size="16" text-anchor="middle" font-weight="bold">Reviews</text>
+  <line x1="350" y1="530" x2="550" y2="530" stroke="#0d6efd" stroke-width="2"/>
+  <text x="360" y="550" font-family="Arial" font-size="12">_id: ObjectId</text>
+  <text x="360" y="570" font-family="Arial" font-size="12">userId: ObjectId (ref)</text>
+  <text x="360" y="590" font-family="Arial" font-size="12">productId: ObjectId (ref)</text>
+  <text x="360" y="610" font-family="Arial" font-size="12">orderId: ObjectId (ref)</text>
+  <text x="360" y="630" font-family="Arial" font-size="12">rating: Number</text>
+  <text x="360" y="650" font-family="Arial" font-size="12">comment: String</text>
+  <text x="360" y="670" font-family="Arial" font-size="12">createdAt: Date</text>
+  
+  <!-- Sellers Collection -->
+  <rect x="650" y="500" width="200" height="180" fill="#e2e3e5" stroke="#0d6efd" stroke-width="2" rx="5"/>
+  <text x="750" y="520" font-family="Arial" font-size="16" text-anchor="middle" font-weight="bold">Sellers</text>
+  <line x1="650" y1="530" x2="850" y2="530" stroke="#0d6efd" stroke-width="2"/>
+  <text x="660" y="550" font-family="Arial" font-size="12">_id: ObjectId</text>
+  <text x="660" y="570" font-family="Arial" font-size="12">userId: ObjectId (ref)</text>
+  <text x="660" y="590" font-family="Arial" font-size="12">businessName: String</text>
+  <text x="660" y="610" font-family="Arial" font-size="12">businessDetails: Object</text>
+  <text x="660" y="630" font-family="Arial" font-size="12">bankDetails: Object</text>
+  <text x="660" y="650" font-family="Arial" font-size="12">status: String (enum)</text>
+  <text x="660" y="670" font-family="Arial" font-size="12">ratings: Number</text>
+  <text x="660" y="690" font-family="Arial" font-size="12">createdAt: Date</text>
+  
+  <!-- Promos Collection -->
+  <rect x="50" y="530" width="200" height="150" fill="#e2e3e5" stroke="#0d6efd" stroke-width="2" rx="5"/>
+  <text x="150" y="550" font-family="Arial" font-size="16" text-anchor="middle" font-weight="bold">Promos</text>
+  <line x1="50" y1="560" x2="250" y2="560" stroke="#0d6efd" stroke-width="2"/>
+  <text x="60" y="580" font-family="Arial" font-size="12">_id: ObjectId</text>
+  <text x="60" y="600" font-family="Arial" font-size="12">code: String</text>
+  <text x="60" y="620" font-family="Arial" font-size="12">discountType: String</text>
+  <text x="60" y="640" font-family="Arial" font-size="12">discount: Number</text>
+  <text x="60" y="660" font-family="Arial" font-size="12">validFrom: Date</text>
+  <text x="60" y="680" font-family="Arial" font-size="12">validUntil: Date</text>
+  
+  <!-- Relationship Lines -->
+  <!-- Users to Profile -->
+  <line x1="150" y1="300" x2="150" y2="330" stroke="#0d6efd" stroke-width="2" stroke-dasharray="5,5"/>
+  
+  <!-- Users to Carts -->
+  <line x1="250" y1="150" x2="350" y2="150" stroke="#0d6efd" stroke-width="2" stroke-dasharray="5,5"/>
+  
+  <!-- Users to Orders -->
+  <line x1="250" y1="200" x2="350" y2="340" stroke="#0d6efd" stroke-width="2" stroke-dasharray="5,5"/>
+  
+  <!-- Users to Reviews -->
+  <line x1="150" y1="300" x2="150" y2="450" stroke="#0d6efd" stroke-width="2" stroke-dasharray="5,5"/>
+  <line x1="150" y1="450" x2="350" y2="570" stroke="#0d6efd" stroke-width="2" stroke-dasharray="5,5"/>
+  
+  <!-- Products to Categories -->
+  <line x1="750" y1="200" x2="750" y2="230" stroke="#0d6efd" stroke-width="2" stroke-dasharray="5,5"/>
+  
+  <!-- Products to Carts (items) -->
+  <line x1="650" y1="320" x2="550" y2="190" stroke="#0d6efd" stroke-width="2" stroke-dasharray="5,5"/>
+  
+  <!-- Products to Orders (items) -->
+  <line x1="650" y1="360" x2="550" y2="360" stroke="#0d6efd" stroke-width="2" stroke-dasharray="5,5"/>
+  
+  <!-- Products to Reviews -->
+  <line x1="700" y1="470" x2="700" y2="520" stroke="#0d6efd" stroke-width="2" stroke-dasharray="5,5"/>
+  <line x1="700" y1="520" x2="550" y2="590" stroke="#0d6efd" stroke-width="2" stroke-dasharray="5,5"/>
+  
+  <!-- Sellers to Products -->
+  <line x1="750" y1="500" x2="750" y2="470" stroke="#0d6efd" stroke-width="2" stroke-dasharray="5,5"/>
+  
+  <!-- Orders to Reviews -->
+  <line x1="450" y1="470" x2="450" y2="500" stroke="#0d6efd" stroke-width="2" stroke-dasharray="5,5"/>
+  
+  <!-- Sellers to Users -->
+  <line x1="650" y1="570" x2="600" y2="570" stroke="#0d6efd" stroke-width="2" stroke-dasharray="5,5"/>
+  <line x1="600" y1="570" x2="600" y2="180" stroke="#0d6efd" stroke-width="2" stroke-dasharray="5,5"/>
+  <line x1="600" y1="180" x2="250" y2="180" stroke="#0d6efd" stroke-width="2" stroke-dasharray="5,5"/>
+  
+  <!-- Carts to Promos -->
+  <line x1="350" y1="210" x2="300" y2="210" stroke="#0d6efd" stroke-width="2" stroke-dasharray="5,5"/>
+  <line x1="300" y1="210" x2="300" y2="600" stroke="#0d6efd" stroke-width="2" stroke-dasharray="5,5"/>
+  <line x1="300" y1="600" x2="250" y2="600" stroke="#0d6efd" stroke-width="2" stroke-dasharray="5,5"/>
+  
+  <!-- Legend -->
+  <rect x="50" y="700" width="15" height="15" fill="#d1e7dd" stroke="#0d6efd" stroke-width="1"/>
+  <text x="75" y="712" font-family="Arial" font-size="12">User Related</text>
+  
+  <rect x="175" y="700" width="15" height="15" fill="#cfe2ff" stroke="#0d6efd" stroke-width="1"/>
+  <text x="200" y="712" font-family="Arial" font-size="12">Product Related</text>
+  
+  <rect x="325" y="700" width="15" height="15" fill="#f8d7da" stroke="#0d6efd" stroke-width="1"/>
+  <text x="350" y="712" font-family="Arial" font-size="12">Order Related</text>
+  
+  <rect x="475" y="700" width="15" height="15" fill="#fff3cd" stroke="#0d6efd" stroke-width="1"/>
+  <text x="500" y="712" font-family="Arial" font-size="12">Reviews/Ratings</text>
+  
+  <rect x="625" y="700" width="15" height="15" fill="#e2e3e5" stroke="#0d6efd" stroke-width="1"/>
+  <text x="650" y="712" font-family="Arial" font-size="12">Other Collections</text>
+  
+  <line x1="775" y1="707" x2="815" y2="707" stroke="#0d6efd" stroke-width="2" stroke-dasharray="5,5"/>
+  <text x="825" y="712" font-family="Arial" font-size="12">References</text>
+</svg>
