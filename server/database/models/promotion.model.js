@@ -4,29 +4,37 @@ const promoCodeSchema = new Schema(
   {
     code: {
       type: String,
-      required: true,
+      required: [true, "Promo code is required."],
       unique: true,
-      minlength: 3,
-
-      maxlength: 20,
+      minlength: [3, "Promo code must be at least 3 characters long."],
+      maxlength: [20, "Promo code cannot exceed 20 characters."],
     },
     discount: {
       type: Number,
-      required: true,
-      min: 1,
-      max: 99,
+      required: [true, "Discount is required."],
+      min: [1, "Discount must be at least 1%."],
+      max: [99, "Discount cannot exceed 99%."],
     },
     validFrom: {
       type: Date,
       required: true,
-      min: Date.now,
-      max: new Date("2030-05-23T23:59:59"),
+      default: Date.now,
+      validate: {
+        validator: function (value) {
+          return value >= new Date();
+        },
+        message: "validFrom must be a future date.",
+      },
     },
     validTo: {
       type: Date,
       required: true,
-      min: Date.now,
-      max: new Date("2030-05-23T23:59:59"),
+      validate: {
+        validator: function (value) {
+          return value > this.validFrom;
+        },
+        message: "validTo must be greater than validFrom.",
+      },
     },
   },
   {
@@ -34,5 +42,12 @@ const promoCodeSchema = new Schema(
     versionKey: false,
   }
 );
+// Pre-save hook for date validation
+promoCodeSchema.pre('save', function (next) {
+  if (this.validTo <= this.validFrom) {
+    return next(new Error('validTo must be greater than validFrom.'));
+  }
+  next();
+});
 
 export const promoModel = model("Promo", promoCodeSchema);
