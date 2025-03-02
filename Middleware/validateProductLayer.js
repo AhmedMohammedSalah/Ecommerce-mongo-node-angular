@@ -1,51 +1,63 @@
+import fs from 'fs'
+import multer from 'multer';
+import jwt from "jsonwebtoken"
 import productValidSchema from "../Validator/productValidSchema.js";
 
 
-//-------------------------
 
-const decyptToken = (token) =>{
+/** function decypt the token
+ * @param: token: 
+ * - Added: in header
+ * - named: `token`
+ * - contain: seller data
+ * - goal: get seller id to be used in image path
+ */
+const decryptToken = (token, res) =>{
 
     const key = "senu123456789senu123456789senu123456789";
-    try{
-        // decript token
-        const decoded = jwt.verify(token, key);
-        console.log("decyptToken : decoded token = ", decoded); // debug
-        return decoded;
-    }
-    catch{
-        console.log("invalid token");
-        return null;
-    }
+    try   { return jwt.verify(token, key) }
+    catch { return res.json({err:"INVALID TOKEN"}) }
 }
 
 
-
-export const storeImg = (req)=>{
+/**
+ * function store the image in `uploads/sellerId/`
+ * - steps: decypt token 
+ * - get sellerId 
+ * - add on the path
+ * - store image
+ * - add local path to the product data
+ */
+export const storeImg = (req, res)=>{
     
-    // decrypt token to get seller id
-    const data = decyptToken(req.headers.token);
+    // DECRYPT TOKEN
+    const data = decryptToken(req.headers.token, res);
 
-    // extract seller id + add on path
+    // EXTRACT SELLER ID + ADD ON PATH
     const sellerId = data.sellerId;
     const imgPath = `uploads/${sellerId}`;
     
-    // create if file not exist
+    // CREATE IF PATH NOT EXIST
     if(!fs.existsSync(imgPath))
         fs.mkdirSync(imgPath,{recursive:true});
 
-    // ACTUAL STORE IMAGE
+    // STORE IMAGE
     const upload = multer({ dest: imgPath }).single("productImg"); 
 
-    upload(req, null, (err) => {
-        if (err) return console.log("Multer error:", err);
+    // DETECT ERROR     
+    upload(req, null, (err) => {if (err) return console.log("Multer error:", err);});
 
-        // ADD image path in product data
-        req.body.imagePath = `${imgPath}/${req.file.filename}`;
-    });
+    // ADD image path in product data
+    req.body.imagePath = `${imgPath}/${req.file.filename}`;
 
 }
 
-
+/**
+ * function validate image before storing by:
+ * - check if the image passed
+ * - check image size
+ * - then store it
+ */
 export const validateImg = (req, res) => {
 
     // check image exist
@@ -56,15 +68,19 @@ export const validateImg = (req, res) => {
     if(req.file.size >= maxSize){return res.json({err:"image size exceed 100mb"})};
 
     // store image
-    storeImg(req);
+    storeImg(req,res);
 
 }
-//-------------------------
 
 
 
-
-export const validateProductLayer = (req, res, next) =>{
+/**
+ * function validate both ( product data + image uploaded )
+ * - convert data to object
+ * - validate with JOI schema on data
+ * - validate on the image using function
+ */
+export const validateProduct = (req, res, next) =>{
 
     // convert string to json object
     const data = JSON.parse(req.body.data);
@@ -80,9 +96,9 @@ export const validateProductLayer = (req, res, next) =>{
         })
     }
 
-    //-validate the image-------
+    //-validate the image---
     validateImg(req,res);
-    //-------------------------
+    //----------------------
 
     // everything ok
     next();

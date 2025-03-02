@@ -6,9 +6,7 @@ import multer from "multer";
 import {storeProduct}                        from "./product.controller.js"
 
 // Middleware
-import { validateProductLayer }              from "../../Middleware/validateProductLayer.js";
-import { imgValidationLayer } from "../../Middleware/product.middleware.js";
-
+import { validateProduct }              from "../../Middleware/validateProductLayer.js";
 //==========================================================================================
 
 // router
@@ -18,12 +16,11 @@ const productRoutes = express.Router();
 const upload = multer({storage: multer.memoryStorage()});
 
 // temp func
-const pass = ()=>{};
+const pass = ()=>{console.log("HELLO IN INSERTION LAYER")};
 
 // ADD PRODUCT 
 productRoutes.post("/products", upload.single("productImg"),    // upload image + DATA
-                                validateProductLayer,           // data validation layer
-                                imgValidationLayer,             // image validation layer
+                                validateProduct,           // data validation layer
                                 pass);                          // insertion layer
 
 export default productRoutes
