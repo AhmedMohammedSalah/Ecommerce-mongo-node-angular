@@ -1,0 +1,20 @@
+import mongoose from "mongoose";
+
+const SellerSchema = new mongoose.Schema(
+  {
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    email: { type: String, unique: true, sparse: true }, 
+    businessName: { type: String, required: true },
+    businessDetails: { type: Object, required: true },
+    bankDetails: { type: Object, required: true },
+    status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
+    ratings: { type: Number, default: 0 },
+    createdAt: { type: Date, default: Date.now },
+    softDelete: { type: Boolean, default: false },
+  },
+  { timestamps: true }
+);
+
+const Seller = mongoose.model("Seller", SellerSchema);
+
+export default Seller;
