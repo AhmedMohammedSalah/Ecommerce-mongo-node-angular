@@ -7,6 +7,7 @@ export const signUp = async (req, res) => {
 
         const newUser = new User({ name, email, password });
         await newUser.save();
+        
 
         const newSeller = new Seller({
             userId: newUser._id,

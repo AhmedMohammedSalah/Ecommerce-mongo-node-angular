@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import sellerRoutes from "./routes/sellers.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
+import cartRoutes from "./routes/cart.js";
+
 
 dotenv.config();
 const app = express();
@@ -10,6 +12,7 @@ const app = express();
 app.use(express.json());
 
 app.use("/sellers", sellerRoutes); 
+app.use("/carts", cartRoutes);
 
 app.use(errorHandler);
 
