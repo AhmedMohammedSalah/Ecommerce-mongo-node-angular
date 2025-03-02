@@ -1,0 +1,15 @@
+begin time: 4:45
+-----------------
+
+(4:47)-->()
+# validation layer: 
+	<validte on producSchema which is joi object>
+	
+# upload layer:
+	- upload the image with the data
+	
+* catch erro function: will be applied on the insertion layer
+	
+# insertion layer:
+	- only insert the data on the DB
+	
