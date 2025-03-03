@@ -6,7 +6,7 @@ const cartSchema = new mongoose.Schema({
   items: { type: Array, default: [] },
   promoCode: { type: String, default: null },
   createdAt: { type: Date, default: Date.now },
-} 
+},
   { timestamps: true,
     versionKey:false
 
