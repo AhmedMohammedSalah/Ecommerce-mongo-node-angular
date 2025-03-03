@@ -3,7 +3,7 @@ import express from "express"
 import multer from "multer";
 
 // Module => Product 
-import {storeProduct}                        from "./product.controller.js"
+import {storeProduct}                   from "./product.controller.js"
 
 // Middleware
 import { validateProduct }              from "../../Middleware/validateProductLayer.js";
@@ -21,6 +21,6 @@ const pass = ()=>{console.log("HELLO IN INSERTION LAYER")};
 // ADD PRODUCT 
 productRoutes.post("/products", upload.single("productImg"),    // upload image + DATA
                                 validateProduct,           // data validation layer
-                                pass);                          // insertion layer
+                                storeProduct);                          // insertion layer
 
 export default productRoutes

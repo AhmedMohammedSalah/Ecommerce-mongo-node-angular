@@ -35,20 +35,24 @@ export const storeImg = (req, res)=>{
 
     // EXTRACT SELLER ID + ADD ON PATH
     const sellerId = data.sellerId;
-    const imgPath = `uploads/${sellerId}`;
+    const dirPath = `uploads/${sellerId}`;
     
     // CREATE IF PATH NOT EXIST
-    if(!fs.existsSync(imgPath))
-        fs.mkdirSync(imgPath,{recursive:true});
+    if(!fs.existsSync(dirPath))
+        fs.mkdirSync(dirPath,{recursive:true});
 
-    // STORE IMAGE
-    const upload = multer({ dest: imgPath }).single("productImg"); 
+    // GOAL: STORE IMAGE
 
-    // DETECT ERROR     
-    upload(req, null, (err) => {if (err) return console.log("Multer error:", err);});
+        // IMAGE PATH
+        const imgPath = `${dirPath}/${req.file.originalname}`;
 
-    // ADD image path in product data
-    req.body.imagePath = `${imgPath}/${req.file.filename}`;
+        // WRITE FILE TO DISK FROM BUFFER
+        fs.writeFileSync(imgPath, req.file.buffer);
+
+        // ADD IMAGE PATH TO `req.body`
+        req.body.imagePath = imgPath;
+
+    //-----------------
 
 }
 
@@ -83,10 +87,10 @@ export const validateImg = (req, res) => {
 export const validateProduct = (req, res, next) =>{
 
     // convert string to json object
-    const data = JSON.parse(req.body.data);
+    req.body = JSON.parse(req.body.data);
 
     // check constraints + give all errors found
-    const validation = productValidSchema.validate(data, {abortEarly: false});
+    const validation = productValidSchema.validate(req.body, {abortEarly: false});
 
     // wrong constraint found
     if(validation.error){
