@@ -1,82 +1,41 @@
 import { productModel } from '../../database/Models/product.model.js';
 
-
-export const storeProduct = (req, res) => {
-
-  console.log("storeProduct : req.body: ", req.body);
-  console.log("storeProduct : req.file: ", req.file);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//---------------------------FUCK----------------------------------------
-
-/*
-
-
-
-
-//--[SIMULATION]---seller ID from token--------
-const sellerId = "67bde250bd09384a7ccb190d";
-//--------------------------------------------
-
-// Add a new product
+/** function just insert the data on product collection
+ * + NOTE: rating will be added `[]` by default 
+ */
 export const storeProduct = async (req, res) => {
 
+  // GET DATA FROM REQUEST BODY
+  const data = req.body;
 
-    // GET DATA FROM REQUEST BODY
-    const data = req.body;
-
-    // CHECK IF PRODUCT ALREADY EXISTS
-    const foundProduct = await productModel.findOne({
+  // CHECK IF PRODUCT ALREADY EXISTS
+  const foundProduct = await productModel.findOne({
       productName: data.productName,
-      categoryId: data.categoryId
-    });
+      categoryId:  data.categoryId
+  });
 
-    if (foundProduct) {
-      return res.status(409).json({ err: "Product already exists. Check name and category." });
-    }
+  if (foundProduct) {
+    return res.json({ err: "Product already exists. Check name and category." });
+  }
 
-    // ADD SELLER ID
-    data.sellerId = sellerId;
+  // INSERT INTO DATABASE 
+  const newProduct = new productModel(data);
+  await newProduct.save();
 
-    // ACTUAL INSERTION INTO DATABASE
-    const insertedProduct = await productModel.create(data);
-    res.json({ msg: "Product inserted successfully", insertedProduct });
+  // final feedback
+  res.json({ msg: "Product inserted successfully", newProduct });
 
 };
 
+
+/*
+LOGIC:
+------------------------------------------------------
+insertOne() works directly with MongoDB.
+ 
+This means:
+❌ No Schema Validation 
+❌ No Default Values (rating: [] won’t be auto-added)
+❌ No Middleware Support (like pre and post hooks)
+------------------------------------------------------
 */

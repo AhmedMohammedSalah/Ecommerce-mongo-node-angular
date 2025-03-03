@@ -23,7 +23,7 @@ const decryptToken = (token, res) =>{
 /**
  * function store the image in `uploads/sellerId/`
  * - steps: decypt token 
- * - get sellerId 
+ * - get sellerId + (quick: add to data)
  * - add on the path
  * - store image
  * - add local path to the product data
@@ -36,6 +36,10 @@ export const storeImg = (req, res)=>{
     // EXTRACT SELLER ID + ADD ON PATH
     const sellerId = data.sellerId;
     const dirPath = `uploads/${sellerId}`;
+
+    //-QUICK ADD sellerId to body------
+    req.body.sellerId = sellerId;
+    //---------------------------------
     
     // CREATE IF PATH NOT EXIST
     if(!fs.existsSync(dirPath))
@@ -52,7 +56,7 @@ export const storeImg = (req, res)=>{
         // ADD IMAGE PATH TO `req.body`
         req.body.imagePath = imgPath;
 
-    //-----------------
+   
 
 }
 
