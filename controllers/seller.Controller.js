@@ -1,5 +1,14 @@
 import Seller from "../models/Seller.js";
 
+
+
+/**
+* @description function to update seller profile
+* @route 
+*  @edited by rehab
+*  @edited on 2023-02-22
+*  
+*/
 export const updateSeller = async (req, res) => {
     try {
         const { sellerId } = req.params;
@@ -16,6 +25,15 @@ export const updateSeller = async (req, res) => {
 };
 
 
+
+/**
+ * @description function to get seller profile
+ * @route 
+ *  @edited by rehab
+ *  @edited on 2023-02-22
+ *  
+ */
+
 export const getSeller = async (req, res) => {
     try {
         const { sellerId } = req.params;
@@ -29,7 +47,16 @@ export const getSeller = async (req, res) => {
     }
 };
 
+/**
+ * @description function to get delete seller profile
+ * @route 
+ *  @edited by rehab
+ *  @edited on 2023-02-22
+ *  
+ */
+  
 
+  
 
 export const softDeleteSeller = async (req, res) => {
     try {
