@@ -67,3 +67,24 @@ export const updateProduct = async (req, res) => {
   // FEEDBACK
   res.json({ msg: "Product updated successfully", product: updatedProduct });
 };
+
+
+//------------------------------------------------------
+
+export const deleteProduct = async (req, res) =>{
+
+  // get id from URL
+  const PID = req.params.id;
+
+  // find and delete
+  const deletedProduct = await productModel.findByIdAndDelete(PID);
+
+  // check existence
+  if(deletedProduct){
+    res.json({msg: "DELETED SUCESSFULLY", product: deletedProduct });
+  }
+  else{
+    res.json({msg: "PRODUCT NOT EXIST"});
+  }
+
+}

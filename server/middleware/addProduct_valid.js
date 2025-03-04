@@ -74,6 +74,8 @@ export const storeImg = (req, res)=>{
  */
 export const validateImg = (req, res) => {
 
+    console.log("===req.file:==========> ", req.file);
+
     // check image exist
     if(!req.file) {return res.json({err: "image didn't uploaded"})};
 

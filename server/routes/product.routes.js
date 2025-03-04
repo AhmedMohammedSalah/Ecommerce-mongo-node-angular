@@ -3,7 +3,7 @@ import express from "express"
 import multer from "multer";
 
 // Module => Product 
-import {addProduct, updateProduct}                  from "../controllers/product.controller.js"
+import {addProduct, updateProduct, deleteProduct}   from "../controllers/product.controller.js"
 
 // Middleware
 import { validateProduct }                          from "../middleware/addProduct_valid.js";
@@ -34,6 +34,8 @@ productRoutes.put("/products/:id",  checkProductExist,           // [MiddleWare]
                                     updateProduct);              // [Controller]: update product
 
 
-
+// DELETE PRODUCT
+//------------------------------------------------------------
+productRoutes.delete("/products/:id", deleteProduct);            // [Controller]: delete existed product
 
 export default productRoutes
