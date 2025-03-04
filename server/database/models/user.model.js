@@ -2,40 +2,40 @@ import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 
 const userSchema = new Schema(
-    {
-        name: {
-        type: String,
-        required: [true, "Name is required"],
-        trim: true,
+  {
+    name: {
+      type: String,
+      required: [true, "Name is required"],
+      trim: true,
     },
     email: {
-    type: String,
-    required: [true, "Email is required"],
-    unique: true,
-    index: true,
-    lowercase: true,
-    validate: {
+      type: String,
+      required: [true, "Email is required"],
+      unique: true,
+      lowercase: true,
+      validate: {
         validator: (v) => /\S+@\S+\.\S+/.test(v),
         message: (props) => `${props.value} is not a valid email!`,
-    },
+      },
     },
     password: {
-        type: String,
-        required: [true, "Password is required"],
-        minlength: [8, "Password must be at least 8 characters"],
-        select: false,
+      type: String,
+      required: [true, "Password is required"],
+      minlength: [8, "Password must be at least 8 characters"],
+      select: false,
+    },
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
     },
     isVerified: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
     isDeleted: {
-        type: Boolean,
-        default: false,
-    },
-    isAdmin: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
   },
   {
@@ -44,15 +44,15 @@ const userSchema = new Schema(
     toObject: { virtuals: true },
   }
 );
-// Query helpers
+
+// Query helper to fetch active users
 userSchema.query.active = function () {
   return this.where({ isDeleted: false });
 };
 
-// Password hashing
+// Hash password before saving
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
-
   try {
     const hashed = await bcrypt.hash(this.password, 10);
     this.password = hashed;
@@ -67,4 +67,5 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-export default model("User", userSchema);
+const User = model("User", userSchema);
+export default User;
