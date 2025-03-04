@@ -3,7 +3,7 @@ import { productModel } from '../../database/Models/product.model.js';
 /** function just insert the data on product collection
  * + NOTE: rating will be added `[]` by default 
  */
-export const storeProduct = async (req, res) => {
+export const addProduct = async (req, res) => {
 
   // GET DATA FROM REQUEST BODY
   const data = req.body;
@@ -39,3 +39,29 @@ This means:
 ❌ No Middleware Support (like pre and post hooks)
 ------------------------------------------------------
 */
+
+
+/**
+ * function update attributes based on what given in the body
+ * at least one attribute
+ */
+export const updateProduct = async (req, res) => {
+
+  const productId = req.params.id;
+  const updates = req.body;
+
+  // CHECK EMPTY DATA 
+  if (Object.keys(updates).length === 0) {
+      return res.json({ msg: "At least one attribute must be provided for update" });
+  }
+
+  // UPDATE
+  const updatedProduct = await productModel.findByIdAndUpdate(
+      productId, 
+      { $set: updates }, 
+      { new: true, runValidators: true } // Return updated product and validate fields
+  );
+
+  // FEEDBACK
+  res.json({ msg: "Product updated successfully", product: updatedProduct });
+};

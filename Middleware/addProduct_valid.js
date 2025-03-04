@@ -1,11 +1,15 @@
 import fs from 'fs'
-import multer from 'multer';
 import jwt from "jsonwebtoken"
 import productValidSchema from "../Validator/productValidSchema.js";
 
+/*----------------------------------
+THERE IS SOMETHING NOT HANDLED
+THAT ADMIN CAN ADD/ UPDATE PRODUCT
+-----------------------------------*/
 
-
-/** function decypt the token
+/** 
+ * function decypt the token
+ * 
  * @param: token: 
  * - Added: in header
  * - named: `token`
@@ -22,6 +26,7 @@ const decryptToken = (token, res) =>{
 
 /**
  * function store the image in `uploads/sellerId/`
+ * 
  * - steps: decypt token 
  * - get sellerId + (quick: add to data)
  * - add on the path
@@ -62,6 +67,7 @@ export const storeImg = (req, res)=>{
 
 /**
  * function validate image before storing by:
+ * 
  * - check if the image passed
  * - check image size
  * - then store it
@@ -84,6 +90,7 @@ export const validateImg = (req, res) => {
 
 /**
  * function validate both ( product data + image uploaded )
+ * 
  * - convert data to object
  * - validate with JOI schema on data
  * - validate on the image using function

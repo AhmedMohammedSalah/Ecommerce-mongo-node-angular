@@ -6,7 +6,9 @@ import jwt from "jsonwebtoken"
 // check the size of the image,
 // create image path if not exist
 
-
+/**
+ * function decrypt token and return the data
+ */
 const decyptToken = (token) =>{
 
     const key = "senu123456789senu123456789senu123456789";
@@ -22,7 +24,12 @@ const decyptToken = (token) =>{
     }
 }
 
-
+/**
+ * function: 
+ * - that user `decyptToken` to get seller id
+ * - create folder in the `upload` named with id of seller
+ * - add the path to the data
+ */
 export const createImgPath = ()=>{
     
     // decrypt token to get seller id
@@ -44,6 +51,9 @@ export const createImgPath = ()=>{
 }
 
 
+/**
+ * layer for checking image exist and its size
+ */
 export const imgValidationLayer = (req, res, next) => {
 
     // check image exist
