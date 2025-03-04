@@ -1,6 +1,6 @@
 import fs from 'fs'
 import jwt from "jsonwebtoken"
-import productValidSchema from "../Validator/productValidSchema.js";
+import productValidSchema from "../validators/productValidSchema.js";
 
 /*----------------------------------
 THERE IS SOMETHING NOT HANDLED

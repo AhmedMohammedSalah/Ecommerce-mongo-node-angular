@@ -3,17 +3,17 @@ import express from "express"
 import multer from "multer";
 
 // Module => Product 
-import {addProduct, updateProduct}                  from "./product.controller.js"
+import {addProduct, updateProduct}                  from "../controllers/product.controller.js"
 
 // Middleware
-import { validateProduct }                          from "../../Middleware/addProduct_valid.js";
-import {checkProductExist, validateUpdatedProduct}  from "../../Middleware/updateProduct_valid.js";
+import { validateProduct }                          from "../middleware/addProduct_valid.js";
+import {checkProductExist, validateUpdatedProduct}  from "../middleware/updateProduct_valid.js";
 //================================================================================================
 
 // router
 const productRoutes = express.Router();
 
-// image middleware: store it only on RAM
+// [SHARED MIDDLEWARE]: store it only on RAM
 const upload = multer({storage: multer.memoryStorage()});
 
 

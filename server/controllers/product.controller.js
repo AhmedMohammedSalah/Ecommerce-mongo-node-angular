@@ -1,4 +1,4 @@
-import { productModel } from '../../database/Models/product.model.js';
+import { productModel } from '../database/models/product.model.js';
 
 /** function just insert the data on product collection
  * + NOTE: rating will be added `[]` by default 

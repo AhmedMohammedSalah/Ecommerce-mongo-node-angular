@@ -9,15 +9,55 @@
 ## **Table of Tasks** 📋
 
 Here’s a breakdown of the tasks for this project:
+# Team Tasks
 
 | Task Name              | Priority 🚨 | Assigned To 👤 | Status 📊   | Start Date 📅 | End Date 🗓️ |
 | ---------------------- | ----------- | -------------- | ----------- | ------------- | ----------- |
-| Get Users Endpoint     | High        | @Fatma         | In Progress | 2025-02-25    | 2025-02-25  |
-| Get User (ID) Endpoint | High        | @Fatma         | In Progress | 2025-02-25    | 2025-02-25  |
-| Add User Endpoint      | High        | @Rehab         | In Progress | 2025-02-25    | 2025-02-25  |
-| Edit User Endpoint     | High        | @Senussi       | In Progress | 2025-02-25    | 2025-02-25  |
-| Delete User Endpoint   | High        | @Ahmed M.Salah | In Progress | 2025-02-25    | 2025-02-25  |
-
+| **Users**              | High        | @Fatma         | In Progress | 2025-03-01    | 2025-03-01  |
+| - Create user (sign up) | High        | @Fatma         | In Progress | 2025-03-01    | 2025-03-01  |
+| - Sign In              | High        | @Fatma         | In Progress | 2025-03-01    | 2025-03-01  |
+| - Read user [admin]    | Medium      | @Fatma         | To Do       | 2025-03-01    | 2025-03-01  |
+| - Update user [user \| admin] `<isVerified>` | Medium | @Fatma | To Do | 2025-03-01 | 2025-03-01 |
+| - Delete user [admin] `{block - soft delete}` | Medium | @Fatma | To Do | 2025-03-01 | 2025-03-01 |
+| **Customer Profile**   | High        | @Fatma         | In Progress | 2025-03-01    | 2025-03-01  |
+| - Creation: Add auto values once customer created (sign up) | High | @Fatma | In Progress | 2025-03-01 | 2025-03-01 |
+| - Update               | Medium      | @Fatma         | To Do       | 2025-03-01    | 2025-03-01  |
+| - Read                 | Medium      | @Fatma         | To Do       | 2025-03-01    | 2025-03-01  |
+| **Seller Profile**     | High        | @Rehab         | In Progress | 2025-03-01    | 2025-03-01  |
+| - Creation: Add auto values once customer created (sign up) | High | @Rehab | In Progress | 2025-03-01 | 2025-03-01 |
+| - Update               | Medium      | @Rehab         | To Do       | 2025-03-01    | 2025-03-01  |
+| - Read                 | Medium      | @Rehab         | To Do       | 2025-03-01    | 2025-03-01  |
+| - Soft-delete [admin]  | Medium      | @Rehab         | To Do       | 2025-03-01    | 2025-03-01  |
+| **Promos**             | High        | @Salah         | In Progress | 2025-03-01    | 2025-03-01  |
+| - Apply: `<the promo code on the product>` [customer] | High | @Salah | In Progress | 2025-03-01 | 2025-03-01 |
+| - Create: [admin-seller] | Medium    | @Salah         | To Do       | 2025-03-01    | 2025-03-01  |
+| - Read: [admin-seller] | Medium      | @Salah         | To Do       | 2025-03-01    | 2025-03-01  |
+| - Update: `<ex: update the percentage of discount>` [admin-seller] | Medium | @Salah | To Do | 2025-03-01 | 2025-03-01 |
+| - [No delete: Update `validUntil` to be in the past] | Low | @Salah | To Do | 2025-03-01 | 2025-03-01 |
+| **Cart**               | High        | @Rehab         | In Progress | 2025-03-01    | 2025-03-01  |
+| - Create: Function will be called on the user when created (signed up) | High | @Rehab | In Progress | 2025-03-01 | 2025-03-01 |
+| - Read: `<read using userID>` | Medium | @Rehab | To Do | 2025-03-01 | 2025-03-01 |
+| - Update `<using userID>` | Medium | @Rehab | To Do | 2025-03-01 | 2025-03-01 |
+| **Orders**             | High        | @Senussi       | In Progress | 2025-03-01    | 2025-03-01  |
+| - Create: `<prerequisite: once customer made purchase>` | High | @Senussi | In Progress | 2025-03-01 | 2025-03-01 |
+| - Update: [admin-seller] Update the status | Medium | @Senussi | To Do | 2025-03-01 | 2025-03-01 |
+| - Delete: [user - admin - seller] | Medium | @Senussi | To Do | 2025-03-01 | 2025-03-01 |
+| - Read: [user(own), seller(own), admin(all)] | Medium | @Senussi | To Do | 2025-03-01 | 2025-03-01 |
+| &nbsp;&nbsp;&nbsp;&nbsp; `[myOrders: user, seller]` | Medium | @Senussi | To Do | 2025-03-01 | 2025-03-01 |
+| &nbsp;&nbsp;&nbsp;&nbsp; `[allOrders: admin]` | Medium | @Senussi | To Do | 2025-03-01 | 2025-03-01 |
+| **Categories**         | High        | @Salah         | In Progress | 2025-03-01    | 2025-03-01  |
+| - Create category [admin] | High    | @Salah         | In Progress | 2025-03-01    | 2025-03-01  |
+| - Update [admin]       | Medium      | @Salah         | To Do       | 2025-03-01    | 2025-03-01  |
+| - Delete [admin]       | Medium      | @Salah         | To Do       | 2025-03-01    | 2025-03-01  |
+| - Read [user - seller - admin] | Medium | @Salah | To Do | 2025-03-01 | 2025-03-01 |
+| **Product**            | High        | @Senussi       | In Progress | 2025-03-01    | 2025-03-01  |
+| - Create products `<get cat from menu provided from admin>` [seller] | High | @Senussi | In Progress | 2025-03-01 | 2025-03-01 |
+| - Read [user: all, seller: own, admin: all] | Medium | @Senussi | To Do | 2025-03-01 | 2025-03-01 |
+| - Update [seller - admin] | Medium    | @Senussi       | To Do       | 2025-03-01    | 2025-03-01  |
+| - Soft-delete: [admin] | Medium      | @Senussi       | To Do       | 2025-03-01    | 2025-03-01  |
+| - Hard-delete: [seller] | Medium     | @Senussi       | To Do       | 2025-03-01    | 2025-03-01  |
+| **Reviews**            | Medium      | @Salah         | To Do       | 2025-03-01    | 2025-03-01  |
+| - (Details to be added) | Medium     | @Salah         | To Do       | 2025-03-01    | 2025-03-01  |
 ---
 
 ## **Work Instructions** 📝

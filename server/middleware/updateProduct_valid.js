@@ -1,8 +1,8 @@
 import fs from 'fs'
 import jwt from "jsonwebtoken"
 // a new schema to not make thd data mandatory
-import productValidSchema from '../Validator/productUpdateValidSchema.js';
-import { productModel } from '../database/Models/product.model.js';
+import productValidSchema from '../validators/productUpdateValidSchema.js';
+import { productModel } from '../database/models/product.model.js';
 import path from "path";
 
 
