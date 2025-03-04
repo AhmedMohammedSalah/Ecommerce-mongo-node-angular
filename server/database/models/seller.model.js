@@ -3,11 +3,10 @@ import { Schema, model } from "mongoose";
 const SellerSchema = new Schema(
   {
     userId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    email: { type: String, unique: true, sparse: true },
     businessName: { type: String, required: true },
     businessDetails: { type: Object, required: true },
     bankDetails: { type: Object, required: true },
@@ -17,13 +16,9 @@ const SellerSchema = new Schema(
       default: "pending",
     },
     ratings: { type: Number, default: 0 },
-    createdAt: { type: Date, default: Date.now },
     softDelete: { type: Boolean, default: false },
   },
-  {
-    timestamps: true,
-    versionKey: false,
-  }
+  { timestamps: true, versionKey: false }
 );
 
 const sellerModel = model("Seller", SellerSchema);

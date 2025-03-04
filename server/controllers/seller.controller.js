@@ -1,13 +1,23 @@
-import sellerModel from "../database/models/sellerModel.model.js";
+import sellerModel from "../database/models/seller.model.js";
 
+/**
+ * @Author rehab
+ * @param {*} req
+ * @param {*} res
+ * @returns Add new promo res.status(200).json(updatedSeller);
+ */
 export const updateSeller = async (req, res) => {
   try {
     const { sellerId } = req.params;
     const updateData = req.body;
 
-    const updatedSeller = await sellerModel.findByIdAndUpdate(sellerId, updateData, {
-      new: true,
-    });
+    const updatedSeller = await sellerModel.findByIdAndUpdate(
+      sellerId,
+      updateData,
+      {
+        new: true,
+      }
+    );
 
     if (!updatedSeller)
       return res.status(404).json({ message: "Seller not found" });
@@ -17,6 +27,14 @@ export const updateSeller = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+/**
+ * @description function to get seller profile
+ * @route
+ *  @edited by rehab
+ *  @edited on 2023-02-22
+ *
+ */
 
 export const getSeller = async (req, res) => {
   try {
@@ -30,6 +48,14 @@ export const getSeller = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+/**
+ * @description function to get delete seller profile
+ * @route
+ *  @edited by rehab
+ *  @edited on 2023-02-22
+ *
+ */
 
 export const softDeleteSeller = async (req, res) => {
   try {
