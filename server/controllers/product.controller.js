@@ -9,9 +9,11 @@ export const addProduct = async (req, res) => {
   const data = req.body;
 
   // CHECK IF PRODUCT ALREADY EXISTS
+  // LOGIC: same name, same category, same seller
   const foundProduct = await productModel.findOne({
       productName: data.productName,
-      categoryId:  data.categoryId
+      categoryId:  data.categoryId,
+      sellerId: data.sellerId
   });
 
   if (foundProduct) {
