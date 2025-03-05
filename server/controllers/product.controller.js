@@ -13,7 +13,7 @@ export const addProduct = async (req, res) => {
   const foundProduct = await productModel.findOne({
       productName: data.productName,
       categoryId:  data.categoryId,
-      sellerId: data.sellerId
+      sellerId: req.userData,
   });
 
   if (foundProduct) {
@@ -61,7 +61,7 @@ export const updateProduct = async (req, res) => {
   const updatedProduct = await productModel.findByIdAndUpdate(
       productId, 
       { $set: updates }, 
-      { new: true, runValidators: true } // Return updated product and validate fields
+      { new: true, runValidators: true }
   );
 
   // FEEDBACK
@@ -71,13 +71,46 @@ export const updateProduct = async (req, res) => {
 
 //------------------------------------------------------
 
+/** 
+ * [DUPLICATED]function decypt the token
+ * 
+ * @param: token: 
+ * - Added: in header
+ * - named: `token`
+ * - contain: seller data
+ * - goal: get seller id to be used in image path
+ */
+const decryptToken = (token, res) =>{
+
+    const key = "senu123456789senu123456789senu123456789";
+    try   { return jwt.verify(token, key) }
+    catch { return res.json({err:"INVALID TOKEN"}) }
+}
+
+//-------------------------------------------------------
+
+/*
+expected token contain "user" info
+if the user role admin , if the user role seller
+remove the product (hard: seller), (soft: admin)
+*/
+
+
+/*
+if user admin: remove soft
+if user seller: check the product is owned to him (userid)
+*/
+
 export const deleteProduct = async (req, res) =>{
+
+  // decypt token
+  decryptToken(req.headers.token, res);
 
   // get id from URL
   const PID = req.params.id;
 
   // find and delete
-  const deletedProduct = await productModel.findByIdAndDelete(PID);
+    const deletedProduct = await productModel.findByIdAndDelete(PID);
 
   // check existence
   if(deletedProduct){

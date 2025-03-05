@@ -6,7 +6,7 @@ import multer from "multer";
 import {addProduct, updateProduct, deleteProduct}   from "../controllers/product.controller.js"
 
 // Middleware
-import { validateProduct }                          from "../middleware/addProduct_valid.js";
+import { validateProduct, verifyUser }                          from "../middleware/addProduct_valid.js";
 import {checkProductExist, validateUpdatedProduct}  from "../middleware/updateProduct_valid.js";
 //================================================================================================
 
@@ -18,10 +18,12 @@ const upload = multer({storage: multer.memoryStorage()});
 
 
 // ADD PRODUCT 
-//-------------------------------------------------------------
-productRoutes.post("/products", upload.single("productImg"), // [MiddleWare]: upload (image + data)
-                                validateProduct,             // [MiddleWare]: validate (image + data)
-                                addProduct);                 // [Controller]: add product
+// [LOGIC]: sellerId for admin who want to add product for seller
+//----------------------------------------------------------------
+productRoutes.post("/products/:sellerId?",  verifyUser,                  // [MiddleWare]: verify user layer
+                                            upload.single("productImg"), // [MiddleWare]: upload (image + data)
+                                            validateProduct,             // [MiddleWare]: validate (image + data)
+                                            addProduct);                 // [Controller]: add product
 
 
 
