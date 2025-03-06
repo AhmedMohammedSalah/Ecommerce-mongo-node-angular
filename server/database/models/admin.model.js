@@ -16,12 +16,19 @@ const adminSchema = new Schema(
         businessDetails: { type: Object, required: true },
         bankDetails: { type: Object, required: true },
 
-        //
-        softDelete: { type: Boolean, default: false },
+        // REVIEWS: reviews(txt) of customer to the admin as a seller
+        reviews: [
+            {
+              customerId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+              reviewTxt: { type: String },
+              rating: { type: Number, required: true, min: 1, max: 5 }
+            }
+          ],
 
-        //--[SENU]-------to store products related to seller------------------------------
+
+        // ADMIN PRODUCTS
         products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product', default: [] }] 
-        //--------------------END---------------------------------------------------------
+        
 
     },
 

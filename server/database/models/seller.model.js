@@ -25,17 +25,18 @@ const SellerSchema = new Schema(
     },
 
     //--[SENU]-:-[LOGIC ERROR] (FIXED)
-    // -------< rating should be array of rating for each customer >-------------
+    // -------< added more general attribute, rating will be computed from it >-------------
     
-      //ratings: { type: Number, default: 0 }, //[OLD CODE]
-      ratings: { 
-        type: [Number], 
-        validate: {
-            validator: (arr) => {return arr.every(n => n >= 0 && n <= 5);},
-            message: "each rating must be between 0 and 5"
-        },
-        default: []
-      },
+    // ratings: { type: Number, default: 0 }, //[OLD CODE]
+
+    // REVIEWS: reviews(txt) of customer to the admin as a seller
+    reviews: [
+      {
+        customerId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+        reviewTxt: { type: String },
+        rating: { type: Number, required: true, min: 1, max: 5 }
+      }
+    ],
 
     //--------------------------------------------------------------------------
 
