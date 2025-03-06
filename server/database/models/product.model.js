@@ -8,8 +8,9 @@ const num = { type: Number, required: true, min: 0 };
 const productSchema = new Schema({
     productName:    { ...str, minlength: 3, maxlength: 100 },
     description:    { type: String, maxlength: 500 },
-    price:          num,
-    imagePath:      str, // AUTO ADDED: after uploading the image 
+    price: num,
+    imagePath: str, // AUTO ADDED: after uploading the image 
+    // [AMS] foregin key constraint 
     categoryId:     str,
     sellerId:       str, // AUTO ADDED: from token <sellerID will be stored there>
     stockQuantity:  num,
@@ -24,6 +25,17 @@ const productSchema = new Schema({
         }
       ],
 
+    // rating: Array of numbers (0->5) 
+    rating: { 
+        type: [Number], 
+        validate: {
+            validator: (arr) => {return arr.every(n => n >= 0 && n <= 5);},
+            message: "each rating must be between 0 and 5"
+        },
+        default: []
+    }
+    // [AMS] <time bounded> it will be review {object} here 
+    // [AMS] add stockQuantity 
 },{ timestamps: true, versionKey: false });
 
 

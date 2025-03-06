@@ -1,9 +1,8 @@
-//#region Packages
+// packages
 import express from "express"
 import multer from "multer";
-//#endregion
 
-//#region Module => Product 
+// Module => Product 
 import {addProduct, updateProduct, deleteProduct}   from "../controllers/product.controller.js"
 //#endregion
 

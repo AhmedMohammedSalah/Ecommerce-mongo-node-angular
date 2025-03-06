@@ -14,7 +14,7 @@ export async function updateUser(req, res) {
   try {
     const { id } = req.params;
     const updates = req.body;
-    const user = await User.findById(id).active();
+    const user = await User.findById(id); //.active();
     if (!user) return res.status(404).json({ message: "User not found" });
     // Allow admins to update isVerified
     if (req.user.role === "admin") {

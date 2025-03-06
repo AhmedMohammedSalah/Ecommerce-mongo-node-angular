@@ -50,22 +50,25 @@ userSchema.query.active = function () {
   return this.where({ isDeleted: false });
 };
 
-// Hash password before saving
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  try {
-    const hashed = await bcrypt.hash(this.password, 10);
-    this.password = hashed;
-    next();
-  } catch (err) {
-    next(new Error("Password hashing failed: " + err.message));
-  }
-});
+// AMS not usefull code <duplicated>
 
+// Hash password before saving
+// userSchema.pre("save", async function (next) {
+//   if (!this.isModified("password")) return next();
+//   try {
+//     const hashed = await bcrypt.hash(this.password, 10);
+//     this.password = hashed;
+//     next();
+//   } catch (err) {
+//     next(new Error("Password hashing failed: " + err.message));
+//   }
+// });
+
+// AMS not usefull code <duplicated>
 // Method to compare passwords
-userSchema.methods.comparePassword = async function (candidatePassword) {
-  return bcrypt.compare(candidatePassword, this.password);
-};
+// userSchema.methods.comparePassword = async function (candidatePassword) {
+//   return bcrypt.compare(candidatePassword, this.password);
+// };
 
 const User = model("User", userSchema);
 export default User;

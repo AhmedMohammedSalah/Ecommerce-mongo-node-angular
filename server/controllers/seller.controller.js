@@ -1,5 +1,9 @@
 import sellerModel from "../database/models/seller.model.js";
 
+// AMS create  function createSellerProfile(usaerId){
+// c
+// }
+
 /**
  * @Author rehab
  * @param {*} req
@@ -11,6 +15,8 @@ export const updateSeller = async (req, res) => {
     const { sellerId } = req.params;
     const updateData = req.body;
 
+    // AMS check if he  is  admin or same user id
+    // current user from headers and params
     const updatedSeller = await sellerModel.findByIdAndUpdate(
       sellerId,
       updateData,

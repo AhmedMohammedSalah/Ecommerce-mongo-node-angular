@@ -8,9 +8,10 @@ import cartModel from "../database/models/cart.model.js";
  *
  * @edited by : [rehab kamal]
  */
-export const createCart = async (req, res) => {
+// userID 
+export const createCart = async ( req, res ) => {
   try {
-    const { userId, sessionId } = req.body;
+    const {sessionId } = req.params.id;
 
     if (!userId || !sessionId) {
       return res
@@ -72,3 +73,8 @@ export const updateCart = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const addItemToCart = async ( req, res, productId ) => {
+  
+}
+
