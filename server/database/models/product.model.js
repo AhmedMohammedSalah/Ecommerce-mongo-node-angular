@@ -13,6 +13,7 @@ const productSchema = new Schema({
     categoryId:     str,
     sellerId:       str, // AUTO ADDED: from token <sellerID will be stored there>
     stockQuantity:  num,
+    discount: {type: Number, min: 0, max: 100, default: 0}, //NEWLY ADDED [DISCOUNT LOGIC]
 
     // rating: Array of numbers (0->5) 
     rating: { 
