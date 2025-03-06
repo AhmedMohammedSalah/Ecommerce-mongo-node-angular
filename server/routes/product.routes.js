@@ -1,13 +1,16 @@
-// packages
+//#region Packages
 import express from "express"
 import multer from "multer";
+//#endregion
 
-// Module => Product 
+//#region Module => Product 
 import {addProduct, updateProduct, deleteProduct}   from "../controllers/product.controller.js"
+//#endregion
 
-// Middleware
+//#region Middleware
 import { validateProduct, verifyUser }                          from "../middleware/addProduct_valid.js";
 import {checkProductExist, validateUpdatedProduct}  from "../middleware/updateProduct_valid.js";
+//#endregion
 //================================================================================================
 
 // router
@@ -18,12 +21,11 @@ const upload = multer({storage: multer.memoryStorage()});
 
 
 // ADD PRODUCT 
-// [LOGIC]: sellerId for admin who want to add product for seller
 //----------------------------------------------------------------
-productRoutes.post("/products/:sellerId?",  verifyUser,                  // [MiddleWare]: verify user layer
-                                            upload.single("productImg"), // [MiddleWare]: upload (image + data)
-                                            validateProduct,             // [MiddleWare]: validate (image + data)
-                                            addProduct);                 // [Controller]: add product
+productRoutes.post("/products/", verifyUser,                  // [MiddleWare]: verify user layer
+                                 upload.single("productImg"), // [MiddleWare]: upload (image + data)
+                                 validateProduct,             // [MiddleWare]: validate (image + data)
+                                 addProduct);                 // [Controller]: add product
 
 
 

@@ -32,7 +32,7 @@ const SellerSchema = new Schema(
     // REVIEWS: reviews(txt) of customer to the admin as a seller
     reviews: [
       {
-        customerId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+        customerId: { type: Schema.Types.ObjectId, ref: "User", required: true },
         reviewTxt: { type: String },
         rating: { type: Number, required: true, min: 1, max: 5 }
       }
@@ -41,7 +41,7 @@ const SellerSchema = new Schema(
     //--------------------------------------------------------------------------
 
     //--[SENU]-:-[LOGIC ADDED]-----to store products related to seller------------------
-    products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product', default: [] }],
+    products: [{ type: Schema.Types.ObjectId, ref: 'Product', default: [] }],
     //--------------------END-----------------------------------------------------------
 
     softDelete: { type: Boolean, default: false },

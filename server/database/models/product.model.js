@@ -18,7 +18,7 @@ const productSchema = new Schema({
     // REVIEWS:  review for each customer on the produt contain the txt and the rating
     reviews: [
         {
-          customerId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+          customerId: { type: Schema.Types.ObjectId, ref: "User", required: true },
           reviewTxt: { type: String },
           rating: { type: Number, required: true, min: 1, max: 5 }
         }

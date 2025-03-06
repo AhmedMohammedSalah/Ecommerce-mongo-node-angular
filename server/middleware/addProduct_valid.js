@@ -38,7 +38,7 @@ const decryptToken = (token, res) =>{
  */
 export const verifyUser = (req,res, next) =>{
 
-    // check token exist
+    // check token added on the header [DEV]
     if(!req.headers.token) 
         {return res.json({msg :"verifyUser:TOKEN NOT EXIST"})}
 
@@ -63,128 +63,39 @@ export const verifyUser = (req,res, next) =>{
 }
 
 
-
-const get_ID_Email_BasedRole = async(userRole, req) => {
-
-    // DEBUG
-    console.log("INSIDE GETTING ID EMAIL FUNCTION.....AND ROLE IS", userRole);
-
-    var sellerId,sellerEmail;
-
-    // CHECK ROLE
-    if (userRole == "seller"){
-
-        // EXTRACT SELLER ID + EMAIL
-        sellerId = req.userData.id;
-        sellerEmail = req.userData.email;
-
-    }
-    else if ( userRole == "admin"){
-
-        // GET SELLER ID WHO WANT TO ADD THE PRODUCT FOR  [URL]
-        sellerId = req.params.sellerId;
-
-        // DEBUG
-        console.log("GOTTEN SELLER ID FROM URL =====>", sellerId);
-
-        // SEARCH THE SELLER => GET EMAIL
-        userModel.findById(sellerId)
-        .then( foundSeller =>  {
-
-            //DEBUG
-            console.log("AFTER SEARCHING THE SELLER ======>", foundSeller);
-
-            if(foundSeller){  
-
-                //DEBUG
-                console.log("IF SELLER FOUND.......")
-
-                sellerEmail = foundSeller.email; 
-
-                //DEBUG
-                console.log(`/nSELLER EMAIL ====>`, sellerEmail);
-            }
-            else{ 
-                console.log("COULDN'T FIND THE SELLER");
-                return null 
-            }
-
-        })
-        .catch(() => {
-            console.log("COULDN'T FIND THE USER");
-        })
-
-
-    }
-
-    // DEBUG
-    console.log("FINALLY THE ID , EMAIL ===>", sellerId, sellerEmail);
-
-    return ([sellerId, sellerEmail]);
-}
-
-
-
 /**
  * function store the image in `uploads/sellerId/`
  * 
  * - steps: decypt token 
- * - get sellerId + (quick: add to data)
+ * - get sellerId + (add to data)
  * - add on the path
  * - store image
  * - add local path to the product data
  */
-export const storeImg = async(req, res)=>{
-
-    // DEBUG
-    console.log("HELLO FROM INSIDE THE STOREIMAGE");
+export const storeImg = (req, res)=>{
 
     const userRole = req.userData.role;
-
-    //DEBUG
-    console.log("THE ROLE ==>", userRole);
-
-    const ID_Email = await get_ID_Email_BasedRole(userRole, req)
-
-
-    // DEBUG
-    console.log("GET ID AND EMAIL BASED ON USER ROLE", ID_Email);
-
-    if(!ID_Email){
-        return res.json({msg: "admin privillages: seller not found, check its id on url"});
-    }
-
-    const [sellerId, sellerEmail] = ID_Email;
-
-    const dirPath = `uploads/${sellerEmail}`;
-
-
-    //DEBUG
-    console.log("DIR PATH ===> ", dirPath);
-
-    //-QUICK ADD sellerId to body------
-    req.body.sellerId = sellerId;
-    //---------------------------------
+    const dirPath = (userRole == "admin")?  
+        `uploads/admin`:
+        `uploads/${req.userData.id}`;  // check id or _id
     
     // CREATE IF PATH NOT EXIST
     if(!fs.existsSync(dirPath))
         fs.mkdirSync(dirPath,{recursive:true});
 
-    // GOAL: STORE IMAGE
+    // IMAGE PATH
+    const imgPath = `${dirPath}/${req.file.originalname}`;
 
-        // IMAGE PATH
-        const imgPath = `${dirPath}/${req.file.originalname}`;
+    // WRITE FILE TO DISK FROM BUFFER
+    fs.writeFileSync(imgPath, req.file.buffer);
 
+    //--ADD IMAGE PATH TO `req.body`--
+    req.body.sellerId = req.userData.id;
+    req.body.imagePath = imgPath;
+    //--------------------------------
 
-        //DEBUG
-        console.log("IMAGE PATH ==>", imgPath);
-
-        // WRITE FILE TO DISK FROM BUFFER
-        fs.writeFileSync(imgPath, req.file.buffer);
-
-        //--ADD IMAGE PATH TO `req.body`--
-        req.body.imagePath = imgPath;
-        //--------------------------------
+    // return that there is no message
+    return false
 
 }
 
@@ -202,10 +113,7 @@ export const validateImg = (req, res) => {
 
     // check image size
     const maxSize = 100*1024*1024;
-    if(req.file.size >= maxSize){return res.json({err:"image size exceed 100mb"})};
-
-    // DEBUG
-    console.log("HELLO AGAIN BEFORE STORE THE IMAGE....");
+    if(req.file.size >= maxSize){ return res.json({err:"image size exceed 100mb"}) };
 
     // store image
     storeImg(req,res);
@@ -223,8 +131,13 @@ export const validateImg = (req, res) => {
  */
 export const validateProduct = (req, res, next) =>{
 
+    // VALIDATE DATA
+    //--------------
+
     // convert string to json object
-    req.body = JSON.parse(req.body.data);
+    try { req.body = JSON.parse(req.body.data); } 
+    catch {  return res.json({ error: "Invalid JSON" }); } //DEV
+    
 
     // check constraints + give all errors found
     const validation = productValidSchema.validate(req.body, {abortEarly: false});
@@ -237,12 +150,18 @@ export const validateProduct = (req, res, next) =>{
         })
     }
 
-    //debug
-    console.log("HELLO IN IMAGE VALIDATION BEGIN....")
+    console.log("\ndata validated\n") //DEBUG
+
+    // VALIDATE IMAGE + STORE
+    //------------------------
 
     //-validate the image---
-    validateImg(req,res);
+    const err = validateImg(req,res);
+
+    if(err){return err}; // to return the error
     //----------------------
+
+    console.log("\nimage stored and validated\n") //DEBUG
 
     // everything ok
     next();
