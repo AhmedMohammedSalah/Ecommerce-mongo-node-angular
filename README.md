@@ -138,3 +138,4 @@ Thank you for your hard work and dedication! Let’s make this project a success
 4. Add or remove sections as needed.
 
 Save this content in your `README.md` file and watch your project documentation come to life! 🌈
+mongosh "mongodb+srv://cluster0.uayfp.mongodb.net/" --apiVersion 1 --username <db_username>
