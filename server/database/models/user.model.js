@@ -70,5 +70,6 @@ userSchema.query.active = function () {
 //   return bcrypt.compare(candidatePassword, this.password);
 // };
 
-const User = model("User", userSchema);
+const User = model( "User", userSchema );
+
 export default User;

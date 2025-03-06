@@ -10,7 +10,10 @@ import sellerRoutes from "./routes/seller.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
 
 const app = express();
-const port = 3030;
+// [AMS] 😒 naming ports
+const senuPort = 3030;
+const defaultPort = 3000;
+
 dbConnection();
 app.use(express.json());
 
@@ -28,6 +31,6 @@ app.use(cartRoutes);
 //   console.log(`Server is running on port ${port}`);
 // });
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.listen(defaultPort, () => {
+  console.log(`Server is running on port ${defaultPort}`);
 });

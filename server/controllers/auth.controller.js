@@ -1,11 +1,14 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import User from "../database/models/user.model.js"
+import User from "../database/models/user.model.js";
+import { sendEmail } from "../Email/email.js";
+
+const userModel = User;// [AMS] 😒 correct naming
 
 export async function signup(req, res) {
   try {
     const { name, email, password, role } = req.body;
-    // middleware 
+    // middleware
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
@@ -16,7 +19,7 @@ export async function signup(req, res) {
       email,
       password: hashedPassword,
       role: role || "user",
-      isVerified: role === "admin" ? true : false, 
+      isVerified: role === "admin" ? true : false,
     });
     await user.save();
     // AMS -> not usefull code
@@ -24,10 +27,12 @@ export async function signup(req, res) {
     //   expiresIn: "1h",
     // });
 
-
     // AMS  depands on user role will create profile
     // fetch user
     // call create profile (id )
+
+    // [AMS]👋 the following line is to send mail to new users
+    sendEmail(user.email);
     res.status(201).json({ user });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -37,19 +42,48 @@ export async function signup(req, res) {
 export async function signin(req, res) {
   try {
     const { email, password } = req.body;
-    // AMS => define .select("+password") ??
+    // [AMS]🤔 => define .select("+password") ??
     const user = await User.findOne({ email, isDeleted: false }).select(
       "+password"
     );
+
+    // [AMS]🔐 security layer to check if user is verified or not
+    if (!user.isVerified) {
+      return res
+        .status(401)
+        .json({ message: "User is not verified , please confirm your mail " });
+    }
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-    const token = jwt.sign(
-      { user },
-      "ARAF"
-    );
+    const token = jwt.sign({ user }, "ARAF");
     res.status(200).json({ user, token });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+}
+
+/**
+ * @author Ahmed M.Salah
+ * @param {*} req
+ * @param {*} res
+ * @description function to verify mail in signup
+ * @return res.status(200).json({ message: "Email verified" });
+ */
+export async function verify(req, res) {
+  jwt.verify(req.params.email, "Ahmed", async (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: "Invalid token" });
+    }
+    console.log({ obj: decoded });
+
+    let email = decoded.email;
+    const user = await userModel.findOneAndUpdate(
+      { email },
+      {
+        isVerified: true,
+      }
+    );
+    res.status(200).json({ message: "Email verified" });
+  });
 }

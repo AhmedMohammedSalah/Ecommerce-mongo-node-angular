@@ -1,5 +1,25 @@
 import jwt from "jsonwebtoken";
 import User from "../database/models/user.model.js";
+import { signupSchema, signinSchema } from "../validators/auth.validator.js";
+
+export const validateSignin = (req, res, next) => {
+  const validation = signupSchema.validate(req.body, { abortEarly: false });
+  if (validation.error) {
+    return res.status(400).json({
+      errors: validation.error.details.map((err) => err.message),
+    });
+  }
+  next();
+};
+export const validateLogin = (req, res, next) => {
+  const validation = signinSchema.validate(req.body, { abortEarly: false });
+  if (validation.error) {
+    return res.status(400).json({
+      errors: validation.error.details.map((err) => err.message),
+    });
+  }
+  next();
+};
 
 export const auth = async (req, res, next) => {
   try {
@@ -21,3 +41,4 @@ export const isAdmin = (req, res, next) => {
   }
   next();
 };
+  
