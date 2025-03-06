@@ -15,15 +15,15 @@ const productSchema = new Schema({
     stockQuantity:  num,
     discount: {type: Number, min: 0, max: 100, default: 0}, //NEWLY ADDED [DISCOUNT LOGIC]
 
-    // rating: Array of numbers (0->5) 
-    rating: { 
-        type: [Number], 
-        validate: {
-            validator: (arr) => {return arr.every(n => n >= 0 && n <= 5);},
-            message: "each rating must be between 0 and 5"
-        },
-        default: []
-    }
+    // REVIEWS:  review for each customer on the produt contain the txt and the rating
+    reviews: [
+        {
+          customerId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+          reviewTxt: { type: String },
+          rating: { type: Number, required: true, min: 1, max: 5 }
+        }
+      ],
+
 },{ timestamps: true, versionKey: false });
 
 
