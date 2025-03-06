@@ -1,0 +1,51 @@
+key = "senu123456789senu123456789senu123456789";
+
+
+token: [OLD]
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZWxsZXJJZCI6IjEzNDU2Nzg5In0.dce4Kzwc1VniHva99_aYE0S-El-jCAAT0Ijun_IJowo
+
+{
+    sellerId
+}
+*/
+
+
+/*
+token:
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJlbWFpbCI6ImpvaG5kb2VAZXhhbXBsZS5jb20iLCJwYXNzd29yZCI6IlN0cm9uZ1Bhc3MxMjMiLCJyb2xlIjoidXNlciIsImlzVmVyaWZpZWQiOmZhbHNlLCJpc0RlbGV0ZWQiOmZhbHNlfQ.anbldZeCjrmhszWkXk1ap9YEMW9RcG4bjVVc_69n_to
+[UNAUHORIZED ACCESS : USER]
+{
+  "name": "John Doe",
+  "email": "johndoe@example.com",
+  "password": "StrongPass123",
+  "role": "user",
+  "isVerified": false,
+  "isDeleted": false
+}
+
+*/
+
+/*
+token:
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQWRtaW4gVXNlciIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJwYXNzd29yZCI6IkFkbWluUGFzczEyMyIsInJvbGUiOiJhZG1pbiIsImlzVmVyaWZpZWQiOnRydWUsImlzRGVsZXRlZCI6ZmFsc2V9.7syo688kYFS0SPSx3iHLN_s-Z8pp4zYJvvzG14iGnJg
+[AUTHORIZED : ADMIN]
+{
+  "name": "Admin User",
+  "email": "admin@example.com",
+  "password": "AdminPass123",
+  "role": "admin",
+  "isVerified": true,
+  "isDeleted": false
+}
+
+
+
+token:
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3YzdhMzI0OGMyYjQwZGU3MmM1YTI4MiIsIm5hbWUiOiJBZG1pbiBVc2VyIiwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInJvbGUiOiJhZG1pbiIsImlzVmVyaWZpZWQiOnRydWV9.u6ziM-cWdVPrby47GpY34rjTBPONYYlw59KR6fRg9GA
+{
+  "id": "67c7a3248c2b40de72c5a282",
+  "name": "Admin User",
+  "email": "admin@example.com",
+  "role": "admin",
+  "isVerified": true
+}
