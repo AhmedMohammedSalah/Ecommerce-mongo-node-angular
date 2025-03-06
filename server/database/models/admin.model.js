@@ -17,8 +17,6 @@ const adminSchema = new Schema(
         bankDetails: { type: Object, required: true },
 
         //
-        ratings: { type: Number, default: 0 },
-        createdAt: { type: Date, default: Date.now },
         softDelete: { type: Boolean, default: false },
 
         //--[SENU]-------to store products related to seller------------------------------
