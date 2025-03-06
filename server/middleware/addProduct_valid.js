@@ -1,23 +1,49 @@
-import fs from 'fs'
+import fs, { stat } from 'fs'
 import jwt from "jsonwebtoken"
 import productValidSchema from "../validators/productValidSchema.js";
 import User from '../database/models/user.model.js'; // user model
+import sellerModel from '../database/models/seller.model.js'; // seller profile
+import adminModel from "../database/models/admin.model.js" // admin profile
 
 // for context
 const userModel = User;
 
-/*----------------------------------
-THERE IS SOMETHING NOT HANDLED
-THAT ADMIN CAN ADD/ UPDATE PRODUCT
------------------------------------*/
 
-/*
- [token will contain the id generated from mongodb]
-*/
+/** HELPER function check user exist
+ * CONTEXT: coming from the token
+ * @param:[userRole]: user role that found in token
+ * @param:[userId]: user id that found in token
+ * @param:[res]: response. <for errors if appear>
+ */
+const checkUserExist = async (userRole, userId) => {
+
+    // whether admin or seller [different schemas]
+    var sellerProfile = null;
+    var err = null;
+
+    // ADMIN
+    if (userRole === "admin") {
+        // get admin [admin profile model]
+        sellerProfile = await adminModel.findById(userId);
+    }
+
+    // SELLER
+    else if (userRole === "seller") {
+        // get seller [seller profile model]
+        sellerProfile = await sellerModel.findOne({ userId: userId });
+    }
+
+    // CHECK EXISTENCE
+    if (!sellerProfile) {
+        err = { msg: "verifyUser: checkUserExistence: seller in token not exist" };
+    }
+
+    // SEND ERROR [IF ANY] AND THE PROFILE
+    return { err, sellerProfile };
+};
 
 
-/** 
- * function decypt the token
+/** function decrypt the token
  * 
  * @param: token: 
  * - Added: in header
@@ -30,41 +56,51 @@ const decryptToken = (token, res) =>{
     const key = "senu123456789senu123456789senu123456789";
     try   { return jwt.verify(token, key) }
     catch { return null }
-}
+};
 
 
-/** function:
- * - verify the user coming in token, whether admin or seller
+/** function verify the user coming in token, whether admin or seller
  */
-export const verifyUser = (req,res, next) =>{
+export const verifyUser = async (req, res, next) => {
 
     // check token added on the header [DEV]
-    if(!req.headers.token) 
-        {return res.json({msg :"verifyUser:TOKEN NOT EXIST"})}
+    if (!req.headers.token) {
+        return res.json({ msg: "verifyUser: TOKEN NOT EXIST" });
+    }
 
     // decrypt user data [token in header]
     const userData = decryptToken(req.headers.token, res);
 
-    if (userData){
+    if (userData) {
+
         // CHECK ROLE
-        if(userData.role == "admin" || userData.role == "seller"){
+        if (userData.role === "admin" || userData.role === "seller") {
 
-            // store data for later use
+            // CHECK SELLER/ADMIN EXIST 
+            const status = await checkUserExist(userData.role, userData.id);
+
+            // If an error exists, send a response
+            if (status.err) {
+                return res.json(status.err);
+            }
+
+            //--STORE--[ data + seller profile ]--later-use---
             req.userData = userData;
-            next(); 
+            req.sellerProfile = status.sellerProfile;
+            //------------------------------------------------
+
+            // everything is ok
+            next();
+        } else {
+            return res.json({ msg: "verifyUser: UNAUTHORIZED ACCESS" });
         }
-        else {return res.json({msg :"verifyUser: UNAUTHORIZED ACCESS"});}
+    } else {
+        return res.json({ msg: "verifyUser: INVALID TOKEN" });
     }
-    else{
-        return res.json({msg :"verifyUser: INVALID TOKEN"});
-    }
+};
 
 
-}
-
-
-/**
- * function store the image in `uploads/sellerId/`
+/** function store the image in `uploads/sellerId/`
  * 
  * - steps: decypt token 
  * - get sellerId + (add to data)
@@ -75,6 +111,7 @@ export const verifyUser = (req,res, next) =>{
 export const storeImg = (req, res)=>{
 
     const userRole = req.userData.role;
+
     const dirPath = (userRole == "admin")?  
         `uploads/admin`:
         `uploads/${req.userData.id}`;  // check id or _id
@@ -97,10 +134,10 @@ export const storeImg = (req, res)=>{
     // return that there is no message
     return false
 
-}
+};
 
-/**
- * function validate image before storing by:
+
+/** function validate image before storing by:
  * 
  * - check if the image passed
  * - check image size
@@ -118,12 +155,10 @@ export const validateImg = (req, res) => {
     // store image
     storeImg(req,res);
 
-}
+};
 
 
-
-/**
- * function validate both ( product data + image uploaded )
+/** function validate both ( product data + image uploaded )
  * 
  * - convert data to object
  * - validate with JOI schema on data
@@ -166,4 +201,4 @@ export const validateProduct = (req, res, next) =>{
     // everything ok
     next();
 
-}
+};
