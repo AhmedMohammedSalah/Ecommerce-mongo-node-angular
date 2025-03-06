@@ -19,17 +19,15 @@ const productRoutes = express.Router();
 const upload = multer({storage: multer.memoryStorage()});
 
 
-// ADD PRODUCT 
+// ADD [seller/admin] PRODUCT 
 //----------------------------------------------------------------
-productRoutes.post("/products/", verifyUser,                  // [MiddleWare]: verify user layer
+productRoutes.post("/products/", verifyUser,                  // [MiddleWare]: verify user layer + [check user exist +(store profile)]
                                  upload.single("productImg"), // [MiddleWare]: upload (image + data)
-                                 validateProduct,             // [MiddleWare]: validate (image + data)
+                                 validateProduct,             // [MiddleWare]: validate (image(validate? store) + data)
                                  addProduct);                 // [Controller]: add product
 
 
-
-
-// UPDATE PRODUCT
+// UPDATE [selle/admin] PRODUCT
 //-------------------------------------------------------------
 productRoutes.put("/products/:id",  checkProductExist,           // [MiddleWare]: using id in URL
                                     upload.single("productImg"), // [MiddleWare]: upload data + image
@@ -42,3 +40,4 @@ productRoutes.put("/products/:id",  checkProductExist,           // [MiddleWare]
 productRoutes.delete("/products/:id", deleteProduct);            // [Controller]: delete existed product
 
 export default productRoutes
+

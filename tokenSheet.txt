@@ -49,3 +49,47 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3YzdhMzI0OGMyYjQwZGU3MmM1YTI4MiI
   "role": "admin",
   "isVerified": true
 }
+
+
+
+token to seller
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3Yzk5ZTMzNjhjZmFkM2Y4YzE1MWI3MiIsIm5hbWUiOiJTZWxsZXIgVXNlciIsImVtYWlsIjoic2VsbGVyQGV4YW1wbGUuY29tIiwicGFzc3dvcmQiOiJTZWxsZXJQYXNzMTIzIiwicm9sZSI6InNlbGxlciIsImlzVmVyaWZpZWQiOnRydWUsImlzRGVsZXRlZCI6ZmFsc2V9.DMiebg272My57_yK8imTfONnnmrb9O_Po7x1QRuLVDU
+{
+  "id": "67c99e3368cfad3f8c151b72", //STRING
+  "name": "Seller User",
+  "email": "seller@example.com",
+  "password": "SellerPass123",
+  "role": "seller",
+  "isVerified": true,
+  "isDeleted": false
+}
+
+data in mongo related to user seller
+{
+  "userId": { "$oid": "67c99e3368cfad3f8c151b72" },
+  "email": "seller@example.com",
+  "businessName": "Tech Solutions",
+  "businessDetails": {
+    "industry": "Electronics",
+    "location": "Cairo, Egypt",
+    "founded": 2020
+  },
+  "bankDetails": {
+    "accountNumber": "123456789",
+    "bankName": "National Bank",
+    "IBAN": "EG123456789000"
+  },
+  "status": "pending",
+  "reviews": [
+    {
+      "customerId": { "$oid": "67c99e3368cfad3f8c151b73" },
+      "reviewTxt": "Great service!",
+      "rating": 5
+    }
+  ],
+  "products": [],
+  "softDelete": false
+}
+
+
+// test code the probem here in 

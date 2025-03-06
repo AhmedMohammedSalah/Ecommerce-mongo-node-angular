@@ -6,15 +6,16 @@ import { productModel } from '../database/models/product.model.js';
 import path from "path";
 
 
+/* [NOTHING LEFT IN UPDATE PRODUCT]:
 
-/*----------------------------------
-THERE IS SOMETHING NOT HANDLED
-THAT ADMIN CAN ADD/ UPDATE PRODUCT
------------------------------------*/
+LAYER AFTER CHECK PRODCUT EXIST:
+    CHECK PRODUCT OWNED BY THE SELLER/ADMIN TO UPDATE ON IT
+    YOU NEED USER ROLE + USER ID TO REACH PROFILE TO REACH THE PRODUCTS ARRAY AND SEARCH IF THE PRODUCT ID EXIST
+*/
 
 
 /** 
- * [DUPLICATED] function decypt the token
+ * [DUPLICATED] function decrypt the token
  * 
  * @param: token: 
  * - Added: in header

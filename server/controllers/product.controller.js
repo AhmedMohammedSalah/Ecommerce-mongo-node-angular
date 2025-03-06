@@ -1,37 +1,45 @@
 import { productModel } from '../database/models/product.model.js';
 
-/** function just insert the data on product collection
- * + NOTE: rating will be added `[]` by default 
- */
+
+/** function:
+ * STORE PRODUCT FOR  ADMIN/SELLER
+ * USED: sellers schema, admin schema
+*/
 export const addProduct = async (req, res) => {
 
   // GET DATA FROM REQUEST BODY
   const data = req.body;
 
   // CHECK IF PRODUCT ALREADY EXISTS
-  // LOGIC: same name, same category, same seller
   const foundProduct = await productModel.findOne({
       productName: data.productName,
       categoryId:  data.categoryId,
-      sellerId: req.userData,
+      sellerId: req.userData.id, // <error fixed here>
   });
 
+  // MESSAGE
   if (foundProduct) {
     return res.json({ err: "Product already exists. Check name and category." });
   }
+
 
   // INSERT INTO DATABASE 
   const newProduct = new productModel(data);
   await newProduct.save();
 
+
+  // STORE PRODUCT FOR  ADMIN/SELLER
+  req.sellerProfile.products.push(newProduct._id);
+  await req.sellerProfile.save();
+
+  
   // final feedback
   res.json({ msg: "Product inserted successfully", newProduct });
 
 };
 
 
-/*
-LOGIC:
+/* LOGIC:
 ------------------------------------------------------
 insertOne() works directly with MongoDB.
  
@@ -68,7 +76,6 @@ export const updateProduct = async (req, res) => {
   res.json({ msg: "Product updated successfully", product: updatedProduct });
 };
 
-
 //------------------------------------------------------
 
 /** 
@@ -90,17 +97,9 @@ const decryptToken = (token, res) =>{
 //-------------------------------------------------------
 
 /*
-expected token contain "user" info
-if the user role admin , if the user role seller
-remove the product (hard: seller), (soft: admin)
-*/
-
-
-/*
 if user admin: remove soft
 if user seller: check the product is owned to him (userid)
 */
-
 export const deleteProduct = async (req, res) =>{
 
   // decypt token
