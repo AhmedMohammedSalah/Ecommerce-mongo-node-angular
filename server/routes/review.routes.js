@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { createReview, readReview } from "../controllers/review.controller.js";
+import { tokenVerify } from "../middleware/tokenVerify.js";
 
 export const reviewRouter = Router();
 // [AMS] 🪪 using of verify token on all routes

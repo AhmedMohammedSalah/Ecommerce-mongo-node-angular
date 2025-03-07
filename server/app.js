@@ -9,7 +9,7 @@ import adminRouter from "./routes/admin.routes.js";
 import sellerRoutes from "./routes/seller.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
 import { reviewRouter } from "./routes/review.routes.js";
-import { tokenVerify } from "./middleware/tokenVerify.js";
+import swaggerUi from 'swagger-ui-express';
 
 const app = express();
 // [AMS] 😒 naming ports
@@ -19,8 +19,14 @@ const defaultPort = 3000;
 dbConnection();
 app.use(express.json());
 
+// [AMS] Setup Swagger
+import fs from "fs"; 
+import path from "path";
+const swaggerFilePath = path.resolve("./utils/swagger-output.json");
+const swaggerDocument = JSON.parse(fs.readFileSync(swaggerFilePath, "utf-8"));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// [AMS] 🚀 using of routers
+// [AMS] 🚀 using of all routers
 app.use(categoryRouter);
 app.use(promoRouter);
 app.use(productRoutes);
@@ -31,6 +37,7 @@ app.use(adminRouter);
 app.use(sellerRoutes);
 app.use(cartRoutes);
 
-app.listen(senuPort, () => {
-  console.log(`Server is running on port ${senuPort}`);
+// [AMS] 🚀 using swagger for documentation api
+app.listen(defaultPort, () => {
+  console.log(`Server is running on port ${defaultPort}`);
 });
