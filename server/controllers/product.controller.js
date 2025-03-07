@@ -1,5 +1,6 @@
+import adminModel from '../database/models/admin.model.js';
 import { productModel } from '../database/models/product.model.js';
-
+import sellerModel from '../database/models/seller.model.js';
 
 /** function: ADD PRODUCT FOR  ADMIN/SELLER
  * USED: sellers schema, admin schema
@@ -78,11 +79,102 @@ export const hardDelProduct = async (req, res) =>{
   res.json({msg:"product deleted from DB"});
 };
 
+/** function: return all products */
+export const getAllProducts = async (req, res) => {
+
+    const products = await productModel.find();
+    res.json(products);
+
+};
+
+/** function to search products by names [regex]*/
+export const searchProductsByName = async (req, res) => {
+
+  // get name from url
+  const name = req.params.name;
+
+  // get products [regex] : try to extract whatever the word from anywhere in the product name
+  const products = await productModel.find({ productName: { $regex: `.*${name}.*`, $options: "i" }});
+
+  // feedback
+  res.json(products);
+};
 
 
-export const getProductbyId = async (req, res) => {
+/** function search products by price */
+export const searchProductsByPrice = async (req, res) => {
 
-}
+  // get from url
+  let min = Number(req.params.min) || 0;
+  let max = Number(req.params.max) || Infinity;
+
+  // handling issue [no worries]
+  if (min > max) {[min, max] = [max, min];}
+
+  // filter and get
+  const products = await productModel.find({
+    price: { $gte: min, $lte: max }
+  });
+
+  //feedback
+  res.json(products);
+};
+
+/**function to search be category based on endpoint naming and url variable */
+export const searchProductsByCategory = async (req, res) => {
+
+  // get category ID  [url] 
+  const { categoryId } = req.params;
+
+  // get products -> category ID
+  const products = await productModel.find({ categoryId: categoryId });
+
+  // feedback
+  res.json(products);
+};
+
+/** fnction get admin products he added, HARDCODE ID INSIDE THE FUNCTION */
+export const getAdminProducts = async (req, res)=> {
+
+  // hard code id-----------------------------
+  const adminId = "67c7a3248c2b40de72c5a282";
+  //------------------------------------------
+
+  // get admin
+  const admin = await adminModel.findById(adminId);
+  if (!admin) return res.json({ error: "Admin not found, check ID" });
+
+  // get products
+  const prodctsIDs  = admin.products;
+
+  // get them from products
+  const productsData = await productModel.find({ _id: { $in: prodctsIDs } });
+
+  // output
+  res.json(productsData);
+
+};
+
+/** function to get the seller product for all user, admin and the seller(made for them) */
+export const getSellerProducts = async (req, res) =>{
+
+  // get id (for user/seller)
+  const sellerId = req.params.sellerId;
+
+  // get admin
+  const seller = await sellerModel.findOne({userId : sellerId});
+  if (!seller) return res.json({ error: "Seller not found, check ID" });
+
+  // get products
+  const prodctsIDs  = seller.products;
+
+  // get them from products
+  const productsData = await productModel.find({ _id: { $in: prodctsIDs } });
+
+  // output
+  res.json(productsData);
+};
+
 
 /* LOGIC: usage of save instead of insertOne
 ------------------------------------------------------
@@ -94,7 +186,6 @@ This means:
 ❌ No Middleware Support (like pre and post hooks)
 ------------------------------------------------------
 */
-
 
 /*TRASH:
 /** function to delete prodct soft: will not appear to the user but stored in db 
