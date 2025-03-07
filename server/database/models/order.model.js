@@ -13,6 +13,7 @@ const orderSchema = new mongoose.Schema(
     items: [
       {
         productId: { type: Schema.Types.ObjectId, ref: "Product" },
+        discount: {typeo: Number, required},
         quantity: { type: Number, required: true, min: 1 },
         price: { type: Number, required: true },
       },
@@ -37,9 +38,7 @@ const orderSchema = new mongoose.Schema(
     },
     total: { type: Number, required: true, min: 0 },
   },
-  {
-    timestamps: true, // Adds createdAt and updatedAt
-  }
+  {timestamps: true}
 );
 
 export const orderModel = model("Order", orderSchema);
