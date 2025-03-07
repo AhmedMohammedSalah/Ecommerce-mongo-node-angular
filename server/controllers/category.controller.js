@@ -2,6 +2,24 @@ import { catModel } from "../database/models/category.model.js";
 import mongoose from "mongoose";
 
 /**
+ * @author : Ahmed M.Salah
+ * @param {string} categoryName
+ * @description helper function for filters by category
+ * @returns category id
+ */
+export async function getCategoryId(categoryName) {
+  try {
+    const category = await catModel.findOne({ name: categoryName });
+    if (category) {
+      return category._id;
+    } else {
+      throw new Error("Category not found");
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+/**
  * @Author AhmedMohammedSalah
  * @param {*} req
  * @param {*} res
