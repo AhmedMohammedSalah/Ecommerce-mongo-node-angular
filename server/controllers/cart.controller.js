@@ -55,8 +55,16 @@ export const getCartByUserId = async (req, res) => {
  *
  * @edited by : [rehab kamal]
  */
+
+//-------READ--------------------------------------------------------------------------
+// [SENU]: update cart also related to update the quantity of the product
+// so checks need to make to check if the quantity less or equal the available product
+
+// LACK THE CABABILITY OF INCREASING THE PRODUCT QUANTITY
+//-------------------------------------------------------------------------------------
 export const updateCart = async (req, res) => {
   try {
+
     const updatedCart = await cartModel.findOneAndUpdate(
       { userId: req.params.userId },
       { $set: req.body },
@@ -74,7 +82,46 @@ export const updateCart = async (req, res) => {
   }
 };
 
-export const addItemToCart = async ( req, res, productId ) => {
+/*
+SCENARIO:
+clikcknig on the add-to-cart button below the product
+at this case you have all product data becauses you fetch it to view the product already
+*/
+
+
+// [SENU]: add prodcut on the item array 
+
+// EXPECTED OUTCOME AS ELEMENT IN THE ITEM ARRAY
+// [WILL BE USED IN THE ORDER SO I EXPECT TO FIND ARRAY OF OBJECT EACH OBJECT CONTAIN THIS]
+//-----------------------------------------------------------------------------------------
+// {productId: 'fsdfsdf', price: 1000,discount:: 12,quantity: default(1)}
+//-----------------------------------------------------------------------------------------
+
+export const addItemToCart = async ( req, res) => {
+
+  // GET [PRODUCT-ID FROM REQUEST BODY [PID]
+
+  // CHECK STOCKQUANTITY (NOT EQUAL ZERO)
+
+    // DECRYPT TOKEN
+
+    // CHECK USER ROLE [FROM TOKEN] [ONLY NORMAL USER HAS CART]
+
+      // GET USER ID [FROM TOKEN]
+
+      // USER ID TO GET CART
+
+      // ACCESS ITEM ARRAY FROM CART AND PUSH {PID: PID, QUANTITIY: 1}
+
+    // ELSE: INVALID TYPE OF USERS
+  
+  //ELSE : OUT-OF-STOCK
   
 }
 
+
+
+// NOTE: WHEN ORDER MADE THE STOCK WILL BE REDUCES BASED ON THE AMOUNT IN THE ORDRER
+// SO IF HE TRYING TO GET EVEN ONE AND THE STOCK IS EMPTY = 0 TELL THEM  "OUT-OF-STOCK"
+
+// AND WHEN THE ORDER CANCELLED THE STOCK WILL INCREASE AGAIN [BUT THIS NOT YOUR BUSINESS]
