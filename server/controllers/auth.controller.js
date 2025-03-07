@@ -41,7 +41,10 @@ export async function signup(req, res) {
 
 export async function signin(req, res) {
   try {
+    console.log("enter sign in ");
+    
     const { email, password } = req.body;
+
     // [AMS]🤔 => define .select("+password") ??
     const user = await User.findOne({ email, isDeleted: false }).select(
       "+password"

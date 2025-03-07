@@ -1,6 +1,7 @@
 import {Schema, model} from "mongoose";
 
-// [SENU] CREATED
+// [SENU] CREATED 
+// [AMS] Great jop ✅
 const customerSchema = new mongoose.Schema(
   {
     // ID 

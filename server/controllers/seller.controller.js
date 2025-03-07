@@ -1,7 +1,24 @@
 import sellerModel from "../database/models/seller.model.js";
 
 // AMS create  function createSellerProfile(usaerId){
-// c
+  export const createSellerProfile = async (userId) => {
+    try {
+      // Check if the user already has a seller profile
+      const existingSeller = await sellerModel.findOne({ userId });
+      if (existingSeller) {
+        return { error: "Seller profile already exists" };
+      }
+  
+      // Create new seller profile
+      const newSeller = new sellerModel({ userId });
+      const savedSeller = await newSeller.save();
+  
+      return savedSeller;
+    } catch (error) {
+      return { error: error.message };
+    }
+  };
+  
 // }
 
 /**
@@ -13,10 +30,14 @@ import sellerModel from "../database/models/seller.model.js";
 export const updateSeller = async (req, res) => {
   try {
     const { sellerId } = req.params;
-    const updateData = req.body;
+    const { updateData } = req.body;
+    const currentUser = req.user; 
 
-    // AMS check if he  is  admin or same user id
-    // current user from headers and params
+    // Check if the user is an admin or updating their own profile
+    if (!currentUser.isAdmin && currentUser.id !== sellerId) {
+      return res.status(403).json({ message: "Unauthorized action" });
+    }
+
     const updatedSeller = await sellerModel.findByIdAndUpdate(
       sellerId,
       updateData,
@@ -25,8 +46,9 @@ export const updateSeller = async (req, res) => {
       }
     );
 
-    if (!updatedSeller)
+    if (!updatedSeller) {
       return res.status(404).json({ message: "Seller not found" });
+    }
 
     res.status(200).json(updatedSeller);
   } catch (error) {

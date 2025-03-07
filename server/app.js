@@ -9,8 +9,8 @@ import adminRouter from "./routes/admin.routes.js";
 import sellerRoutes from "./routes/seller.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
 import { reviewRouter } from "./routes/review.routes.js";
-import swaggerUi from 'swagger-ui-express';
-import orderRoutes from "./routes/order.route.js";
+import swaggerUi from "swagger-ui-express";
+import orderRoutes from "./routes/order.routes.js";
 
 const app = express();
 // [AMS] 😒 naming ports
@@ -20,26 +20,25 @@ const defaultPort = 3000;
 dbConnection();
 app.use(express.json());
 
-// [AMS] Setup Swagger
-import fs from "fs"; 
+// [AMS] 🚀 using swagger for documentation api
+import fs from "fs";
 import path from "path";
 const swaggerFilePath = path.resolve("./utils/swagger-output.json");
 const swaggerDocument = JSON.parse(fs.readFileSync(swaggerFilePath, "utf-8"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // [AMS] 🚀 using of all routers
+app.use(authRouter);
 app.use(categoryRouter);
 app.use(promoRouter);
 app.use(productRoutes);
 app.use(reviewRouter);
-app.use(authRouter);
 app.use(userRouter);
 app.use(adminRouter);
 app.use(sellerRoutes);
 app.use(cartRoutes);
-app.use(orderRoutes);  
+app.use(orderRoutes);
 
-// [AMS] 🚀 using swagger for documentation api
-app.listen(senuPort, () => {
+app.listen(defaultPort, () => {
   console.log(`Server is running on port`);
 });

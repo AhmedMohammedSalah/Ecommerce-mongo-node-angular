@@ -1,10 +1,10 @@
 import { Router } from "express";
-const authRouter = Router();
 import { signup, signin, verify } from "../controllers/auth.controller.js";
-import { validateLogin, validateSignin } from "../middleware/authValidation.js";
+import { validateLogin, validateSignup } from "../middleware/authValidation.js";
 import { checkMail } from "../middleware/checkExsistMail.js";
 
-authRouter.post("/auth/signup", validateSignin, checkMail, signup);
+const authRouter = Router();
+authRouter.post("/auth/signup", validateSignup, checkMail, signup);
 authRouter.post("/auth/signin", validateLogin, signin);
 authRouter.get(
   "/auth/verify/:email",
