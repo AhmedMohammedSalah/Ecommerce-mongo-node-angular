@@ -9,11 +9,15 @@ import {addProduct, updateProduct, hardDelProduct}   from "../controllers/produc
 //#region Middleware
 import { validateProduct, verifyUser }                          from "../middleware/addProduct_valid.js";
 import {checkProductExist, validateUpdatedProduct}  from "../middleware/updateProduct_valid.js";
+import { tokenVerify } from "../middleware/tokenVerify.js";
 //#endregion
 //================================================================================================
 
 // router
 const productRoutes = express.Router();
+
+// [AMS] 🪪 using of verify token on all routes
+productRoutes.use(tokenVerify);
 
 // [SHARED MIDDLEWARE]: store it only on RAM
 const upload = multer({storage: multer.memoryStorage()});

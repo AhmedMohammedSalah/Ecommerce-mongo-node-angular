@@ -19,14 +19,6 @@ const defaultPort = 3000;
 dbConnection();
 app.use(express.json());
 
-// [AMS] 🪪 using of verify token on all routes
-categoryRouter.use(tokenVerify);
-productRoutes.use(tokenVerify);
-userRouter.use(tokenVerify);
-adminRouter.use(tokenVerify);
-sellerRoutes.use(tokenVerify);
-cartRoutes.use(tokenVerify);
-reviewRouter.use(tokenVerify);
 
 // [AMS] 🚀 using of routers
 app.use(categoryRouter);

@@ -4,8 +4,11 @@ import {
   getCartByUserId,
   updateCart,
 } from "../controllers/cart.controller.js";
+import { tokenVerify } from "../middleware/tokenVerify.js";
 
 const cartRoutes = Router();
+// [AMS] 🪪 using of verify token on all routes
+cartRoutes.use(tokenVerify);
 cartRoutes.get("/cart", (req, res) => {
   res.send("welcome into cart ");
 });
