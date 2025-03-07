@@ -5,8 +5,10 @@ import cartModel from "../database/models/cart.model.js";
  * It accepts the `userId` and `sessionId` in the request body.
  * If both `userId` and `sessionId` are provided, a new cart is created and saved to the database.
  * The function returns the created cart as a response.
- *
+ * @param req 
+ *  @param res 
  * @edited by : [rehab kamal]
+ *  
  */
 // userID 
 export const createCart = async ( req, res ) => {
@@ -64,23 +66,36 @@ export const getCartByUserId = async (req, res) => {
 //-------------------------------------------------------------------------------------
 export const updateCart = async (req, res) => {
   try {
+    const { userId } = req.params;
+    const { productId, quantity } = req.body;
 
+    // Find the product to check available stock
+    const product = await productModel.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    if (quantity > product.availableStock) {
+      return res.status(400).json({ message: "Insufficient stock available" });
+    }
+
+    // Update cart with the new quantity
     const updatedCart = await cartModel.findOneAndUpdate(
-      { userId: req.params.userId },
-      { $set: req.body },
+      { userId, "items.productId": productId },
+      { $set: { "items.$.quantity": quantity } },
       { new: true }
     );
 
-    if (!updatedCart)
+    if (!updatedCart) {
       return res.status(404).json({ message: "Cart not found" });
+    }
 
-    res
-      .status(200)
-      .json({ message: "Cart updated successfully", cart: updatedCart });
+    res.status(200).json({ message: "Cart updated successfully", cart: updatedCart });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 /*
 SCENARIO:
@@ -98,15 +113,10 @@ at this case you have all product data becauses you fetch it to view the product
 //-----------------------------------------------------------------------------------------
 
 export const addItemToCart = async ( req, res) => {
-
-  // GET [PRODUCT-ID FROM REQUEST BODY [PID]
-
+    // GET [PRODUCT-ID FROM REQUEST BODY [PID]
   // CHECK STOCKQUANTITY (NOT EQUAL ZERO)
-
     // DECRYPT TOKEN
-
     // CHECK USER ROLE [FROM TOKEN] [ONLY NORMAL USER HAS CART]
-
       // GET USER ID [FROM TOKEN]
 
       // USER ID TO GET CART
@@ -117,8 +127,54 @@ export const addItemToCart = async ( req, res) => {
   
   //ELSE : OUT-OF-STOCK
   
-}
+  try {
+    const user = req.user; 
+    const userId = user.id;
+    const userRole = user.role;
 
+    if (userRole !== "user") {
+      return res.status(403).json({ message: "Only normal users can have a cart" });
+    }
+
+    const { productId } = req.body;
+    if (!productId) {
+      return res.status(400).json({ message: "Product ID is required" });
+    }
+
+    const product = await productModel.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    if (product.stockQuantity <= 0) {
+      return res.status(400).json({ message: "Product is out of stock" });
+    }
+
+    let cart = await cartModel.findOne({ userId });
+
+    if (!cart) {
+      cart = new cartModel({ userId, items: [] });
+    }
+
+    const existingCartItem = cart.items.find((item) => item.productId.toString() === productId);
+
+    if (existingCartItem) {
+      existingCartItem.quantity += 1;
+    } else {
+      cart.items.push({
+        productId: productId,
+        price: product.price,
+        discount: product.discount,
+        quantity: 1
+      });
+    }
+    await cart.save();
+
+    return res.status(200).json({ message: "Product added to cart successfully", cart });
+  } catch (error) {
+    return res.status(500).json({ message: "Error adding product to cart", error: error.message });
+  }
+};
 
 
 // NOTE: WHEN ORDER MADE THE STOCK WILL BE REDUCES BASED ON THE AMOUNT IN THE ORDRER
