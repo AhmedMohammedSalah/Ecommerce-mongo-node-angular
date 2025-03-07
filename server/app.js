@@ -9,6 +9,7 @@ import adminRouter from "./routes/admin.routes.js";
 import sellerRoutes from "./routes/seller.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
 import { reviewRouter } from "./routes/review.routes.js";
+import { tokenVerify } from "./middleware/tokenVerify.js";
 
 const app = express();
 // [AMS] 😒 naming ports
@@ -18,21 +19,25 @@ const defaultPort = 3000;
 dbConnection();
 app.use(express.json());
 
+// [AMS] 🪪 using of verify token on all routes
+categoryRouter.use(tokenVerify);
+productRoutes.use(tokenVerify);
+userRouter.use(tokenVerify);
+adminRouter.use(tokenVerify);
+sellerRoutes.use(tokenVerify);
+cartRoutes.use(tokenVerify);
+reviewRouter.use(tokenVerify);
+
+// [AMS] 🚀 using of routers
 app.use(categoryRouter);
 app.use(promoRouter);
 app.use(productRoutes);
-
 app.use(reviewRouter);
-
 app.use(authRouter);
 app.use(userRouter);
 app.use(adminRouter);
-
 app.use(sellerRoutes);
 app.use(cartRoutes);
-// app.listen(port, () => {
-//   console.log(`Server is running on port ${port}`);
-// });
 
 app.listen(defaultPort, () => {
   console.log(`Server is running on port ${defaultPort}`);
