@@ -1,6 +1,6 @@
-import { Schema, model} from "mongoose";
+import { Schema, model } from "mongoose";
 
-const orderSchema = new mongoose.Schema(
+const orderSchema = new Schema(
   { 
     // UID
     userId: {
@@ -9,15 +9,17 @@ const orderSchema = new mongoose.Schema(
       default: null, // allow null for guests
     },
 
-    //
+    // ITEMS
     items: [
       {
         productId: { type: Schema.Types.ObjectId, ref: "Product" },
-        discount: {typeo: Number, required},
+        discount: { type: Number, required: true }, 
         quantity: { type: Number, required: true, min: 1 },
         price: { type: Number, required: true },
       },
     ],
+
+    // ADDRESS DELIVER
     shippingAddress: {
       street: { type: String, required: true },
       city: { type: String, required: true },
@@ -25,6 +27,8 @@ const orderSchema = new mongoose.Schema(
       zipCode: { type: String, required: true },
       country: { type: String, required: true },
     },
+
+    // PAYMENT
     paymentMethod: {
       type: String,
       required: true,
@@ -36,10 +40,13 @@ const orderSchema = new mongoose.Schema(
       enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"],
       default: "Pending",
     },
+
+    // TOTAL PRICE + DISCOUNT APPLIED + PROMO APPLIED
     total: { type: Number, required: true, min: 0 },
   },
-  {timestamps: true}
+  { timestamps: true, versionKey: false }
 );
 
-export const orderModel = model("Order", orderSchema);
+const orderModel = model("Order", orderSchema);
 
+export default orderModel;

@@ -1,19 +1,22 @@
 import { promoModel } from "../database/models/promotion.model.js";
 import mongoose from "mongoose";
 
+
+//[SENU]: EXPORTED isValidPromoId, findPromoById, findPromoByCode
+
 /**
  * Helper function to validate promo ID
  * @param {string} id - Promo ID
  * @returns {boolean} - True if valid, false otherwise
  */
-const isValidPromoId = (id) => mongoose.Types.ObjectId.isValid(id);
+export const isValidPromoId = (id) => mongoose.Types.ObjectId.isValid(id);
 
 /**
  * Helper function to find a promo by ID
  * @param {string} id - Promo ID
  * @returns {Promise<Object>} - Promo document
  */
-const findPromoById = async (id) => await promoModel.findById(id);
+export const findPromoById = async (id) => await promoModel.findById(id);
 
 /**
  * @Author Ahmed Mohamed Salah
