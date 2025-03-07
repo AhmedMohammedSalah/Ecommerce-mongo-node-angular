@@ -39,5 +39,5 @@ app.use(cartRoutes);
 
 // [AMS] 🚀 using swagger for documentation api
 app.listen(defaultPort, () => {
-  console.log(`Server is running on port ${defaultPort}`);
+  console.log(`Server is running on port`);
 });
