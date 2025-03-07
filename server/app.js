@@ -8,6 +8,7 @@ import userRouter from "./routes/user.routes.js";
 import adminRouter from "./routes/admin.routes.js";
 import sellerRoutes from "./routes/seller.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
+import { reviewRouter } from "./routes/review.routes.js";
 
 const app = express();
 // [AMS] 😒 naming ports
@@ -20,6 +21,8 @@ app.use(express.json());
 app.use(categoryRouter);
 app.use(promoRouter);
 app.use(productRoutes);
+
+app.use(reviewRouter);
 
 app.use(authRouter);
 app.use(userRouter);
