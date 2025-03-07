@@ -2,6 +2,13 @@ import adminModel from '../database/models/admin.model.js';
 import { productModel } from '../database/models/product.model.js';
 import sellerModel from '../database/models/seller.model.js';
 
+
+/*
+IN READING PRODUCT
+NEED TO FILTER THE SOFT DELETED PRODUCT AND THE OUT-OF-STOCK
+*/
+
+
 /** function: ADD PRODUCT FOR  ADMIN/SELLER
  * USED: sellers schema, admin schema
 */
@@ -174,6 +181,10 @@ export const getSellerProducts = async (req, res) =>{
   // output
   res.json(productsData);
 };
+
+
+
+
 
 
 /* LOGIC: usage of save instead of insertOne
