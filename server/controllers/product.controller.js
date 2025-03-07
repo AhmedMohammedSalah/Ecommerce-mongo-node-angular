@@ -1,8 +1,7 @@
 import { productModel } from '../database/models/product.model.js';
 
 
-/** function:
- * STORE PRODUCT FOR  ADMIN/SELLER
+/** function: ADD PRODUCT FOR  ADMIN/SELLER
  * USED: sellers schema, admin schema
 */
 export const addProduct = async (req, res) => {
@@ -39,20 +38,7 @@ export const addProduct = async (req, res) => {
 };
 
 
-/* LOGIC:
-------------------------------------------------------
-insertOne() works directly with MongoDB.
- 
-This means:
-❌ No Schema Validation 
-❌ No Default Values (rating: [] won’t be auto-added)
-❌ No Middleware Support (like pre and post hooks)
-------------------------------------------------------
-*/
-
-
-/**
- * function update attributes based on what given in the body
+/** function update attributes based on what given in the body
  * at least one attribute
  */
 export const updateProduct = async (req, res) => {
@@ -76,34 +62,11 @@ export const updateProduct = async (req, res) => {
   res.json({ msg: "Product updated successfully", product: updatedProduct });
 };
 
-//------------------------------------------------------
 
-/** 
- * [DUPLICATED]function decypt the token
- * 
- * @param: token: 
- * - Added: in header
- * - named: `token`
- * - contain: seller data
- * - goal: get seller id to be used in image path
- */
-const decryptToken = (token, res) =>{
-
-    const key = "senu123456789senu123456789senu123456789";
-    try   { return jwt.verify(token, key) }
-    catch { return res.json({err:"INVALID TOKEN"}) }
-}
-
-//-------------------------------------------------------
-
-/*
-if user admin: remove soft
-if user seller: check the product is owned to him (userid)
+/** function to hard delete the prodct: remove it from db
+ * @param: on URL: you need to add the product id to delete
 */
-export const deleteProduct = async (req, res) =>{
-
-  // decypt token
-  decryptToken(req.headers.token, res);
+export const hardDelProduct = async (req, res) =>{
 
   // get id from URL
   const PID = req.params.id;
@@ -111,12 +74,41 @@ export const deleteProduct = async (req, res) =>{
   // find and delete
     const deletedProduct = await productModel.findByIdAndDelete(PID);
 
-  // check existence
-  if(deletedProduct){
-    res.json({msg: "DELETED SUCESSFULLY", product: deletedProduct });
-  }
-  else{
-    res.json({msg: "PRODUCT NOT EXIST"});
-  }
+  // feedback
+  res.json({msg:"product deleted from DB"});
+};
+
+
+
+export const getProductbyId = async (req, res) => {
 
 }
+
+/* LOGIC: usage of save instead of insertOne
+------------------------------------------------------
+insertOne() works directly with MongoDB.
+ 
+This means:
+❌ No Schema Validation 
+❌ No Default Values (rating: [] won’t be auto-added)
+❌ No Middleware Support (like pre and post hooks)
+------------------------------------------------------
+*/
+
+
+/*TRASH:
+/** function to delete prodct soft: will not appear to the user but stored in db 
+ * @param: on URL: you need to add the product id to delete
+export const softDelProduct = async (req, res) => {
+
+  // get id from URL
+  const PID = req.params.id;
+
+  // find and update [Deleted]
+  await Model.findByIdAndUpdate(PID, { $set: { isDeleted: true } });
+
+  // feedback
+  res.json({msg:"product cannot be seen by customers"});
+  
+};
+*/

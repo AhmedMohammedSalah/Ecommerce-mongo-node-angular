@@ -25,7 +25,7 @@ LAYER AFTER CHECK PRODCUT EXIST:
  */
 const decryptToken = (token, res) =>{
 
-    const key = "senu123456789senu123456789senu123456789";
+    const key = "ARAF";
     try   { return jwt.verify(token, key) }
     catch { return res.json({err:"INVALID TOKEN"}) }
 }

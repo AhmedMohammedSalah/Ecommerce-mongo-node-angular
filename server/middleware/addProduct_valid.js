@@ -53,7 +53,7 @@ const checkUserExist = async (userRole, userId) => {
  */
 const decryptToken = (token, res) =>{
 
-    const key = "senu123456789senu123456789senu123456789";
+    const key = "ARAF";
     try   { return jwt.verify(token, key) }
     catch { return null }
 };

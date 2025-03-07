@@ -6,6 +6,7 @@ const num = { type: Number, required: true, min: 0 };
 
 // schema
 const productSchema = new Schema({
+
     productName:    { ...str, minlength: 3, maxlength: 100 },
     description:    { type: String, maxlength: 500 },
     price: num,
@@ -16,7 +17,7 @@ const productSchema = new Schema({
     stockQuantity:  num,
     discount: {type: Number, min: 0, max: 100, default: 0}, //NEWLY ADDED [DISCOUNT LOGIC]
 
-    // REVIEWS:  review for each customer on the produt contain the txt and the rating
+    // REVIEWS:  review for each customer on the produt contain the txt and the rating <time bounded>
     reviews: [
         {
           customerId: { type: Schema.Types.ObjectId, ref: "User", required: true },
@@ -33,9 +34,14 @@ const productSchema = new Schema({
             message: "each rating must be between 0 and 5"
         },
         default: []
-    }
-    // [AMS] <time bounded> it will be review {object} here 
-    // [AMS] add stockQuantity 
+    },
+
+    // [AMS] add stockQuantity [DONE]
+    stockQuantity: num,
+
+    // [SENU] ADDED [soft-delete]
+    isDeleted: {type: Boolean, default: false }
+
 },{ timestamps: true, versionKey: false });
 
 

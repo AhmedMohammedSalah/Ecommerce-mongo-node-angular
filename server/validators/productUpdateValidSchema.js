@@ -28,7 +28,9 @@ const productValidSchema = Joi.object({
     //
     stockQuantity: Joi.number().min(0).messages({
         "number.min": "PRICE CANNOT BE NEGATIVE",
-    })
+    }),
+
+    isDeleted: Joi.boolean().default(false)
     
 })
 

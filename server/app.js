@@ -39,6 +39,6 @@ app.use(adminRouter);
 app.use(sellerRoutes);
 app.use(cartRoutes);
 
-app.listen(defaultPort, () => {
-  console.log(`Server is running on port ${defaultPort}`);
+app.listen(senuPort, () => {
+  console.log(`Server is running on port ${senuPort}`);
 });

@@ -3,7 +3,7 @@ import express from "express"
 import multer from "multer";
 
 // Module => Product 
-import {addProduct, updateProduct, deleteProduct}   from "../controllers/product.controller.js"
+import {addProduct, updateProduct, hardDelProduct}   from "../controllers/product.controller.js"
 //#endregion
 
 //#region Middleware
@@ -27,8 +27,8 @@ productRoutes.post("/products/", verifyUser,                  // [MiddleWare]: v
                                  addProduct);                 // [Controller]: add product
 
 
-// UPDATE [selle/admin] PRODUCT
-//-------------------------------------------------------------
+// UPDATE [selle/admin] PRODUCT ::: soft-delete✅ ::: add-review❗
+//-----------------------------------------------------------------
 productRoutes.put("/products/:id",  checkProductExist,           // [MiddleWare]: using id in URL
                                     upload.single("productImg"), // [MiddleWare]: upload data + image
                                     validateUpdatedProduct,      // [MiddleWare]: validate data + image inserted 
@@ -37,7 +37,8 @@ productRoutes.put("/products/:id",  checkProductExist,           // [MiddleWare]
 
 // DELETE PRODUCT
 //------------------------------------------------------------
-productRoutes.delete("/products/:id", deleteProduct);            // [Controller]: delete existed product
+productRoutes.delete("/products/hardDel/:id", checkProductExist, hardDelProduct);   // [Controller]
+
 
 export default productRoutes
 
