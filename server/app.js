@@ -10,6 +10,7 @@ import sellerRoutes from "./routes/seller.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
 import { reviewRouter } from "./routes/review.routes.js";
 import swaggerUi from 'swagger-ui-express';
+import orderRoutes from "./routes/order.route.js";
 
 const app = express();
 // [AMS] 😒 naming ports
@@ -36,8 +37,9 @@ app.use(userRouter);
 app.use(adminRouter);
 app.use(sellerRoutes);
 app.use(cartRoutes);
+app.use(orderRoutes);  
 
 // [AMS] 🚀 using swagger for documentation api
-app.listen(defaultPort, () => {
+app.listen(senuPort, () => {
   console.log(`Server is running on port`);
 });
