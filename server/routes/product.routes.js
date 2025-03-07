@@ -1,9 +1,18 @@
-// packages
+//#region packages
 import express from "express"
 import multer from "multer";
+//#endregion
 
-// Module => Product 
-import {addProduct, updateProduct, hardDelProduct}   from "../controllers/product.controller.js"
+//#region Module => Product 
+import { addProduct,
+         updateProduct, 
+         hardDelProduct,
+         getAllProducts,
+         getAdminProducts,
+         getSellerProducts,
+         searchProductsByName,
+         searchProductsByPrice,
+         searchProductsByCategory}   from "../controllers/product.controller.js"
 //#endregion
 
 //#region Middleware
@@ -15,7 +24,7 @@ import {checkProductExist, validateUpdatedProduct}  from "../middleware/updatePr
 // router
 const productRoutes = express.Router();
 
-// [SHARED MIDDLEWARE]: store it only on RAM
+// store [iamge + data] on RAM [till the validation end]
 const upload = multer({storage: multer.memoryStorage()});
 
 
@@ -40,5 +49,21 @@ productRoutes.put("/products/:id",  checkProductExist,           // [MiddleWare]
 productRoutes.delete("/products/hardDel/:id", checkProductExist, hardDelProduct);   // [Controller]
 
 
+
+// READ PRODUCTS : [NO SECURITY NEEDED] <forgot to exclude deleted products>
+//---------------------------------------------------------------------------
+productRoutes.get("/products/",getAllProducts);                                     // ALL 
+productRoutes.get('/products/search/:name', searchProductsByName);                  // BY NAME: user
+productRoutes.get("/products/price/:max?/:min?",searchProductsByPrice);             // BY PRICE: user
+productRoutes.get('/products/category/:categoryId', searchProductsByCategory);      // BY CAT: user
+
+
+// get seller its own products
+productRoutes.get("/products/admin/",getAdminProducts);
+productRoutes.get("/products/seller/:sellerId?", getSellerProducts);
+
+
 export default productRoutes
+
+
 
