@@ -7,10 +7,10 @@ import sellerModel from "../database/models/seller.model.js";
 import adminModel from "../database/models/admin.model.js";
 
 
-/*
-verify layer using joi need to be added on the order data on the request body
-*/
+// IMP INFO: find return the refernece to the order so it act at the original object
 
+// NEED TO BE DONE
+/* verify layer using joi need to be added on the order data on the request body */
 
 /** function decrypt the token
  * 
@@ -69,14 +69,8 @@ const calculateTotalPrice = (cartItems, promoDiscount) => {
     return totalPrice * (1 - promoDiscount / 100);
 };
 
-
-
-
-////////////////////////////////////////////////////////////////////////////
-
 const getSellerByPID = async (PID) => 
     (await productModel.findById(PID).select("sellerId")).sellerId;
-
 
 /**helper function take the itemscart and 
  * send the sellers and product in dictionary 
@@ -99,8 +93,10 @@ const collectSellersAndTheirProducts = async (items) => {
     return sellersProducts;
 };
 
-
-// DIVIDE ORDER INTO SELLER ORDERS AND STORE IT ON THEM
+/** function: 
+ * DIVIDE ORDER INTO SELLER ORDERS AND STORE IT ON THEM 
+ 
+*/
 const sendOrder2sellers = async(items, parentOrderId, UID) => {
 
     // provide unique sellers and its own products
@@ -142,7 +138,12 @@ const sendOrder2sellers = async(items, parentOrderId, UID) => {
 
     return stateList;
 
-}
+};
+
+
+
+
+
 
 
 /** function to create order
@@ -213,7 +214,6 @@ export const createOrder = async (req, res) => {
 
 };
 
-///////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -223,3 +223,296 @@ export const createOrder = async (req, res) => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/** function: update the status */
+
+
+
+
+/* EXAMPLE IN THE BODY  
+{
+    oid: order id for the customer
+    status: "Pending", "Processing", "Shipping", "Delivered", "Cancelled"
+}
+*/
+
+// for sellers
+const updateDeliverStatus = async(req, res)=>{
+
+
+    /*FIRST: GETTING ALL DATA YOU NEED
+    -----------------------------------*/
+
+    // body data
+    const orderId = req.body.oid;       
+    const newStatus = req.body.status   
+
+    // decrypt token
+    const userData = decryptToken(req.headers.token);
+    if(!userData){res.json({msg:"updateDeliverStatus: user not exist, check id in the token"});  return; };
+
+    // get seller profile
+    var sellerData = await sellerModel.findOne({userId: userData.id});
+    if(!sellerData){ sellerData =  await seller.findById(userData.id); }; // check it on admin profile
+    if(!sellerData){ res.json({msg: "updateDeliverStatus: user is not a seller. check the token"}); return; }; // raise error
+
+
+    // get seller order
+    let sellerOrder = sellerData.orders.find(o => o[orderId]);
+
+
+    // get customer order
+    const customerOrder = await orderModel.findById(orderId);
+    if(!customerOrder){ res.json({msg:"order not exist. check id"}); return; }
+
+
+    // get seller element in customerOrder for the seller
+    var lastSellerOrderStatus = customerOrder.stateList.find(obj => obj[userData.id])?.[userData.id];
+
+
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    //|||||||||| CANCEL ||||||||||
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    if (newStatus == "Cancelled"){
+
+
+        /* [ SHIPPED  |  DELIVERED ]: can't cancel
+        ---------------------------------------------------------------*/
+        if (["Shipped", "Delivered"].includes(lastSellerOrderStatus)) {
+            res.json({msg:"TERMINATED: order cannot be cancelled at this stage"})
+            return;
+        }
+
+
+        /* [ PROCESSING ]: increase stock + cancel
+        ---------------------------------------------*/
+        if (lastSellerOrderStatus == "Processing"){
+
+
+            /* INCREASE STOCK
+            -----------------------------------------*/
+            for (const p of sellerOrder.products) { 
+
+                // access inserted product
+                const insertedProduct = await findById(p.pid);
+                if (!insertedProduct) {res.json({ msg: "updateDeliverStatus: product not exist when trying to increase the stock" });  return;}
+            
+                // increase the quantity
+                insertedProduct.stockQuantity += p.quantity;
+                insertedProduct.save(); 
+            }
+
+            /* CANCEL: change status
+            ----------------------------------*/
+            sellerOrder.status = newStatus;
+            sellerData.save(); 
+
+            lastSellerOrderStatus = newStatus;
+            customerOrder.save();
+            
+            // FEEDBACK
+            res.json({msg:"order cancelld successfully, stock increased"})
+            return;
+
+        }
+
+        // CANCEL + STOCK NO CHANGE
+        if(lastSellerOrderStatus == "Pending"){
+
+            // ONLY UPDATE STATUS
+            sellerOrder.status = newStatus;
+            sellerData.save(); 
+
+            lastSellerOrderStatus = newStatus;
+            customerOrder.save();
+
+            // FEEDBACK
+            res.json({msg:"order cancelld successfully, stock no change"})
+            return;
+        }
+
+        res.json({msg:"TERMINATED: order already cancelled"})
+        return;
+    }
+
+
+
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    //|||||||||| PROCESS ||||||||||
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    else if(newStatus == "Processing"){
+
+        /*[ SHIPPED - DELIVERED ]
+        ------------------------------*/ //NO
+        if(["Shipped", "Delivered"].includes(lastSellerOrderStatus)){
+            res.json({msg:"TERMINATED: order now in higher stage. can't return to processing"});
+            return;
+        }
+
+        /*[ PENDING ] decrease stock + update status
+        ----------------------------------------------*/ //OK
+        if(["Pending","Cancelled"].includes(lastSellerOrderStatus)){
+
+
+            /* DECREASE STOCK
+            -----------------------------------------*/
+            for (const p of sellerOrder.products) { 
+
+                // access inserted product
+                const insertedProduct = await findById(p.pid);
+                if (!insertedProduct) {res.json({ msg: "updateDeliverStatus: product not exist when trying to increase the stock" });}
+            
+                // check quantity: 
+                if(insertedProduct.stockQuantity < p.quantity){
+                    res.json({msg:"TERMINATED: one of product out of stock."});
+                    return;
+                }
+                
+                // decrease the quantity
+                insertedProduct.stockQuantity -= p.quantity;
+                insertedProduct.save(); 
+            }
+
+            /* UPDATE STATUS
+            ----------------------------------*/
+            sellerOrder.status = newStatus;
+            sellerData.save(); 
+
+            lastSellerOrderStatus = newStatus;
+            customerOrder.save();
+            
+            //---FEEDBACK-------------------------------------------------
+            res.json({msg:"order cancelld successfully, stock decreased"})
+            return;
+
+        }
+
+        res.json({msg:"TERMINATED: order already processed"});
+        return;
+    }
+
+
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    //|||||||||| SHIPPED ||||||||||
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    else if(newStatus == "Shipped"){
+
+        /*[ PENDING ]: no, lower stage
+        --------------------------------*/ //NO: LOWER STAGE
+        if(lastSellerOrderStatus == "Pending"){
+            res.json({msg:"order, in very low stage to be shipped."})
+            return;
+        }
+
+        /*[ PROCESSING ]:ok <change status>
+        ------------------------------------*/  //OK
+        if(lastSellerOrderStatus == "Processing"){
+
+            // UPDATE STATUS    
+            sellerOrder.status = newStatus;
+            sellerData.save(); 
+
+            lastSellerOrderStatus = newStatus;
+            customerOrder.save();
+            
+        }
+        
+        /*[ DELIVERED ]: no, higher stage
+        ------------------------------------*/ // NO: HIGHER STAGE
+        if(lastSellerOrderStatus == "Delivered"){
+            res.json({msg:"TERMINATED: already delivered"});
+            return;
+        }
+
+        /*[ CANCELED ]:
+        ------------------------------------*/ // CANNOT SHIP CANCELLED PRODUCT
+        if(lastSellerOrderStatus == "Cancelled"){
+            res.json({msg:"TERMINATED: can not ship cancelled product"});
+            return;
+        }
+
+        res.json({msg:"TERMINATED: order already in in shipping stage"});
+        return;
+    }
+
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    //|||||||||| DELIVERD ||||||||||
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    else if(newStatus == "Delivered"){
+
+
+        /*[ PENDING - PROCESSING ]: no, lower stages
+        -------------------------------------------------*/
+        if(["Pending", "Processing"].includes(lastSellerOrderStatus)){
+            res.json({msg:"TERMINATED: lower stages to be delivered."});
+            return;
+        }
+
+        /*[ CANCEL]: no, cannot deliver a cancelld order
+        -------------------------------------------------*/
+        if(lastSellerOrderStatus == "Cancelled"){
+            res.json({msg:"TERMINATED: cannot deliver a cancelld order."});
+            return;
+        }
+
+
+        /*[ SHIPPING ]: ok, <change status>
+        ------------------------------------------------*/
+        if(lastSellerOrderStatus == "Shipped"){
+
+            // UPDATE STATUS    
+            sellerOrder.status = newStatus;
+            sellerData.save(); 
+
+            lastSellerOrderStatus = newStatus;
+            customerOrder.save();
+
+        }
+        
+
+    }
+
+
+    else{ 
+        res.json({msg:"wrong status."}); 
+        return; 
+    }
+
+
+/*
+
+    //NOW CHANGE IT ON THE CUSTOMER STATUS
+
+    // LOOP ON THEM [element on stateList in the order]:
+
+        // IF       PENDING FOUND  => CUSTOMERORDER.STATUS = PENDING
+        // ELSE IF  PROGRESS FOUND => CUSTOMERORDER.STATUS = PROGRESS
+        // ELSE IF  SHIPPED FOUND  => CUSTOMERORDER.STATUS = SHIPPED
+        // ELSE IF  DELIVIED FOUND => CUSTOMERORDER.STATUS = DELIVERED
+        // ELSE IF  CANCEL FOUND   => CUSTOMERORDER.STATUS = CANCELLED
+
+*/
+
+
+
+    
+    
+
+}
