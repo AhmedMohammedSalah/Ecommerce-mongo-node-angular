@@ -7,9 +7,8 @@ import sellerModel from "../database/models/seller.model.js";
 import adminModel from "../database/models/admin.model.js";
 
 
-/*
-verify layer using joi need to be added on the order data on the request body
-*/
+// NEED TO BE DONE
+/* verify layer using joi need to be added on the order data on the request body */
 
 
 /** function decrypt the token
@@ -70,10 +69,6 @@ const calculateTotalPrice = (cartItems, promoDiscount) => {
 };
 
 
-
-
-////////////////////////////////////////////////////////////////////////////
-
 const getSellerByPID = async (PID) => 
     (await productModel.findById(PID).select("sellerId")).sellerId;
 
@@ -100,7 +95,10 @@ const collectSellersAndTheirProducts = async (items) => {
 };
 
 
-// DIVIDE ORDER INTO SELLER ORDERS AND STORE IT ON THEM
+/** function: 
+ * DIVIDE ORDER INTO SELLER ORDERS AND STORE IT ON THEM 
+ 
+*/
 const sendOrder2sellers = async(items, parentOrderId, UID) => {
 
     // provide unique sellers and its own products
@@ -142,7 +140,7 @@ const sendOrder2sellers = async(items, parentOrderId, UID) => {
 
     return stateList;
 
-}
+};
 
 
 /** function to create order
@@ -213,13 +211,51 @@ export const createOrder = async (req, res) => {
 
 };
 
-///////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////
+// [LOGIC] PARENT ORDER ID [MADE BY USER] is unique in the list of the orders
+
+/*
+{
+    oid: order id for the customer
+    status: "Pending", "Processing", "Shipping", "Delivered", "Cancelled"
+}
+*/
 
 
+// for sellers
+const updateDeliverStatus = async(req, res)=>{
 
+    // body data
+    const orderId = req.body.oid;       
+    const newStatus = req.body.status   
 
+    // decrypt token
+    const userData = decryptToken(req.headers.token);
+    if(!userData){res.json({msg:"updateDeliverStatus: user not exist, check id in the token"})};
 
+    // get seller profile
+    var sellerData = await sellerModel.findOne({userId: userData.id});
+    if(!sellerData){ sellerData =  await seller.findById(userData.id); }; // check it on admin profile
+    if(!sellerData){ res.json({msg: "updateDeliverStatus: user is not a seller. check the token"}); }; // raise error
 
+    // get customer order
+    const customerOrder = await orderModel.findById(orderId);
+    if(!customerOrder){ res.json({msg:"order not exist. check id"})}
 
+    // if status cancel
+    if (newStatus == "Cancelled"){
 
+        // access seller element in customerOrder for the seller
+        const lastSellerOrderStatus = customerOrder.stateList.find(obj => obj[userData.id])?.[userData.id];
 
+        //  can't cancel the order
+        if (["Shipped", "Delivered"].includes(lastSellerOrderStatus)) {
+            res.json({msg:"order cannot be cancelled at this stage"})
+        }
+    }
+
+    
+    
+
+}
