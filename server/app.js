@@ -35,10 +35,9 @@ app.use(promoRouter);
 app.use(productRoutes);
 app.use(reviewRouter);
 app.use(userRouter);
-app.use(adminRouter);
 app.use(sellerRoutes);
 app.use(cartRoutes);
-app.use( orderRoutes );
+app.use(orderRoutes);
 app.use(customerRouter)
 
 app.listen(defaultPort, () => {
