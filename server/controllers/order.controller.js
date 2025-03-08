@@ -225,24 +225,6 @@ export const createOrder = async (req, res) => {
 */
 
 
-/** helper function: only update the status
- * - for seler order.
- * - lastSellerOrder on the customer order.
-*/
-const updateStatus = (newStatus, sellerData, customerOrder) =>{
-
-    // update seller order
-    sellerData.orders.find(o => o[orderId]) = newStatus;
-    sellerData.save();
-
-    // update lastSellerOrderStatus
-    customerOrder.stateList.find(obj => obj[userData.id])?.[userData.id] = newStatus;
-    customerOrder.save()
-
-}
-
-
-
 // for sellers
 const updateDeliverStatus = async(req, res)=>{
 
@@ -306,29 +288,33 @@ const updateDeliverStatus = async(req, res)=>{
 
             /* CANCEL: change status
             ----------------------------------*/
-            updateStatus(newStatus, sellerData, customerOrder);
+            sellerOrder.status = newStatus;
+            sellerData.save(); 
+
+            lastSellerOrderStatus = newStatus;
+            customerOrder.save();
             
             // FEEDBACK
-            res.json({msg:"order cancelld successfully, stock reduced"})
-            return
+            res.json({msg:"order cancelld successfully, stock increased"})
+            return;
 
         }
 
         // CANCEL + STOCK NO CHANGE
         if(lastSellerOrderStatus == "Pending"){
 
-            sellerOrder.status = "Cancelled";
-            sellerData.save();
+            sellerOrder.status = newStatus;
+            sellerData.save(); 
 
-            //----------------------------------WORKING HERE-------------------------------------
-            lastSellerOrderStatus = "Cancelled"; //<=====HOW TO UPDATE IN DB
-            //<<<<===================================================================LOOOOK===
+            lastSellerOrderStatus = newStatus;
+            customerOrder.save();
 
             // FEEDBACK
             res.json({msg:"order cancelld successfully, stock no change"})
             return;
         }
 
+        res.json({msg:"order already cancelled"})
         return;
     }
 
@@ -337,16 +323,59 @@ const updateDeliverStatus = async(req, res)=>{
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     //|||||||||| PROCESS ||||||||||
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    if(newStatus = "Processing"){
+    if(newStatus == "Processing"){
 
+        /*[ SHIPPED - DELIVERED ]
+        ------------------------------*/ //NO
+        if(["Shipped", "Delivered"].includes(lastSellerOrderStatus)){
+            res.json({msg:"order now in higher stage. can't return to processing"});
+            return;
+        }
+
+        /*[ PENDING ] decrease stock + update status
+        ----------------------------------------------*/ //OK
+        if(["Pending","Cancelled"].includes(lastSellerOrderStatus)){
+
+
+            /* DECREASE STOCK
+            -----------------------------------------*/
+            for (const p of sellerOrder.products) { 
+
+                // access inserted product
+                const insertedProduct = await findById(p.pid);
+                if (!insertedProduct) {res.json({ msg: "updateDeliverStatus: product not exist when trying to increase the stock" });}
+            
+                // check quantity: 
+                if(insertedProduct.stockQuantity < p.quantity){
+                    res.json({msg:"TERMINATED: one of product out of stock."});
+                    return;
+                }
+                
+                // decrease the quantity
+                insertedProduct.stockQuantity -= p.quantity;
+                insertedProduct.save(); 
+            }
+
+            /* UPDATE STATUS
+            ----------------------------------*/
+            sellerOrder.status = newStatus;
+            sellerData.save(); 
+
+            lastSellerOrderStatus = newStatus;
+            customerOrder.save();
+            
+            //---FEEDBACK-------------------------------------------------
+            res.json({msg:"order cancelld successfully, stock decreased"})
+            return;
+
+        }
+
+        res.json({msg:"order already processed"});
+        return;
     }
 
 
-
-
 /*
-
-    // NOW CHANGE THE STATUS IN THE ORDER STORED WHATEVER THE STAGE
 
     //NOW CHANGE IT ON THE CUSTOMER STATUS
 
