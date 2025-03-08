@@ -12,7 +12,6 @@ import adminModel from "../database/models/admin.model.js";
 // NEED TO BE DONE
 /* verify layer using joi need to be added on the order data on the request body */
 
-
 /** function decrypt the token
  * 
  * @param: token: 
@@ -70,10 +69,8 @@ const calculateTotalPrice = (cartItems, promoDiscount) => {
     return totalPrice * (1 - promoDiscount / 100);
 };
 
-
 const getSellerByPID = async (PID) => 
     (await productModel.findById(PID).select("sellerId")).sellerId;
-
 
 /**helper function take the itemscart and 
  * send the sellers and product in dictionary 
@@ -95,7 +92,6 @@ const collectSellersAndTheirProducts = async (items) => {
 
     return sellersProducts;
 };
-
 
 /** function: 
  * DIVIDE ORDER INTO SELLER ORDERS AND STORE IT ON THEM 
@@ -143,6 +139,11 @@ const sendOrder2sellers = async(items, parentOrderId, UID) => {
     return stateList;
 
 };
+
+
+
+
+
 
 
 /** function to create order
@@ -214,19 +215,50 @@ export const createOrder = async (req, res) => {
 };
 
 
-/////////////////////////////////////////////////////////////////////////
-// [LOGIC] PARENT ORDER ID [MADE BY USER] is unique in the list of the orders
 
-/*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/** function: update the status */
+
+
+
+
+/* EXAMPLE IN THE BODY  
 {
     oid: order id for the customer
     status: "Pending", "Processing", "Shipping", "Delivered", "Cancelled"
 }
 */
 
-
 // for sellers
 const updateDeliverStatus = async(req, res)=>{
+
+
+    /*FIRST: GETTING ALL DATA YOU NEED
+    -----------------------------------*/
 
     // body data
     const orderId = req.body.oid;       
@@ -234,12 +266,12 @@ const updateDeliverStatus = async(req, res)=>{
 
     // decrypt token
     const userData = decryptToken(req.headers.token);
-    if(!userData){res.json({msg:"updateDeliverStatus: user not exist, check id in the token"})};
+    if(!userData){res.json({msg:"updateDeliverStatus: user not exist, check id in the token"});  return; };
 
     // get seller profile
     var sellerData = await sellerModel.findOne({userId: userData.id});
     if(!sellerData){ sellerData =  await seller.findById(userData.id); }; // check it on admin profile
-    if(!sellerData){ res.json({msg: "updateDeliverStatus: user is not a seller. check the token"}); }; // raise error
+    if(!sellerData){ res.json({msg: "updateDeliverStatus: user is not a seller. check the token"}); return; }; // raise error
 
 
     // get seller order
@@ -248,11 +280,12 @@ const updateDeliverStatus = async(req, res)=>{
 
     // get customer order
     const customerOrder = await orderModel.findById(orderId);
-    if(!customerOrder){ res.json({msg:"order not exist. check id"})}
+    if(!customerOrder){ res.json({msg:"order not exist. check id"}); return; }
 
 
     // get seller element in customerOrder for the seller
     var lastSellerOrderStatus = customerOrder.stateList.find(obj => obj[userData.id])?.[userData.id];
+
 
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     //|||||||||| CANCEL ||||||||||
@@ -263,7 +296,7 @@ const updateDeliverStatus = async(req, res)=>{
         /* [ SHIPPED  |  DELIVERED ]: can't cancel
         ---------------------------------------------------------------*/
         if (["Shipped", "Delivered"].includes(lastSellerOrderStatus)) {
-            res.json({msg:"order cannot be cancelled at this stage"})
+            res.json({msg:"TERMINATED: order cannot be cancelled at this stage"})
             return;
         }
 
@@ -279,7 +312,7 @@ const updateDeliverStatus = async(req, res)=>{
 
                 // access inserted product
                 const insertedProduct = await findById(p.pid);
-                if (!insertedProduct) {res.json({ msg: "updateDeliverStatus: product not exist when trying to increase the stock" });}
+                if (!insertedProduct) {res.json({ msg: "updateDeliverStatus: product not exist when trying to increase the stock" });  return;}
             
                 // increase the quantity
                 insertedProduct.stockQuantity += p.quantity;
@@ -303,6 +336,7 @@ const updateDeliverStatus = async(req, res)=>{
         // CANCEL + STOCK NO CHANGE
         if(lastSellerOrderStatus == "Pending"){
 
+            // ONLY UPDATE STATUS
             sellerOrder.status = newStatus;
             sellerData.save(); 
 
@@ -314,7 +348,7 @@ const updateDeliverStatus = async(req, res)=>{
             return;
         }
 
-        res.json({msg:"order already cancelled"})
+        res.json({msg:"TERMINATED: order already cancelled"})
         return;
     }
 
@@ -323,12 +357,12 @@ const updateDeliverStatus = async(req, res)=>{
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     //|||||||||| PROCESS ||||||||||
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    if(newStatus == "Processing"){
+    else if(newStatus == "Processing"){
 
         /*[ SHIPPED - DELIVERED ]
         ------------------------------*/ //NO
         if(["Shipped", "Delivered"].includes(lastSellerOrderStatus)){
-            res.json({msg:"order now in higher stage. can't return to processing"});
+            res.json({msg:"TERMINATED: order now in higher stage. can't return to processing"});
             return;
         }
 
@@ -370,8 +404,95 @@ const updateDeliverStatus = async(req, res)=>{
 
         }
 
-        res.json({msg:"order already processed"});
+        res.json({msg:"TERMINATED: order already processed"});
         return;
+    }
+
+
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    //|||||||||| SHIPPED ||||||||||
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    else if(newStatus == "Shipped"){
+
+        /*[ PENDING ]: no, lower stage
+        --------------------------------*/ //NO: LOWER STAGE
+        if(lastSellerOrderStatus == "Pending"){
+            res.json({msg:"order, in very low stage to be shipped."})
+            return;
+        }
+
+        /*[ PROCESSING ]:ok <change status>
+        ------------------------------------*/  //OK
+        if(lastSellerOrderStatus == "Processing"){
+
+            // UPDATE STATUS    
+            sellerOrder.status = newStatus;
+            sellerData.save(); 
+
+            lastSellerOrderStatus = newStatus;
+            customerOrder.save();
+            
+        }
+        
+        /*[ DELIVERED ]: no, higher stage
+        ------------------------------------*/ // NO: HIGHER STAGE
+        if(lastSellerOrderStatus == "Delivered"){
+            res.json({msg:"TERMINATED: already delivered"});
+            return;
+        }
+
+        /*[ CANCELED ]:
+        ------------------------------------*/ // CANNOT SHIP CANCELLED PRODUCT
+        if(lastSellerOrderStatus == "Cancelled"){
+            res.json({msg:"TERMINATED: can not ship cancelled product"});
+            return;
+        }
+
+        res.json({msg:"TERMINATED: order already in in shipping stage"});
+        return;
+    }
+
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    //|||||||||| DELIVERD ||||||||||
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    else if(newStatus == "Delivered"){
+
+
+        /*[ PENDING - PROCESSING ]: no, lower stages
+        -------------------------------------------------*/
+        if(["Pending", "Processing"].includes(lastSellerOrderStatus)){
+            res.json({msg:"TERMINATED: lower stages to be delivered."});
+            return;
+        }
+
+        /*[ CANCEL]: no, cannot deliver a cancelld order
+        -------------------------------------------------*/
+        if(lastSellerOrderStatus == "Cancelled"){
+            res.json({msg:"TERMINATED: cannot deliver a cancelld order."});
+            return;
+        }
+
+
+        /*[ SHIPPING ]: ok, <change status>
+        ------------------------------------------------*/
+        if(lastSellerOrderStatus == "Shipped"){
+
+            // UPDATE STATUS    
+            sellerOrder.status = newStatus;
+            sellerData.save(); 
+
+            lastSellerOrderStatus = newStatus;
+            customerOrder.save();
+
+        }
+        
+
+    }
+
+
+    else{ 
+        res.json({msg:"wrong status."}); 
+        return; 
     }
 
 
@@ -388,6 +509,7 @@ const updateDeliverStatus = async(req, res)=>{
         // ELSE IF  CANCEL FOUND   => CUSTOMERORDER.STATUS = CANCELLED
 
 */
+
 
 
     
