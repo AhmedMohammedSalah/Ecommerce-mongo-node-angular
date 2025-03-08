@@ -7,6 +7,8 @@ import sellerModel from "../database/models/seller.model.js";
 import adminModel from "../database/models/admin.model.js";
 
 
+// IMP INFO: find return the refernece to the order so it act at the original object
+
 // NEED TO BE DONE
 /* verify layer using joi need to be added on the order data on the request body */
 
@@ -223,6 +225,24 @@ export const createOrder = async (req, res) => {
 */
 
 
+/** helper function: only update the status
+ * - for seler order.
+ * - lastSellerOrder on the customer order.
+*/
+const updateStatus = (newStatus, sellerData, customerOrder) =>{
+
+    // update seller order
+    sellerData.orders.find(o => o[orderId]) = newStatus;
+    sellerData.save();
+
+    // update lastSellerOrderStatus
+    customerOrder.stateList.find(obj => obj[userData.id])?.[userData.id] = newStatus;
+    customerOrder.save()
+
+}
+
+
+
 // for sellers
 const updateDeliverStatus = async(req, res)=>{
 
@@ -239,61 +259,104 @@ const updateDeliverStatus = async(req, res)=>{
     if(!sellerData){ sellerData =  await seller.findById(userData.id); }; // check it on admin profile
     if(!sellerData){ res.json({msg: "updateDeliverStatus: user is not a seller. check the token"}); }; // raise error
 
+
+    // get seller order
+    let sellerOrder = sellerData.orders.find(o => o[orderId]);
+
+
     // get customer order
     const customerOrder = await orderModel.findById(orderId);
     if(!customerOrder){ res.json({msg:"order not exist. check id"})}
 
-    // if status cancel
+
+    // get seller element in customerOrder for the seller
+    var lastSellerOrderStatus = customerOrder.stateList.find(obj => obj[userData.id])?.[userData.id];
+
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    //|||||||||| CANCEL ||||||||||
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     if (newStatus == "Cancelled"){
 
-        // access seller element in customerOrder for the seller
-        const lastSellerOrderStatus = customerOrder.stateList.find(obj => obj[userData.id])?.[userData.id];
 
-        //  can't cancel the order
+        /* [ SHIPPED  |  DELIVERED ]: can't cancel
+        ---------------------------------------------------------------*/
         if (["Shipped", "Delivered"].includes(lastSellerOrderStatus)) {
             res.json({msg:"order cannot be cancelled at this stage"})
+            return;
         }
+
+
+        /* [ PROCESSING ]: increase stock + cancel
+        ---------------------------------------------*/
+        if (lastSellerOrderStatus == "Processing"){
+
+
+            /* INCREASE STOCK
+            -----------------------------------------*/
+            for (const p of sellerOrder.products) { 
+
+                // access inserted product
+                const insertedProduct = await findById(p.pid);
+                if (!insertedProduct) {res.json({ msg: "updateDeliverStatus: product not exist when trying to increase the stock" });}
+            
+                // increase the quantity
+                insertedProduct.stockQuantity += p.quantity;
+                insertedProduct.save(); 
+            }
+
+            /* CANCEL: change status
+            ----------------------------------*/
+            updateStatus(newStatus, sellerData, customerOrder);
+            
+            // FEEDBACK
+            res.json({msg:"order cancelld successfully, stock reduced"})
+            return
+
+        }
+
+        // CANCEL + STOCK NO CHANGE
+        if(lastSellerOrderStatus == "Pending"){
+
+            sellerOrder.status = "Cancelled";
+            sellerData.save();
+
+            //----------------------------------WORKING HERE-------------------------------------
+            lastSellerOrderStatus = "Cancelled"; //<=====HOW TO UPDATE IN DB
+            //<<<<===================================================================LOOOOK===
+
+            // FEEDBACK
+            res.json({msg:"order cancelld successfully, stock no change"})
+            return;
+        }
+
+        return;
     }
 
-    // access the order stored on seller using orderId
 
 
-    // STATUS WHEN THE STOCK INCREASE OR DECREASE
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    //|||||||||| PROCESS ||||||||||
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    if(newStatus = "Processing"){
 
-    /* if newStatus == "Cancelled"{
-
-        access product by pid from the accessed order
-
-        access quantity needed
-
-        access stock quantity in the product
-
-        increase on what exist because it cancelled
     }
 
-    else if (newStatus == "Processing"){
 
-        access product by pid from the accessed order
 
-        access quantity needed
 
-        access stock quantity in the product
-
-        decrease on what exist because it take from the storage
-    }
-
+/*
 
     // NOW CHANGE THE STATUS IN THE ORDER STORED WHATEVER THE STAGE
 
     //NOW CHANGE IT ON THE CUSTOMER STATUS
 
-    // LOOP ON THEM:
+    // LOOP ON THEM [element on stateList in the order]:
 
-        // IF       PENDING FOUND => CUSTOMERORDER.STATUS = PENDING
+        // IF       PENDING FOUND  => CUSTOMERORDER.STATUS = PENDING
         // ELSE IF  PROGRESS FOUND => CUSTOMERORDER.STATUS = PROGRESS
-        // ELSE IF SHIPPED FOUND  => CUSTOMERORDER.STATUS = SHIPPED
-        // ELSE IF DELIVIED FOUND => CUSTOMERORDER.STATUS = DELIVERED
-        // ELSE IF CANCEL FOUND  => CUSTOMERORDER.STATUS = CANCELLED
+        // ELSE IF  SHIPPED FOUND  => CUSTOMERORDER.STATUS = SHIPPED
+        // ELSE IF  DELIVIED FOUND => CUSTOMERORDER.STATUS = DELIVERED
+        // ELSE IF  CANCEL FOUND   => CUSTOMERORDER.STATUS = CANCELLED
 
 */
 
