@@ -9,13 +9,15 @@ const SellerSchema = new Schema(
       required: true,
     },
     //--[SENU]: WARNING: <email duplicated> ---> exist in user schema [parent]-----
-    email: { type: String, unique: true, sparse: true },
+    //[AMS] deleted❗  email: { type: String, unique: true, sparse: true },
     //----------------------------------------------------------------------------
 
     // COMMERCIAL INFO
-    businessName: { type: String, required: true },
-    businessDetails: { type: Object, required: true },
-    bankDetails: { type: Object, required: true },
+    //[AMS] ❎ remove any required from the following
+    // because when it created auto
+    businessName: { type: String /*,required: true*/ },
+    businessDetails: { type: Object /*,required: true*/ },
+    bankDetails: { type: Object /*,required: true*/ },
 
     // SELLER STATUS
     status: {
@@ -26,26 +28,29 @@ const SellerSchema = new Schema(
 
     //--[SENU]-:-[LOGIC ERROR] (FIXED)
     // -------< added more general attribute, rating will be computed from it >-------------
-    
+
     // ratings: { type: Number, default: 0 }, //[OLD CODE]
 
     // REVIEWS: reviews(txt) of customer to the admin as a seller
     reviews: [
       {
-        customerId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+        customerId: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+          /*,required: true*/
+        },
         reviewTxt: { type: String },
-        rating: { type: Number, required: true, min: 1, max: 5 }
-      }
+        rating: { type: Number, required: true, min: 1, max: 5 },
+      },
     ],
 
     //--------------------------------------------------------------------------
 
     //--[SENU]-:-[LOGIC ADDED]-----to store products related to seller------------------
-    products: [{ type: Schema.Types.ObjectId, ref: 'Product', default: [] }],
+    products: [{ type: Schema.Types.ObjectId, ref: "Product", default: [] }],
     //--------------------END-----------------------------------------------------------
 
     softDelete: { type: Boolean, default: false },
-
   },
 
   {

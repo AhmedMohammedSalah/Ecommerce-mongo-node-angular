@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 export async function tokenVerify(req, res, next) {
   const token = req.headers["token"];
   console.log("Enter token verify middleware ");
-  
+
   if (!token) {
     return res.status(401).json({ message: "Token is required" });
   }
@@ -11,7 +11,9 @@ export async function tokenVerify(req, res, next) {
     if (err) {
       return res.status(401).json({ message: "Invalid token" });
     }
-    req.user = decoded;
+    // console.log(decoded.user);
+
+    req.user = decoded.user;
     next();
   });
 }

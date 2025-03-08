@@ -27,8 +27,10 @@ export const findPromoById = async (id) => await promoModel.findById(id);
 export async function addPromo(req, res) {
   try {
     // Check if the user is admin (commented out for now)
-    // if (req.user.role !== "admin")
-    //   return res.status(401).json({ message: "Unauthorized" });
+    if ( req.user.role !== "admin" )
+      console.log(req.user.role);
+      
+      return res.status(401).json({ message: "Unauthorized" });
 
     // Validate request body
     const { code, discount, validFrom, validTo } = req.body;
@@ -80,8 +82,8 @@ export async function addPromo(req, res) {
 export async function getPromos(req, res) {
   try {
     // Check if the user is admin (commented out for now)
-    // if (req.user.role !== "admin")
-    //   return res.status(401).json({ message: "Unauthorized" });
+    if (req.user.role !== "admin")
+      return res.status(401).json({ message: "Unauthorized" });
 
     // Fetch all promos
     const promos = await promoModel.find();
@@ -106,8 +108,8 @@ export async function getPromos(req, res) {
 export async function editPromo(req, res) {
   try {
     // Check if the user is admin (commented out for now)
-    // if (req.user.role !== "admin")
-    //   return res.status(401).json({ message: "Unauthorized" });
+    if (req.user.role !== "admin")
+      return res.status(401).json({ message: "Unauthorized" });
 
     // Validate promo ID
     const id = req.params.id;
@@ -145,8 +147,8 @@ export async function editPromo(req, res) {
 export async function deactivatePromo(req, res) {
   try {
     // Check if the user is admin (commented out for now)
-    // if (req.user.role !== "admin")
-    //   return res.status(401).json({ message: "Unauthorized" });
+    if (req.user.role !== "admin")
+      return res.status(401).json({ message: "Unauthorized" });
 
     // Validate promo ID
     const id = req.params.id;

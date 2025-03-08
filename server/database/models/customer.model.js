@@ -1,50 +1,50 @@
-import {Schema, model} from "mongoose";
+import { Schema, model } from "mongoose";
 
-// [SENU] CREATED 
-// [AMS] Great jop ✅
-const customerSchema = new mongoose.Schema(
+// [SENU] CREATED
+// [AMS] Great jop ✅ but edit _id to be userId
+const customerSchema = new Schema(
   {
-    // ID 
-    _id: {
+    // ID
+    userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true
+      required: true,
     },
 
     // PAYMENT
     paymentMethods: {
       type: [String],
-      default: []
+      default: [],
     },
 
     // WISH LIST [BONUS]
     wishlist: {
       type: [Schema.Types.ObjectId],
       ref: "Product",
-      default: []
+      default: [],
     },
 
     // LOYALITY POINT [REDUCE PRICE][BONUS]
     loyaltyPoints: {
       type: Number,
-      default: 0
+      default: 0,
     },
 
     // DIFFERENT LANG [BONUS]
     preferredLanguage: {
       type: String,
-      default: "en"
+      default: "en",
     },
 
     // NOTIFICATION [TIME BOUNDED]
     notifications: {
       type: Object,
-      default: {}
-    }
+      default: {},
+    },
   },
   { timestamps: true }
 );
 
-const customerModel = mongoose.model("Customer", customerSchema);
+const customerModel = model("Customer", customerSchema);
 
 export default customerModel;

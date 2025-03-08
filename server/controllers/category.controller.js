@@ -28,8 +28,8 @@ export async function getCategoryId(categoryName) {
  */
 export async function createCategory(req, res) {
   // Check Authority (Admin only)
-  // if (req.user.role !== 'admin')
-  //   return res.status(401).json({ message: 'Unauthorized' });
+  if (req.user.role !== "admin")
+    return res.status(401).json({ message: "Unauthorized" });
 
   // Extract data from request body
   const { name, description, parentId } = req.body;
@@ -129,8 +129,8 @@ export async function getCategoryById(req, res) {
  */
 export async function updateCategory(req, res) {
   // Check Authority (Admin only)
-  // if (req.user.role !== 'admin')
-  //   return res.status(401).json({ message: 'Unauthorized' });
+  if (req.user.role !== "admin")
+    return res.status(401).json({ message: "Unauthorized" });
 
   // Get category ID from request params
   const id = req.params.id;
@@ -179,8 +179,8 @@ export async function updateCategory(req, res) {
  */
 export async function deleteCategory(req, res) {
   // Check Authority (Admin only)
-  // if (req.user.role !== 'admin')
-  //   return res.status(401).json({ message: 'Unauthorized' });
+  if (req.user.role !== "admin")
+    return res.status(401).json({ message: "Unauthorized" });
 
   // Get category ID from request params
   const id = req.params.id;

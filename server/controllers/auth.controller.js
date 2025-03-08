@@ -2,6 +2,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../database/models/user.model.js";
 import { sendEmail } from "../Email/email.js";
+import { createCustomerProfile } from "./customer.controller.js";
+import { createSellerProfile } from "./seller.controller.js";
 
 const userModel = User;// [AMS] 😒 correct naming
 
@@ -27,13 +29,24 @@ export async function signup(req, res) {
     //   expiresIn: "1h",
     // });
 
-    // AMS  depands on user role will create profile
+    //[AMS] 🤕 depands on user role will create profile
+    if (user.role === "user") {
+      let customer = await createCustomerProfile(user._id);
+      console.log(customer);
+      // [AMS]👋 the following line is to send mail to new users
+      sendEmail(user.email);
+      res.status(201).json({ user });
+    } else if (user.role === "seller") {
+      let seller = await createSellerProfile(user._id);
+      console.log(seller);
+      // [AMS]👋 the following line is to send mail to new users
+      sendEmail(user.email);
+      res.status(201).json({ user });
+    }
     // fetch user
     // call create profile (id )
 
-    // [AMS]👋 the following line is to send mail to new users
-    sendEmail(user.email);
-    res.status(201).json({ user });
+    
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

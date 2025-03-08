@@ -24,9 +24,10 @@ const userSchema = new Schema(
       minlength: [8, "Password must be at least 8 characters"],
       select: false,
     },
+    // [AMS] add seller role 
     role: {
       type: String,
-      enum: ["user", "admin"],
+      enum: ["user","seller", "admin"],
       default: "user",
     },
     isVerified: {
