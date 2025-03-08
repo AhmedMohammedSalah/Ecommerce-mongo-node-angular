@@ -29,7 +29,10 @@ const adminSchema = Schema(
 
 
         // ADMIN PRODUCTS
-        products: [{ type: Schema.Types.ObjectId, ref: 'Product', default: [] }] 
+        products: [{ type: Schema.Types.ObjectId, ref: 'Product', default: [] }],
+        
+        //ADMIN ORDERS FROM THE CUSTOMERS
+        orders: { type: Array, default: [] },
         
 
     },

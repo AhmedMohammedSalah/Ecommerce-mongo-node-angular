@@ -2,6 +2,9 @@ import cartModel from "../database/models/cart.model.js";
 import orderModel from "../database/models/order.model.js"; 
 import jwt from "jsonwebtoken";
 import { promoModel } from "../database/models/promotion.model.js";
+import { productModel } from "../database/models/product.model.js";
+import sellerModel from "../database/models/seller.model.js";
+import adminModel from "../database/models/admin.model.js";
 
 
 /*
@@ -66,6 +69,82 @@ const calculateTotalPrice = (cartItems, promoDiscount) => {
     return totalPrice * (1 - promoDiscount / 100);
 };
 
+
+
+
+////////////////////////////////////////////////////////////////////////////
+
+const getSellerByPID = async (PID) => 
+    (await productModel.findById(PID).select("sellerId")).sellerId;
+
+
+/**helper function take the itemscart and 
+ * send the sellers and product in dictionary 
+ * key is the seller id and the value is array of product
+ * {"sid": [{},{}], "sid": [{}]} */
+const collectSellersAndTheirProducts = async (items) => {
+
+    const sellersProducts = {};
+
+    for (const itm of items) {
+
+        // seller id for the product [who sell it]
+        const SID = await getSellerByPID(itm.pid); 
+
+        // key: SID => value: [{Pinfo}]
+        if (!sellersProducts[SID]) {sellersProducts[SID] = [];}
+        sellersProducts[SID].push(itm);
+    }
+
+    return sellersProducts;
+};
+
+
+// DIVIDE ORDER INTO SELLER ORDERS AND STORE IT ON THEM
+const sendOrder2sellers = async(items, parentOrderId, UID) => {
+
+    // provide unique sellers and its own products
+    const sellersProducts = await collectSellersAndTheirProducts(items);
+
+    // state list: [ {"sid": status}, {"sid": status} ] <for handling the shipping>
+    let stateList = [];
+
+    var findSeller;
+
+    // to create and store the orders for each seller inside it
+    for (const SID in sellersProducts) {
+
+        // order that seller saw
+        let sellerOrder = {
+            userId: UID,                    // id of the user (customer)
+            parentOrderId: parentOrderId,   // parent order id for the user
+            products: sellersProducts[SID], // product for the seller that the user ordered
+            status: "Pending"               // default status for the order once made
+        }
+
+
+        findSeller = await sellerModel.findOne({userId: SID});
+
+        // if not exist in seller schema search on admin schema
+        if(!findSeller){ findSeller = await adminModel.findById(SID)}
+
+        // none of them : raise error
+        if(!findSeller){return false}
+
+        // add the order to the order array for the seller
+        findSeller.orders.push(sellerOrder);
+        await findSeller.save();
+
+        // adding the state for the state list for the seller
+        stateList.push({[SID]:"Pending"});
+
+    }
+
+    return stateList;
+
+}
+
+
 /** function to create order
  * - Retrieves user cart
  * - Checks for promo code
@@ -104,11 +183,8 @@ export const createOrder = async (req, res) => {
         }
     }
 
-
     // CALCULATE TOTAL PRICE WITH ALL DISCOUNTS
-    let finalTotalPrice = calculateTotalPrice(userCart.items, promoDiscount);
-
-
+    let finalTotalPrice = calculateTotalPrice(userCart.items, promoDiscount); 
 
     // CREATE ORDER OBJECT
     const orderDetails = new orderModel({
@@ -120,10 +196,30 @@ export const createOrder = async (req, res) => {
         paymentId:          req.body.paymentId
     });
 
-
     // SAVE ORDER TO DATABASE
     const savedOrder = await orderDetails.save();
-    res.json({ msg: "Order created successfully", order: savedOrder });
 
+    // SEND THE ORDER TO THE SELLERS [DIVIDE IT INTO SMALL ORDERS]
+    const stateList = await sendOrder2sellers(userCart.items, savedOrder._id, userData.id);
+
+    if(!stateList){res.json({msg:"seller not exist"})}; 
+
+    // add to stateList
+    savedOrder.stateList = stateList;
+
+    //save
+    await savedOrder.save()
+    res.json({ msg: "Order created, and the orders sent to the sellers successfully", order: savedOrder });
 
 };
+
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+

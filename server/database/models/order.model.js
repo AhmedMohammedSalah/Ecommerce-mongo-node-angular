@@ -43,6 +43,11 @@ const orderSchema = new Schema(
 
     // TOTAL PRICE + DISCOUNT APPLIED + PROMO APPLIED
     total: { type: Number, required: true, min: 0 },
+
+    //--state list when shipping logic accumlate----
+    stateList: { type: Array, default: [] }
+    //----------------------------------------------
+
   },
   { timestamps: true, versionKey: false }
 );

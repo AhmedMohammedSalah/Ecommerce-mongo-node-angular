@@ -93,3 +93,18 @@ data in mongo related to user seller
 
 
 // test code the probem here in 
+
+
+======================
+
+token to customer:
+eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY3Y2FmYzA1ZDI3M2NjMjg1YmIyYWU5ZiIsIm5hbWUiOiJtb2hhbWVkIGVsVXNlciIsImVtYWlsIjoibW9oYW1lZEVsVXNlckdkYW5AZXhhbXBsZS5jb20iLCJwYXNzd29yZCI6IlVzZXJQYXNzMTIzIiwicm9sZSI6InVzZXIiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0RlbGV0ZWQiOmZhbHNlfQ.DVAUJPxKJGrOIIIY87gTou7RHshOj8NzLyxBVc65kww
+
+{
+  "id": "67cafc05d273cc285bb2ae9f",
+  "name": "mohamed elUser",
+  "email": "mohamedElUserGdan@example.com",
+  "role": "user",
+  "isVerified": true,
+  "isDeleted": false
+}

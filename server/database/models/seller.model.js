@@ -51,6 +51,11 @@ const SellerSchema = new Schema(
     //--------------------END-----------------------------------------------------------
 
     softDelete: { type: Boolean, default: false },
+
+    //--[SENU]-:-[LOGIC ADDED]----store the orders of customer to seller product-----
+    orders: { type: Array, default: [] },
+    //-------------------------------------------------------------------------------
+
   },
 
   {
