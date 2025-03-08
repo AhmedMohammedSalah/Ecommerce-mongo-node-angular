@@ -255,6 +255,49 @@ const updateDeliverStatus = async(req, res)=>{
         }
     }
 
+    // access the order stored on seller using orderId
+
+
+    // STATUS WHEN THE STOCK INCREASE OR DECREASE
+
+    /* if newStatus == "Cancelled"{
+
+        access product by pid from the accessed order
+
+        access quantity needed
+
+        access stock quantity in the product
+
+        increase on what exist because it cancelled
+    }
+
+    else if (newStatus == "Processing"){
+
+        access product by pid from the accessed order
+
+        access quantity needed
+
+        access stock quantity in the product
+
+        decrease on what exist because it take from the storage
+    }
+
+
+    // NOW CHANGE THE STATUS IN THE ORDER STORED WHATEVER THE STAGE
+
+    //NOW CHANGE IT ON THE CUSTOMER STATUS
+
+    // LOOP ON THEM:
+
+        // IF       PENDING FOUND => CUSTOMERORDER.STATUS = PENDING
+        // ELSE IF  PROGRESS FOUND => CUSTOMERORDER.STATUS = PROGRESS
+        // ELSE IF SHIPPED FOUND  => CUSTOMERORDER.STATUS = SHIPPED
+        // ELSE IF DELIVIED FOUND => CUSTOMERORDER.STATUS = DELIVERED
+        // ELSE IF CANCEL FOUND  => CUSTOMERORDER.STATUS = CANCELLED
+
+*/
+
+
     
     
 
