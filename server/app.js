@@ -11,6 +11,7 @@ import cartRoutes from "./routes/cart.routes.js";
 import { reviewRouter } from "./routes/review.routes.js";
 import swaggerUi from "swagger-ui-express";
 import orderRoutes from "./routes/order.routes.js";
+import customerRouter from "./routes/customer.routes.js";
 
 const app = express();
 // [AMS] 😒 naming ports
@@ -37,7 +38,8 @@ app.use(userRouter);
 app.use(adminRouter);
 app.use(sellerRoutes);
 app.use(cartRoutes);
-app.use(orderRoutes);
+app.use( orderRoutes );
+app.use(customerRouter)
 
 app.listen(defaultPort, () => {
   console.log(`Server is running on port`);

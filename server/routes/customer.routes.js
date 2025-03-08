@@ -4,6 +4,6 @@ const customerRouter = Router();
 import { updateCustomer } from "../controllers/customer.controller.js";
 
 // update customer
-customerRouter.put("/update/:index", updateCustomer);
+customerRouter.put("/customer/update-profile", updateCustomer);
 
 export default customerRouter;

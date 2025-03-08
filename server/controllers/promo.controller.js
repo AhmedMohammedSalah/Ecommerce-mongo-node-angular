@@ -28,8 +28,6 @@ export async function addPromo(req, res) {
   try {
     // Check if the user is admin (commented out for now)
     if ( req.user.role !== "admin" )
-      console.log(req.user.role);
-      
       return res.status(401).json({ message: "Unauthorized" });
 
     // Validate request body
