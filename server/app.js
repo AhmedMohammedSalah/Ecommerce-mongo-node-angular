@@ -41,11 +41,11 @@ app.use(userRouter);
 app.use(sellerRoutes);
 app.use(customerRouter)
 
-app.listen(defaultPort, () => {
-  console.log(`Server is running on port`);
-});
-
-
 // app.listen(defaultPort, () => {
 //   console.log(`Server is running on port`);
 // });
+
+
+app.listen(defaultPort, () => {
+  console.log(`Server is running on port`);
+});
