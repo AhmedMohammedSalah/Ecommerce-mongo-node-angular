@@ -5,24 +5,24 @@ import cartModel from "../database/models/cart.model.js";
  * It accepts the `userId` and `sessionId` in the request body.
  * If both `userId` and `sessionId` are provided, a new cart is created and saved to the database.
  * The function returns the created cart as a response.
- * @param req 
- *  @param res 
+ * @param req
+ *  @param res
  * @edited by : [rehab kamal]
- *  
+ *
  */
-// userID 
-export const createCart = async ( req, res ) => {
+// for front end
+export const createCart = async (req, res) => {
   try {
-    const {sessionId } = req.params.id;
+    const { sessionId } = req.params;
 
-    if (!userId || !sessionId) {
+    if (!sessionId) {
       return res
         .status(400)
         .json({ message: "UserId and SessionId are required." });
     }
 
-    const newCart = new cartModel({ userId, sessionId });
-    const savedCart = await  newCart.save();
+    const newCart = new cartModel({ sessionId });
+    const savedCart = await newCart.save();
 
     res.status(201).json(savedCart);
   } catch (error) {
@@ -40,7 +40,7 @@ export const createCart = async ( req, res ) => {
  */
 export const getCartByUserId = async (req, res) => {
   try {
-    const cart = await cartModel.findOne({ userId: req.params.userId });
+    const cart = await cartModel.findOne({ userId: req.user._id });
     if (!cart) return res.status(404).json({ message: "Cart not found" });
 
     res.status(200).json(cart);
@@ -66,7 +66,7 @@ export const getCartByUserId = async (req, res) => {
 //-------------------------------------------------------------------------------------
 export const updateCart = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const  userId  = req.user._id;
     const { productId, quantity } = req.body;
 
     // Find the product to check available stock
@@ -90,21 +90,53 @@ export const updateCart = async (req, res) => {
       return res.status(404).json({ message: "Cart not found" });
     }
 
-    res.status(200).json({ message: "Cart updated successfully", cart: updatedCart });
+    res
+      .status(200)
+      .json({ message: "Cart updated successfully", cart: updatedCart });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-
+/**
+ * @author Ahmed M.Salah
+ * @param {*} req
+ * @param {*} res
+ * @return res.status( 200 ).json( { message: 'User set to cart successfully', cart } );
+ */
+export async function setUserToCart(req, res) {
+  try {
+    const userId = req.user._id;
+    const { sessionId } = req.body;
+    let cart = await cartModel.findOne( { sessionId } );
+    let userCart = await cartModel.findOne( { userId } );
+    if ( userCart ) {
+      return res.status ( 400 ).json( { message: 'User already have a cart',userCart } );
+    }
+    if ( !cart ) {
+      console.log( "enter if " );
+      const newCart = new cartModel( { userId } );
+      await newCart.save();
+      res
+        .status(200)
+        .json({ message: "User set to cart successfully", newCart });
+    } else {
+      console.log("enter else")
+      cart.userId = userId;
+      await cart.save();
+      res.status(200).json({ message: "User set to cart successfully", cart });
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+}
 /*
 SCENARIO:
 clikcknig on the add-to-cart button below the product
 at this case you have all product data becauses you fetch it to view the product already
 */
 
-
-// [SENU]: add prodcut on the item array 
+// [SENU]: add prodcut on the item array
 
 // EXPECTED OUTCOME AS ELEMENT IN THE ITEM ARRAY
 // [WILL BE USED IN THE ORDER SO I EXPECT TO FIND ARRAY OF OBJECT EACH OBJECT CONTAIN THIS]
@@ -112,28 +144,30 @@ at this case you have all product data becauses you fetch it to view the product
 // {productId: 'fsdfsdf', price: 1000,discount:: 12,quantity: default(1)}
 //-----------------------------------------------------------------------------------------
 
-export const addItemToCart = async ( req, res) => {
-    // GET [PRODUCT-ID FROM REQUEST BODY [PID]
+export const addItemToCart = async (req, res) => {
+  // GET [PRODUCT-ID FROM REQUEST BODY [PID]
   // CHECK STOCKQUANTITY (NOT EQUAL ZERO)
-    // DECRYPT TOKEN
-    // CHECK USER ROLE [FROM TOKEN] [ONLY NORMAL USER HAS CART]
-      // GET USER ID [FROM TOKEN]
+  // DECRYPT TOKEN
+  // CHECK USER ROLE [FROM TOKEN] [ONLY NORMAL USER HAS CART]
+  // GET USER ID [FROM TOKEN]
 
-      // USER ID TO GET CART
+  // USER ID TO GET CART
 
-      // ACCESS ITEM ARRAY FROM CART AND PUSH {PID: PID, QUANTITIY: 1}
+  // ACCESS ITEM ARRAY FROM CART AND PUSH {PID: PID, QUANTITIY: 1}
 
-    // ELSE: INVALID TYPE OF USERS
-  
+  // ELSE: INVALID TYPE OF USERS
+
   //ELSE : OUT-OF-STOCK
-  
+
   try {
-    const user = req.user; 
+    const user = req.user;
     const userId = user.id;
     const userRole = user.role;
 
     if (userRole !== "user") {
-      return res.status(403).json({ message: "Only normal users can have a cart" });
+      return res
+        .status(403)
+        .json({ message: "Only normal users can have a cart" });
     }
 
     const { productId } = req.body;
@@ -156,7 +190,9 @@ export const addItemToCart = async ( req, res) => {
       cart = new cartModel({ userId, items: [] });
     }
 
-    const existingCartItem = cart.items.find((item) => item.productId.toString() === productId);
+    const existingCartItem = cart.items.find(
+      (item) => item.productId.toString() === productId
+    );
 
     if (existingCartItem) {
       existingCartItem.quantity += 1;
@@ -165,17 +201,20 @@ export const addItemToCart = async ( req, res) => {
         productId: productId,
         price: product.price,
         discount: product.discount,
-        quantity: 1
+        quantity: 1,
       });
     }
     await cart.save();
 
-    return res.status(200).json({ message: "Product added to cart successfully", cart });
+    return res
+      .status(200)
+      .json({ message: "Product added to cart successfully", cart });
   } catch (error) {
-    return res.status(500).json({ message: "Error adding product to cart", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Error adding product to cart", error: error.message });
   }
 };
-
 
 // NOTE: WHEN ORDER MADE THE STOCK WILL BE REDUCES BASED ON THE AMOUNT IN THE ORDRER
 // SO IF HE TRYING TO GET EVEN ONE AND THE STOCK IS EMPTY = 0 TELL THEM  "OUT-OF-STOCK"

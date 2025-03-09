@@ -5,7 +5,7 @@ import { Schema, model } from "mongoose";
 const customerSchema = new Schema(
   {
     // ID
-    userId: {
+    _id: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -42,7 +42,7 @@ const customerSchema = new Schema(
       default: {},
     },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 const customerModel = model("Customer", customerSchema);

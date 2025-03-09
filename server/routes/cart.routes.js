@@ -2,25 +2,24 @@ import { Router } from "express";
 import {
   createCart,
   getCartByUserId,
+  setUserToCart,
   updateCart,
 } from "../controllers/cart.controller.js";
 import { tokenVerify } from "../middleware/tokenVerify.js";
 
 const cartRoutes = Router();
-// [AMS] 🪪 using of verify token on all routes
-cartRoutes.use(tokenVerify);
-cartRoutes.get("/cart", (req, res) => {
-  res.send("welcome into cart ");
-});
+
 // Create new cart
 
-
-cartRoutes.post("/cart/:id", createCart);
+// [AMS] => :id means session id
+cartRoutes.post("/cart/:sessionId", createCart);
 
 // Get cart by userId
-cartRoutes.get("/cart/:userId", getCartByUserId);
+cartRoutes.get("/cart/",tokenVerify, getCartByUserId);
 
 // Update cart
-cartRoutes.put("/cart/update/:userId", updateCart);
+cartRoutes.put("/cart/", updateCart);
+
+cartRoutes.put("/cart/set-user/", tokenVerify, setUserToCart);
 
 export default cartRoutes;

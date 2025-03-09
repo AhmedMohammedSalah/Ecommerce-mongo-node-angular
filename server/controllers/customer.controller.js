@@ -28,7 +28,7 @@ export const createCustomerProfile = async (userID) => {
     if (!user) {
       throw new Error("User not found");
     }
-    const customer = new customerModel({ userId: userID });
+    const customer = new customerModel({ _id: userID });
     await customer.save();
     return customer;
   } catch (error) {
@@ -63,9 +63,8 @@ export const createCustomerProfile = async (userID) => {
 }
  */
 export async function updateCustomer(req, res) {
-
   const userId = req.user._id;
-  const customer = await customerModel.findOne({ userId });
+  const customer = await customerModel.findById(userId);
 
   if (!customer) return res.status(404).json({ message: "customer not found" });
   console.log(customer._id);

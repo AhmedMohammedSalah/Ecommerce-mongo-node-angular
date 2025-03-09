@@ -25,8 +25,7 @@ import { tokenVerify } from "../middleware/tokenVerify.js";
 // router
 const productRoutes = express.Router();
 
-// [AMS] 🪪 using of verify token on all routes
-productRoutes.use(tokenVerify);
+
 
 // [SHARED MIDDLEWARE]: store it only on RAM
 // store [iamge + data] on RAM [till the validation end]

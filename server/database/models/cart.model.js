@@ -7,7 +7,7 @@ const cartSchema = new Schema(
       ref: "User",
       default: null,
     },
-    sessionId: { type: String, default: null },
+    sessionId: { type: String, unique:true ,default: null },
     items: { type: Array, default: [] },
     //AMS-> array of {productID ,price, discount, quantity }
     promoCode: { type: String, default: null },

@@ -1,6 +1,8 @@
 import adminModel from '../database/models/admin.model.js';
 import { productModel } from '../database/models/product.model.js';
 import sellerModel from '../database/models/seller.model.js';
+import  jwt  from 'jsonwebtoken';
+
 
 
 /*
@@ -164,16 +166,25 @@ export const getAdminProducts = async (req, res)=> {
 
 /** function to get the seller product for all user, admin and the seller(made for them) */
 export const getSellerProducts = async (req, res) =>{
-
   // get id (for user/seller)
-  const sellerId = req.params.sellerId;
-
+  let sellerId = req.params.sellerId;
+  // --------------------------------------------------------------------
+  // [AMS] 🫰🏻 update the code to get seller id from token if it's exsists  |
+  // --------------------------------------------------------------------
+  if (req.headers["token"]) {
+    jwt.verify(req.headers["token"], "ARAF", (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ message: "Invalid token" });
+      }
+      sellerId = decoded.user._id;
+    });
+  }
   // get admin
-  const seller = await sellerModel.findOne({userId : sellerId});
+  const seller = await sellerModel.findOne({ userId: sellerId });
   if (!seller) return res.json({ error: "Seller not found, check ID" });
 
   // get products
-  const prodctsIDs  = seller.products;
+  const prodctsIDs = seller.products;
 
   // get them from products
   const productsData = await productModel.find({ _id: { $in: prodctsIDs } });
