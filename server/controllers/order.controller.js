@@ -155,64 +155,64 @@ const sendOrder2sellers = async(items, parentOrderId, UID) => {
  * - Returns final order details
  */
 export const createOrder = async (req, res) => {
+        let promoDiscount = 0;
 
-    let promoDiscount = 0;
+        // DECRYPT TOKEN
+    const userData = req.user;
+    console.log(userData)
 
-    // DECRYPT TOKEN
-    const userData = decryptToken(req.headers.token);
-
-    // CHECK ROLE
-    if (userData.role !== "user") {
-        return res.json({ msg: "Account is not customer type" });
-    }
-
-    // GET USER CART
-    const userCart = await cartModel.findOne({ userId: userData.id });
-
-    // CHECK EXIST OR EMPTY
-    if (!userCart || !userCart.items.length) {
-        return res.json({ msg: "Cart not found or empty" });
-    }
-
-    // CHECK PROMO CODE
-    if (userCart.promoCode) {
-
-        // CHECK EXIST | VALID + GET IT
-        const promo = await findPromoByCode({ body: { code: userCart.promoCode } }, res);
-
-        if (promo && promo.discount) {
-            promoDiscount = promo.discount;
+        // CHECK ROLE
+        if ( userData.role !== "user" ) {
+            return res.json( { msg: "Account is not customer type" } );
         }
-    }
 
-    // CALCULATE TOTAL PRICE WITH ALL DISCOUNTS
-    let finalTotalPrice = calculateTotalPrice(userCart.items, promoDiscount); 
+        // GET USER CART
+        const userCart = await cartModel.findOne( { userId: userData.id } );
 
-    // CREATE ORDER OBJECT
-    const orderDetails = new orderModel({
-        userId:             userData.id,
-        items:              userCart.items,
-        total:              finalTotalPrice,
-        shippingAddress:    req.body.shippingAddress,
-        paymentMethod:      req.body.paymentMethod,
-        paymentId:          req.body.paymentId
-    });
+        // CHECK EXIST OR EMPTY
+        if ( !userCart || !userCart.items.length ) {
+            return res.json( { msg: "Cart not found or empty" } );
+        }
 
-    // SAVE ORDER TO DATABASE
-    const savedOrder = await orderDetails.save();
+        // CHECK PROMO CODE
+        if ( userCart.promoCode ) {
 
-    // SEND THE ORDER TO THE SELLERS [DIVIDE IT INTO SMALL ORDERS]
-    const stateList = await sendOrder2sellers(userCart.items, savedOrder._id, userData.id);
+            // CHECK EXIST | VALID + GET IT
+            const promo = await findPromoByCode( { body: { code: userCart.promoCode } }, res );
 
-    if(!stateList){res.json({msg:"seller not exist"})}; 
+            if ( promo && promo.discount ) {
+                promoDiscount = promo.discount;
+            }
+        }
 
-    // add to stateList
-    savedOrder.stateList = stateList;
+        // CALCULATE TOTAL PRICE WITH ALL DISCOUNTS
+        let finalTotalPrice = calculateTotalPrice( userCart.items, promoDiscount );
 
-    //save
-    await savedOrder.save()
-    res.json({ msg: "Order created, and the orders sent to the sellers successfully", order: savedOrder });
+        // CREATE ORDER OBJECT
+        const orderDetails = new orderModel( {
+            userId: userData.id,
+            items: userCart.items,
+            total: finalTotalPrice,
+            shippingAddress: req.body.shippingAddress,
+            paymentMethod: req.body.paymentMethod,
+            paymentId: req.body.paymentId
+        } );
 
+        // SAVE ORDER TO DATABASE
+        const savedOrder = await orderDetails.save();
+
+        // SEND THE ORDER TO THE SELLERS [DIVIDE IT INTO SMALL ORDERS]
+        const stateList = await sendOrder2sellers( userCart.items, savedOrder._id, userData.id );
+
+        if ( !stateList ) { res.json( { msg: "seller not exist" } ) };
+
+        // add to stateList
+        savedOrder.stateList = stateList;
+
+        //save
+        await savedOrder.save()
+        res.json( { msg: "Order created, and the orders sent to the sellers successfully", order: savedOrder } );
+     
 };
 
 

@@ -1,9 +1,9 @@
 import adminModel from '../database/models/admin.model.js';
 import { productModel } from '../database/models/product.model.js';
 import sellerModel from '../database/models/seller.model.js';
-import  jwt  from 'jsonwebtoken';
-
-
+import jwt from 'jsonwebtoken';
+import User from '../database/models/user.model.js';
+const userModel = User;
 
 /*
 IN READING PRODUCT
@@ -143,25 +143,38 @@ export const searchProductsByCategory = async (req, res) => {
 };
 
 /** fnction get admin products he added, HARDCODE ID INSIDE THE FUNCTION */
-export const getAdminProducts = async (req, res)=> {
-
+export const getAdminProducts = async ( req, res ) => {
   // hard code id-----------------------------
-  const adminId = "67c7a3248c2b40de72c5a282";
-  //------------------------------------------
-
+  let adminId = "67c7a3248c2b40de72c5a282";
+  // ---------------------------------------------------------------------
+  // [AMS] it didn't right to make admin id as a hard coded            ||
+  // [AMS] the best way is to pass it as it through token              ||
+  // --------------------------------------------------------------------
+  // [AMS] 🫰🏻 update the code to get admin id from token if exsist     ||
+  // --------------------------------------------------------------------
+  if ( req.headers["token"] ) {
+    jwt.verify( req.headers["token"], "ARAF", ( err, decoded ) => {
+      if ( err ) {
+        return res.status( 401 ).json( { message: "Invalid token" } );
+      }
+      if ( decoded.user.role != "admin" ) {
+        return res.status( 401 ).json( { message: "unauthorized" } );
+      }
+      adminId = decoded.user._id;
+    } );
+  }
   // get admin
-  const admin = await adminModel.findById(adminId);
+  const admin = await userModel.findById(adminId);
   if (!admin) return res.json({ error: "Admin not found, check ID" });
 
   // get products
-  const prodctsIDs  = admin.products;
+  const prodctsIDs = admin.products;
 
   // get them from products
   const productsData = await productModel.find({ _id: { $in: prodctsIDs } });
 
   // output
   res.json(productsData);
-
 };
 
 /** function to get the seller product for all user, admin and the seller(made for them) */

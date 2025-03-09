@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-  createCart,
+  createCart,addItemToCart,
   getCartByUserId,
   setUserToCart,
   updateCart,
@@ -20,6 +20,7 @@ cartRoutes.get("/cart/",tokenVerify, getCartByUserId);
 // Update cart
 cartRoutes.put("/cart/", updateCart);
 
-cartRoutes.put("/cart/set-user/", tokenVerify, setUserToCart);
+cartRoutes.put( "/cart/set-user/", tokenVerify, setUserToCart );
 
+cartRoutes.post("/addtocart", addItemToCart);
 export default cartRoutes;

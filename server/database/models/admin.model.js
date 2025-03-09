@@ -1,53 +1,50 @@
 import { Schema, model } from "mongoose";
 
-
 // [LOGIC]: here admin behave as a seller
 // FREEDOM SPACE TO ADD ANYTHING RELATED TO ADMIN IN FUTURE
 
 const adminSchema = Schema(
-    {   
-        // UID: FK
-        _id: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-        },
-
-        // COMMERICAL INFO
-        businessName: { type: String, required: true },
-        businessDetails: { type: Object, required: true },
-        bankDetails: { type: Object, required: true },
-
-        // REVIEWS: reviews(txt) of customer to the admin as a seller
-        reviews: [
-            {
-              customerId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-              reviewTxt: { type: String },
-              rating: { type: Number, required: true, min: 1, max: 5 }
-            }
-          ],
-
-
-        // ADMIN PRODUCTS
-        products: [{ type: Schema.Types.ObjectId, ref: 'Product', default: [] }],
-        
-        //ADMIN ORDERS FROM THE CUSTOMERS
-        orders: { type: Array, default: [] },
-        
-
+  {
+    // UID: FK
+    _id: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
 
-    {
+    // COMMERICAL INFO
+    businessName: { type: String },
+    businessDetails: { type: Object },
+    bankDetails: { type: Object },
+
+    // REVIEWS: reviews(txt) of customer to the admin as a seller
+    reviews: [
+      {
+        customerId: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        reviewTxt: { type: String },
+        rating: { type: Number, required: true, min: 1, max: 5 },
+      },
+    ],
+
+    // ADMIN PRODUCTS
+    products: [{ type: Schema.Types.ObjectId, ref: "Product", default: [] }],
+
+    //ADMIN ORDERS FROM THE CUSTOMERS
+    orders: { type: Array, default: [] },
+  },
+
+  {
     timestamps: true,
     versionKey: false,
-    }
+  }
 );
 
-
-const adminModel = model("Admin", adminSchema)
-export default adminModel
-
-
+const adminModel = model("Admin", adminSchema);
+export default adminModel;
 
 /* ADMIN DOCUMENT IN MONGO
 ------------------------------

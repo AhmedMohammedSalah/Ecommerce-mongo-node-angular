@@ -1,14 +1,17 @@
-import express from "express"
-import { createOrder, updateDeliverStatus } from "../controllers/order.controller.js";
+import express from "express";
+import {
+  createOrder,
+  updateDeliverStatus,
+} from "../controllers/order.controller.js";
+
+import { tokenVerify } from "../middleware/tokenVerify.js";
 
 const orderRoutes = express.Router();
 
-
-
 // CREATE ORDER [TOKEN]
-orderRoutes.post('/orders/', createOrder);
+orderRoutes.post("/orders", tokenVerify, createOrder);
 
 // UPDATE ORDER DELIVERY
 orderRoutes.post("/orders/seller/update", updateDeliverStatus);
 
-export default orderRoutes
+export default orderRoutes;
