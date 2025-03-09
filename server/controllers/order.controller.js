@@ -268,7 +268,6 @@ function updateOrderStatus(sellerOrder, sellerData, customerOrder, userData, new
 // for sellers
 export const updateDeliverStatus = async(req, res)=>{
 
-
     /*FIRST: GETTING ALL DATA YOU NEED
     -----------------------------------*/
 
@@ -280,9 +279,11 @@ export const updateDeliverStatus = async(req, res)=>{
     const userData = decryptToken(req.headers.token);
     if(!userData){res.json({msg:"updateDeliverStatus: user not exist, check id in the token"});  return; };
 
+
+
     // get seller profile
     var sellerData = await sellerModel.findOne({userId: userData.id});
-    if(!sellerData){ sellerData =  await seller.findById(userData.id); }; // check it on admin profile
+    if(!sellerData){ sellerData =  await adminModel.findById(userData.id); }; // check it on admin profile
     if(!sellerData){ res.json({msg: "updateDeliverStatus: user is not a seller. check the token"}); return; }; // raise error
 
 
@@ -337,7 +338,7 @@ export const updateDeliverStatus = async(req, res)=>{
             
             // FEEDBACK
             res.json({msg:"order cancelld successfully, stock increased"})
-            return;
+            //return;
 
         }
 
@@ -349,7 +350,7 @@ export const updateDeliverStatus = async(req, res)=>{
 
             // FEEDBACK
             res.json({msg:"order cancelld successfully, stock no change"})
-            return;
+            //return;
         }
 
         res.json({msg:"TERMINATED: order already cancelled"})
@@ -367,7 +368,7 @@ export const updateDeliverStatus = async(req, res)=>{
         ------------------------------*/ //NO
         if(["Shipped", "Delivered"].includes(lastSellerOrderStatus)){
             res.json({msg:"TERMINATED: order now in higher stage. can't return to processing"});
-            return;
+            //return;
         }
 
         /*[ PENDING ] decrease stock + update status
@@ -398,13 +399,13 @@ export const updateDeliverStatus = async(req, res)=>{
             ----------------------------------------------------------------------------*/
             updateOrderStatus(sellerOrder, sellerData, customerOrder, userData, newStatus);
             res.json({msg:"order processed successfully, stock decreased"})
-            return;
+            //return;
 
 
         }
 
-        res.json({msg:"TERMINATED: order already processed"});
-        return;
+        if(lastSellerOrderStatus=="Processing"){res.json({msg:"already Processing"}) };
+
     }
 
 
@@ -416,7 +417,7 @@ export const updateDeliverStatus = async(req, res)=>{
         /*[ PENDING ]: no, lower stage
         --------------------------------*/ //NO: LOWER STAGE
         if(lastSellerOrderStatus == "Pending"){
-            res.json({msg:"order, in very low stage to be shipped."})
+            res.json({msg:"TERMINATED: order, in very low stage to be shipped."})
             return;
         }
 
@@ -427,10 +428,11 @@ export const updateDeliverStatus = async(req, res)=>{
             // UPDATE STATUS    
             updateOrderStatus(sellerOrder, sellerData, customerOrder, userData, newStatus); 
             res.json({msg:"order shipped successfully"})
-            return;
+            //return;
             
         }
         
+
         /*[ DELIVERED ]: no, higher stage
         ------------------------------------*/ // NO: HIGHER STAGE
         if(lastSellerOrderStatus == "Delivered"){
@@ -445,8 +447,7 @@ export const updateDeliverStatus = async(req, res)=>{
             return;
         }
 
-        res.json({msg:"TERMINATED: order already in in shipping stage"});
-        return;
+        if(lastSellerOrderStatus=="Shipped"){res.json({msg:"already Shipped"}) };
     }
 
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -477,9 +478,11 @@ export const updateDeliverStatus = async(req, res)=>{
             // UPDATE STATUS    
             updateOrderStatus(sellerOrder, sellerData, customerOrder, userData, newStatus);
             res.json({msg:"order delivered successfully"})
-            return;
+            //return;
 
         }
+
+        if(lastSellerOrderStatus=="Delivered"){res.json({msg:"already Delivered"}) };
     }
 
 
@@ -489,19 +492,37 @@ export const updateDeliverStatus = async(req, res)=>{
     }
 
 
-/*
+
 
     //NOW CHANGE IT ON THE CUSTOMER STATUS
 
     // LOOP ON THEM [element on stateList in the order]:
+    const statusPriority = ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"];
 
-        // IF       PENDING FOUND  => CUSTOMERORDER.STATUS = PENDING
-        // ELSE IF  PROGRESS FOUND => CUSTOMERORDER.STATUS = PROGRESS
-        // ELSE IF  SHIPPED FOUND  => CUSTOMERORDER.STATUS = SHIPPED
-        // ELSE IF  DELIVIED FOUND => CUSTOMERORDER.STATUS = DELIVERED
-        // ELSE IF  CANCEL FOUND   => CUSTOMERORDER.STATUS = CANCELLED
+    // default
+    let foundStatus = "Cancelled"; 
+    
+    // PICK VALUE
+    for (let priority of statusPriority) {
 
-*/
+        // LOOP ON THEM ALL UNTIL FIND IT
+        for (let e of customerOrder.stateList) {
 
+            let value = Object.values(e)[0];
+
+            if (value == priority) { 
+
+                foundStatus = value;
+                if (value === "Pending") break; 
+            }
+        }
+        if (foundStatus === "Pending") break; 
+    }
+    
+    // UPDATE THE STATUS FOR THE ORDER
+    customerOrder.status = foundStatus;
+    customerOrder.markModified("status");
+    customerOrder.save();
+    
 
 }
