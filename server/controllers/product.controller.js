@@ -95,6 +95,8 @@ export const getAllProducts = async (req, res) => {
 
 };
 
+
+// [SOFT-DELETE ADDED] [SENU]
 /** function to search products by names [regex]*/
 export const searchProductsByName = async (req, res) => {
 
@@ -102,13 +104,14 @@ export const searchProductsByName = async (req, res) => {
   const name = req.params.name;
 
   // get products [regex] : try to extract whatever the word from anywhere in the product name
-  const products = await productModel.find({ productName: { $regex: `.*${name}.*`, $options: "i" }});
+  const products = await productModel.find({ productName: { $regex: `.*${name}.*`, $options: "i" }, isDeleted: { $ne: true }});
 
   // feedback
   res.json(products);
 };
 
 
+//[SOFT-DELETE ADDED] [SENU]
 /** function search products by price */
 export const searchProductsByPrice = async (req, res) => {
 
@@ -121,13 +124,15 @@ export const searchProductsByPrice = async (req, res) => {
 
   // filter and get
   const products = await productModel.find({
-    price: { $gte: min, $lte: max }
+    price: { $gte: min, $lte: max },
+    isDeleted: { $ne: true } //<========================SOFTING-DELETED
   });
 
   //feedback
   res.json(products);
 };
 
+//[SOFT DELETE ADDED] [SENU]
 /**function to search be category based on endpoint naming and url variable */
 export const searchProductsByCategory = async (req, res) => {
 
@@ -135,11 +140,27 @@ export const searchProductsByCategory = async (req, res) => {
   const { categoryId } = req.params;
 
   // get products -> category ID
-  const products = await productModel.find({ categoryId: categoryId });
+  const products = await productModel.find({ categoryId: categoryId, isDeleted: { $ne: true }  }); //<<<======SOFT-DELETE
 
   // feedback
   res.json(products);
 };
+
+
+
+/**logic thinking:
+ * ---------------
+ * check if the product is requested inside order):
+ * and the status on stateList for seller ownerProduct IS NOT [DELIVERED or CANCELLED] then
+ * if the product is requested in order you can remove it  [NO, CAN'T BE REMOVED]
+ * 
+ * 
+ * why delivered and cancelled because here the product already decreased from the existed stock
+ * and reached to the customer or put on the store again so, now if the seller need to remove his own 
+ * products its ok
+ * 
+ */
+
 
 /** fnction get admin products he added, HARDCODE ID INSIDE THE FUNCTION */
 export const getAdminProducts = async ( req, res ) => {
@@ -176,13 +197,18 @@ export const getAdminProducts = async ( req, res ) => {
   res.json(productsData);
 };
 
+
+
+// [SOFT DELETE ADDED : SENU]
 /** function to get the seller product for all user, admin and the seller(made for them) */
-export const getSellerProducts = async (req, res) =>{
+export const getSellerProducts = async (req, res) => {
+
   // get id (for user/seller)
   let sellerId = req.params.sellerId;
   // --------------------------------------------------------------------
   // [AMS] 🫰🏻 update the code to get seller id from token if it's exsists  |
   // --------------------------------------------------------------------
+
   if (req.headers["token"]) {
     jwt.verify(req.headers["token"], "ARAF", (err, decoded) => {
       if (err) {
@@ -191,6 +217,7 @@ export const getSellerProducts = async (req, res) =>{
       sellerId = decoded.user._id;
     });
   }
+
   // get admin
   const seller = await sellerModel.findOne({ userId: sellerId });
   if (!seller) return res.json({ error: "Seller not found, check ID" });
@@ -198,12 +225,17 @@ export const getSellerProducts = async (req, res) =>{
   // get products
   const prodctsIDs = seller.products;
 
-  // get them from products
-  const productsData = await productModel.find({ _id: { $in: prodctsIDs } });
+  // get them from products (excluding soft-deleted ones)
+  const productsData = await productModel.find({ 
+    _id: { $in: prodctsIDs }, 
+    isDeleted: { $ne: true } //<<==========================SOFTING DELETE
+  });
 
   // output
   res.json(productsData);
+
 };
+
 
 
 // [RECENTLY ADDED]

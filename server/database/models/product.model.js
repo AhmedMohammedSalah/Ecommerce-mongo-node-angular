@@ -52,6 +52,5 @@ export const productModel = model("Product", productSchema);
 
 
 
-
 //{"productName": "Apple iPhone 15", "description": "The latest iPhone model.", "price": 999, "categoryId": "65f2c4b8a1e3d6f8d3a7b5c9", "stockQuantity": 50}
   
