@@ -183,6 +183,29 @@ export const getSellerProducts = async (req, res) =>{
 };
 
 
+// [RECENTLY ADDED]
+
+/** function: get product by id
+ *  @param: ON URL: product id
+ * @returns Promise
+ */ 
+import mongoose from "mongoose";
+
+export const getProductById = async (req, res) => {
+
+  const PID = req.params.id;
+
+  // check object ID format [important]
+  if (!mongoose.Types.ObjectId.isValid(PID)) {
+    return res.status(400).json({ err: "invalid ID format." });
+  }
+
+  const findProduct = await productModel.findById(PID);
+  if (!findProduct) return res.status(404).json({ err: "product not found. check ID." });
+
+  res.json(findProduct);
+};
+
 
 
 

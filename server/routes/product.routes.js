@@ -7,6 +7,7 @@ import multer from "multer";
 import { addProduct,
          updateProduct, 
          hardDelProduct,
+         getProductById,
          getAllProducts,
          getAdminProducts,
          getSellerProducts,
@@ -68,6 +69,8 @@ productRoutes.get("/products/admin/",getAdminProducts);
 productRoutes.get("/products/seller/:sellerId?", getSellerProducts);
 
 
+// get product by id (endpoint without "s" 😉)
+productRoutes.get("/product/:id?",getProductById);
 export default productRoutes
 
 
