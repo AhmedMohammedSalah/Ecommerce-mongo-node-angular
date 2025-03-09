@@ -163,10 +163,17 @@ const sendOrder2sellers = async(items, parentOrderId, UID) => {
  * - Inserts order into orderModel
  * - Returns final order details
  */
+
+///////////////
+
+
+///////////////
+
 export const createOrder = async (req, res) => {
 
     let promoDiscount = 0;
 
+    // DECRYPT TOKEN
     const userData = req.user;
 
     // CHECK ROLE
@@ -191,30 +198,31 @@ export const createOrder = async (req, res) => {
         if (promo && promo.discount) {
             promoDiscount = promo.discount;
         }
+    }
 
-        // GET USER CART
-        const userCart = await cartModel.findOne({ userId: userData.id });
+    // CALCULATE TOTAL PRICE WITH ALL DISCOUNTS
+    let finalTotalPrice = calculateTotalPrice(userCart.items, promoDiscount); 
 
-        // CHECK EXIST OR EMPTY
-        if (!userCart || !userCart.items.length) {
-            return res.json({ msg: "Cart not found or empty" });
-        }
+    // CREATE ORDER OBJECT
+    const orderDetails = new orderModel({
+        userId:             userData.id,
+        items:              userCart.items,
+        total:              finalTotalPrice,
+        shippingAddress:    req.body.shippingAddress,
+        paymentMethod:      req.body.paymentMethod,
+        paymentId:          req.body.paymentId
+    });
 
-        // CHECK PROMO CODE
-        if (userCart.promoCode) {
+    // SAVE ORDER TO DATABASE
+    const savedOrder = await orderDetails.save();
 
-            // CHECK EXIST | VALID + GET IT
-            const promo = await findPromoByCode({ body: { code: userCart.promoCode } }, res);
+    // SEND THE ORDER TO THE SELLERS [DIVIDE IT INTO SMALL ORDERS]
+    const stateList = await sendOrder2sellers(userCart.items, savedOrder._id, userData.id);
 
-            if (promo && promo.discount) {
-                promoDiscount = promo.discount;
-            }
-        }
+    if(!stateList){res.json({msg:"seller not exist"})}; 
 
-        // CALCULATE TOTAL PRICE WITH ALL DISCOUNTS
-        let finalTotalPrice = calculateTotalPrice(userCart.items, promoDiscount);
-
-
+    // add to stateList
+    savedOrder.stateList = stateList;
 
     // [NEW] store order id in the customer's orders array 
     const customerProfile = await customerModel.findById(userData.id);
@@ -222,29 +230,11 @@ export const createOrder = async (req, res) => {
     customerProfile.orders.push(savedOrder.id);
     customerProfile.save()
 
+    //save
+    await savedOrder.save()
+    res.json({ msg: "Order created, and the orders sent to the sellers successfully", order: savedOrder });
 
-        //save
-        await savedOrder.save()
-        res.json({ msg: "Order created, and the orders sent to the sellers successfully", order: savedOrder });
-
-        // SAVE ORDER TO DATABASE
-        const savedOrder = await orderDetails.save();
-
-        // SEND THE ORDER TO THE SELLERS [DIVIDE IT INTO SMALL ORDERS]
-        const stateList = await sendOrder2sellers(userCart.items, savedOrder._id, userData.id);
-
-        if (!stateList) { res.json({ msg: "seller not exist" }) };
-
-        // add to stateList
-        savedOrder.stateList = stateList;
-
-        //save
-        await savedOrder.save()
-        res.json({ msg: "Order created, and the orders sent to the sellers successfully", order: savedOrder });
-
-    };
-}
-
+};
 
 
 
@@ -510,8 +500,6 @@ export const updateDeliverStatus = async (req, res) => {
         res.json({ msg: "wrong status." });
         return;
     }
-
-
 
 
     //NOW CHANGE IT ON THE CUSTOMER STATUS
