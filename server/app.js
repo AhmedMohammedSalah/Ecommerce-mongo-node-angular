@@ -44,3 +44,8 @@ app.use(customerRouter)
 app.listen(senuPort, () => {
   console.log(`Server is running on port`);
 });
+
+
+// app.listen(defaultPort, () => {
+//   console.log(`Server is running on port`);
+// });

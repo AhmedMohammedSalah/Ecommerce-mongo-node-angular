@@ -80,8 +80,14 @@ const calculateTotalPrice = (cartItems, promoDiscount) => {
     return totalPrice * (1 - promoDiscount / 100);
 };
 
-const getSellerByPID = async (PID) =>
+
+
+
+////////////////////////////////////////////////////////////////////////////
+
+const getSellerByPID = async (PID) => 
     (await productModel.findById(PID).select("sellerId")).sellerId;
+
 
 /**helper function take the itemscart and 
  * send the sellers and product in dictionary 
@@ -104,11 +110,9 @@ const collectSellersAndTheirProducts = async (items) => {
     return sellersProducts;
 };
 
-/** function: 
- * DIVIDE ORDER INTO SELLER ORDERS AND STORE IT ON THEM 
- 
-*/
-const sendOrder2sellers = async (items, parentOrderId, UID) => {
+
+// DIVIDE ORDER INTO SELLER ORDERS AND STORE IT ON THEM
+const sendOrder2sellers = async(items, parentOrderId, UID) => {
 
     // provide unique sellers and its own products
     const sellersProducts = await collectSellersAndTheirProducts(items);
@@ -149,12 +153,7 @@ const sendOrder2sellers = async (items, parentOrderId, UID) => {
 
     return stateList;
 
-};
-
-
-
-
-
+}
 
 
 /** function to create order
@@ -168,7 +167,6 @@ export const createOrder = async (req, res) => {
 
     let promoDiscount = 0;
 
-    // DECRYPT TOKEN
     const userData = req.user;
 
     // CHECK ROLE
@@ -178,7 +176,6 @@ export const createOrder = async (req, res) => {
 
     // GET USER CART
     const userCart = await cartModel.findOne({ userId: userData.id });
-
 
     // CHECK EXIST OR EMPTY
     if (!userCart || !userCart.items.length) {
@@ -218,11 +215,13 @@ export const createOrder = async (req, res) => {
         let finalTotalPrice = calculateTotalPrice(userCart.items, promoDiscount);
 
 
-        // [NEW] store order id in the customer's orders array 
-        const customerProfile = await customerModel.findById(userData.id);
-        if (!customerProfile) { return res.json({ err: "createOrder: customer not exist. check token" }) }
-        customerProfile.orders.push(savedOrder.id);
-        await customerProfile.save();
+
+    // [NEW] store order id in the customer's orders array 
+    const customerProfile = await customerModel.findById(userData.id);
+    if(!customerProfile){return res.json({err:"createOrder: customer not exist. check token"})}
+    customerProfile.orders.push(savedOrder.id);
+    customerProfile.save()
+
 
         //save
         await savedOrder.save()
@@ -245,11 +244,6 @@ export const createOrder = async (req, res) => {
 
     };
 }
-
-
-
-
-
 
 
 
@@ -551,3 +545,18 @@ export const updateDeliverStatus = async (req, res) => {
     customerOrder.save();
 
 }
+
+
+
+
+///////////////////READING///////////////////////
+
+
+
+// export const getOrders =  async (req, res) =>{
+    
+//     // get user
+//     const userData = 
+    
+
+// }
