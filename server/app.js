@@ -41,6 +41,6 @@ app.use(sellerRoutes);
 app.use(orderRoutes);
 app.use(customerRouter)
 
-app.listen(defaultPort, () => {
+app.listen(senuPort, () => {
   console.log(`Server is running on port`);
 });
