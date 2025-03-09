@@ -1,4 +1,6 @@
+import { productModel } from "../database/models/product.model.js";
 import { reviewModel } from "../database/models/review.model.js";
+import sellerModel from "../database/models/seller.model.js";
 
 /**
  * @author Ahmed M.Salah
@@ -56,8 +58,15 @@ export async function createReview(req, res) {
     const populatedReview = await reviewModel
       .findById(review._id)
       .populate("userId", "name email")
-      .populate("productId", "productName price");
-
+      .populate( "productId", "productName price" );
+    const product = await productModel.findById( productId );
+    product.reviews.push({
+      customerId: userId,
+      reviewTxt: comment,
+      rating,
+    });
+    await product.save();
+    // addReviewToProduct(ProdId,reviewId)
     res.status(201).json({
       message: "Review created successfully",
       review: populatedReview,
@@ -91,4 +100,34 @@ export async function readReview(req, res) {
       .status(400)
       .json({ message: "Failed to read review", error: error.message });
   }
+}
+export async function addReviewToSeller ( req, res ) {
+   const { sellerId, rating, comment } = req.body;
+   // Validate rating
+   if (rating < 1 || rating > 5) {
+     return res.status(400).json({ message: "Rating must be between 1 and 5" });
+   }
+   // Validate comment
+   if (!comment || comment.trim().length === 0) {
+     return res.status(400).json({ message: "Comment cannot be empty" });
+   }
+   const userId = req.user._id;
+   try {
+     const seller = await sellerModel.findOne( { userId: sellerId } );
+     if ( !seller ) {
+       return res.status(400).json({ message: "seller not found" }); 
+     }
+     seller.reviews.push({
+       customerId: userId,
+       reviewTxt: comment,
+       rating,
+     });
+     await seller.save();
+     res.status(201).json({
+       message: "Review created successfully",
+       seller_reviews:seller.reviews
+     });
+   } catch (error) {
+     res.status(400).json({ message: "Failed to create review", error });
+   }
 }
