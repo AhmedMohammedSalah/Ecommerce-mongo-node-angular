@@ -6,6 +6,7 @@ import { productModel } from "../database/models/product.model.js";
 import sellerModel from "../database/models/seller.model.js";
 import adminModel from "../database/models/admin.model.js";
 import customerModel from "../database/models/customer.model.js";
+import { createCustomerProfile } from "./customer.controller.js";
 
 /*
 working token
@@ -94,7 +95,9 @@ const collectSellersAndTheirProducts = async (items) => {
   const sellersProducts = {};
 
   for (const itm of items) {
-    // seller id for the product [who sell it]
+      // seller id for the product [who sell it]
+      if (!itm.pid) itm.pid = itm.productId;
+    //   console.log( itm.pid );
     const SID = await getSellerByPID(itm.pid);
 
     // key: SID => value: [{Pinfo}]
@@ -225,7 +228,11 @@ export const createOrder = async (req, res) => {
   savedOrder.stateList = stateList;
 
   // [NEW] store order id in the customer's orders array
-  const customerProfile = await customerModel.findById(userData.id);
+    
+    const customerProfile = await customerModel.findById( userData.id );
+    // [AMS] For debug only
+    //  await createCustomerProfile(userData.id);
+    // console.log(userData.id);
   if (!customerProfile) {
     return res.json({ err: "createOrder: customer not exist. check token" });
   }
