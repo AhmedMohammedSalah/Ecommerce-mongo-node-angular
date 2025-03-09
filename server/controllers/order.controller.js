@@ -533,23 +533,6 @@ export const updateDeliverStatus = async(req, res)=>{
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ///////////////////READING///////////////////////
 
 
