@@ -100,9 +100,15 @@ const collectSellersAndTheirProducts = async (items) => {
     //   console.log( itm.pid );
     const SID = await getSellerByPID(itm.pid);
 
-    // key: SID => value: [{Pinfo}]
-    if (!sellersProducts[SID]) {
-      sellersProducts[SID] = [];
+    for (const itm of items) {
+
+        // seller id for the product [who sell it]
+        if (!itm.pid) itm.pid = itm.productId; //<<<<<<<<<<<<<<<<<<HERE SOMETHING ADDED
+        const SID = await getSellerByPID(itm.pid);
+
+        // key: SID => value: [{Pinfo}]
+        if (!sellersProducts[SID]) { sellersProducts[SID] = []; }
+        sellersProducts[SID].push(itm);
     }
     sellersProducts[SID].push(itm);
   }
@@ -568,9 +574,76 @@ export const updateDeliverStatus = async (req, res) => {
 
 ///////////////////READING///////////////////////
 
-// export const getOrders =  async (req, res) =>{
 
-//     // get user
-//     const userData =
 
-// }
+export const getOrders =  async (req, res) =>{
+    
+    // get user
+    const userData = req.user;
+    const role = userData.role;
+    const id = userData.id
+
+    // role
+    if( role == "user"){
+
+        // profile [CUSTOMER]
+        const customerProfile = await  customerModel.findById(id);
+        if(!customerProfile){ return res.json({msg:"coudn't find customer, check token"}) };
+
+        // read
+        const customerOrders = customerProfile.orders;
+        const orders = await orderModel.find({ _id: { $in: customerOrders } });
+        if(!orders){return res.json({mag:"error related to find the orders!. check it"})};
+        res.json(orders);
+        return
+
+
+    }
+    else if(role == "seller" ){
+
+        // profile [SELLER]
+        const sellerProfile = await sellerModel.findOne({userId: id});
+        if(!sellerProfile){ return res.json({msg:"coudn't find seller, check token"}) };
+
+        // read
+        const sellerOrders = sellerProfile.orders;
+        if(sellerOrders.length == 0){return res.json({msg:"no order yet"})};
+        res.json(sellerOrders);
+        return
+
+    }
+    else if(role == "admin"){
+
+        //profile [ADMIN AS A SELLER]
+        const adminProfile = await adminModel.findById(id);
+        if(!adminProfile){ return res.json({msg:"coudn't find admin[as a seller], check token"}) };
+
+        // read
+        const adminOrders = adminProfile.orders;
+        if(adminOrders.length == 0){return res.json({msg:"no order yet"})};
+        res.json(adminOrders);
+        return
+
+    }
+
+    // wrong in role
+    res.json({msg:"unfound role check id"});
+}
+
+
+
+/** [FOR ADMIN ONLY]
+ * check all orders
+ */
+export const getAllOrders = async(req, res) => {
+
+    // check admin
+    const userData = req.user;
+    if(!userData){ return res.json({msg:"getAllOrders: check token"})} 
+
+    if(userData.role != "admin"){ return res.json({msg:"getAllOrders: UNAUTHORIZED ACCESS, CHECK USER ROLE"})}
+
+    const allOrders = await orderModel.find({});
+    if(!allOrders) {return res.json({msg: "getAllOrders: coudn't get the orders from orderModel"});}
+    res.json(allOrders);
+}

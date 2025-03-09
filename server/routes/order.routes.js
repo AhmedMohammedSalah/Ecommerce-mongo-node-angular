@@ -1,6 +1,8 @@
 import express from "express";
 import {
   createOrder,
+  getOrders,
+  getAllOrders,
   updateDeliverStatus,
 } from "../controllers/order.controller.js";
 
@@ -16,8 +18,11 @@ orderRoutes.post("/orders/seller/update", updateDeliverStatus);
 
 
 // READ ORDER: CHECK ROLE : USER => ORDER | (SELLER OR ADMIN) => ORDER
-orderRoutes.get("/orders/", ()=>{});
+orderRoutes.get("/orders/", getOrders);
 
+
+// READ ALL ORDERS
+orderRoutes.get("/orders/admin", getAllOrders);
 
 
 export default orderRoutes
