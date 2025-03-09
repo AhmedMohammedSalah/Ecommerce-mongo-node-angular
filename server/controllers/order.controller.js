@@ -80,8 +80,14 @@ const calculateTotalPrice = (cartItems, promoDiscount) => {
     return totalPrice * (1 - promoDiscount / 100);
 };
 
+
+
+
+////////////////////////////////////////////////////////////////////////////
+
 const getSellerByPID = async (PID) => 
     (await productModel.findById(PID).select("sellerId")).sellerId;
+
 
 /**helper function take the itemscart and 
  * send the sellers and product in dictionary 
@@ -104,10 +110,8 @@ const collectSellersAndTheirProducts = async (items) => {
     return sellersProducts;
 };
 
-/** function: 
- * DIVIDE ORDER INTO SELLER ORDERS AND STORE IT ON THEM 
- 
-*/
+
+// DIVIDE ORDER INTO SELLER ORDERS AND STORE IT ON THEM
 const sendOrder2sellers = async(items, parentOrderId, UID) => {
 
     // provide unique sellers and its own products
@@ -149,12 +153,7 @@ const sendOrder2sellers = async(items, parentOrderId, UID) => {
 
     return stateList;
 
-};
-
-
-
-
-
+}
 
 
 /** function to create order
@@ -168,8 +167,7 @@ export const createOrder = async (req, res) => {
 
     let promoDiscount = 0;
 
-    // DECRYPT TOKEN
-    var userData = req.user;
+    const userData = req.user;
 
     // CHECK ROLE
     if (userData.role !== "user") {
@@ -178,9 +176,6 @@ export const createOrder = async (req, res) => {
 
     // GET USER CART
     const userCart = await cartModel.findOne({ userId: userData.id });
-
-    //debug
-    console.log("")
 
     // CHECK EXIST OR EMPTY
     if (!userCart || !userCart.items.length) {
@@ -222,23 +217,11 @@ export const createOrder = async (req, res) => {
     // add to stateList
     savedOrder.stateList = stateList;
 
-
-    // [NEW] store order id in the customer's orders array 
-    const customerProfile = await customerModel.findById(userData.id);
-    if(!customerProfile){return res.json({err:"createOrder: customer not exist. check token"})}
-    customerProfile.orders.push(savedOrder.id);
-    customerProfile.save();
-
     //save
     await savedOrder.save()
     res.json({ msg: "Order created, and the orders sent to the sellers successfully", order: savedOrder });
 
 };
-
-
-
-
-
 
 
 
