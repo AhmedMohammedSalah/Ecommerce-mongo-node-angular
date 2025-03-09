@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   createCart,addItemToCart,
   getCartByUserId,
-  setUserToCart,
+  setUserToCart,removeItemFromCart,
   updateCart,
 } from "../controllers/cart.controller.js";
 import { tokenVerify } from "../middleware/tokenVerify.js";
@@ -22,5 +22,7 @@ cartRoutes.put("/cart/", updateCart);
 
 cartRoutes.put( "/cart/set-user/", tokenVerify, setUserToCart );
 
-cartRoutes.post("/addtocart", addItemToCart);
+cartRoutes.post( "/addtocart", addItemToCart );
+
+cartRoutes.post("/removefromcart", removeItemFromCart);
 export default cartRoutes;

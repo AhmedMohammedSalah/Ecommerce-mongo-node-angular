@@ -260,3 +260,82 @@ export async function addItemToCart (req, res) {
 // SO IF HE TRYING TO GET EVEN ONE AND THE STOCK IS EMPTY = 0 TELL THEM  "OUT-OF-STOCK"
 
 // AND WHEN THE ORDER CANCELLED THE STOCK WILL INCREASE AGAIN [BUT THIS NOT YOUR BUSINESS]
+export async function removeItemFromCart(req, res) {
+  try {
+    let user = req.user;
+
+    // Verify token if present
+    if (req.headers["token"]) {
+      try {
+        const decoded = await jwt.verify(req.headers["token"], "ARAF");
+        user = decoded.user;
+      } catch (err) {
+        return res.status(401).json({ message: "Invalid token" });
+      }
+    }
+
+    const userId = user?.id;
+    const userRole = user?.role;
+    const { sessionId, productId } = req.body;
+
+    // Handle unsigned users
+    if (!userId && !sessionId) {
+      return res
+        .status(400)
+        .json({ message: "User ID or session ID is required" });
+    }
+
+    // Role check
+    if (user && userRole !== "user") {
+      return res
+        .status(403)
+        .json({ message: "Only normal users can have a cart" });
+    }
+
+    // Validate product ID
+    if (!productId) {
+      return res.status(400).json({ message: "Product ID is required" });
+    }
+
+    // Find or create cart
+    let cart;
+    if (userId) {
+      cart = await cartModel.findOne({ userId });
+    } else if (sessionId) {
+      cart = await cartModel.findOne({ sessionId });
+    }
+
+    if (!cart) {
+      return res.status(404).json({ message: "Cart not found" });
+    }
+
+    // Find the item in the cart
+    const itemIndex = cart.items.findIndex(
+      (item) => item.productId.toString() === productId
+    );
+
+    if (itemIndex === -1) {
+      return res.status(404).json({ message: "Item not found in cart" });
+    }
+
+    // Remove the item from the cart
+    cart.items.splice(itemIndex, 1);
+
+    // Mark the items array as modified
+    cart.markModified("items");
+
+    // Save the updated cart
+    await cart.save();
+
+    return res
+      .status(200)
+      .json({ message: "Product removed from cart successfully", cart });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({
+        message: "Error removing product from cart",
+        error: error.message,
+      });
+  }
+}

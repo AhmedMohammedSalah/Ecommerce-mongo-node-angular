@@ -293,7 +293,7 @@ export const updateDeliverStatus = async (req, res) => {
   const newStatus = req.body.status;
 
   // decrypt token
-  const userData = decryptToken(req.headers.token);
+  const userData = req.user ;
   if (!userData) {
     res.json({
       msg: "updateDeliverStatus: user not exist, check id in the token",
