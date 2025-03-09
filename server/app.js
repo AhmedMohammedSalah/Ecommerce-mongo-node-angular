@@ -28,6 +28,7 @@ const swaggerDocument = JSON.parse(fs.readFileSync(swaggerFilePath, "utf-8"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // [AMS] 🚀 using of all routers
+
 app.use(authRouter);
 app.use(categoryRouter);
 app.use(promoRouter);
@@ -39,6 +40,6 @@ app.use(sellerRoutes);
 app.use(cartRoutes);
 app.use(orderRoutes);
 
-app.listen(defaultPort, () => {
+app.listen(senuPort, () => {
   console.log(`Server is running on port`);
 });

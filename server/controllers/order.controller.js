@@ -5,6 +5,7 @@ import { promoModel } from "../database/models/promotion.model.js";
 import { productModel } from "../database/models/product.model.js";
 import sellerModel from "../database/models/seller.model.js";
 import adminModel from "../database/models/admin.model.js";
+import mongoose from 'mongoose'
 
 
 // IMP INFO: find return the refernece to the order so it act at the original object
@@ -242,8 +243,19 @@ export const createOrder = async (req, res) => {
 
 
 /** function: update the status */
+function updateOrderStatus(sellerOrder, sellerData, customerOrder, userData, newStatus) {
 
+    // Update seller order status
+    sellerOrder.status = newStatus;
+    sellerData.markModified("orders"); 
+    sellerData.save(); 
 
+    // Update customer order state list
+    customerOrder.stateList.forEach(e => { if (e[userData.id]) {e[userData.id] = newStatus;} });
+    customerOrder.markModified("stateList");
+    customerOrder.save();
+
+}
 
 
 /* EXAMPLE IN THE BODY  
@@ -254,7 +266,7 @@ export const createOrder = async (req, res) => {
 */
 
 // for sellers
-const updateDeliverStatus = async(req, res)=>{
+export const updateDeliverStatus = async(req, res)=>{
 
 
     /*FIRST: GETTING ALL DATA YOU NEED
@@ -275,7 +287,7 @@ const updateDeliverStatus = async(req, res)=>{
 
 
     // get seller order
-    let sellerOrder = sellerData.orders.find(o => o[orderId]);
+    let sellerOrder = sellerData.orders.find(o => o.parentOrderId.equals(orderId));
 
 
     // get customer order
@@ -311,7 +323,7 @@ const updateDeliverStatus = async(req, res)=>{
             for (const p of sellerOrder.products) { 
 
                 // access inserted product
-                const insertedProduct = await findById(p.pid);
+                const insertedProduct = await productModel.findById(p.pid);
                 if (!insertedProduct) {res.json({ msg: "updateDeliverStatus: product not exist when trying to increase the stock" });  return;}
             
                 // increase the quantity
@@ -321,11 +333,7 @@ const updateDeliverStatus = async(req, res)=>{
 
             /* CANCEL: change status
             ----------------------------------*/
-            sellerOrder.status = newStatus;
-            sellerData.save(); 
-
-            lastSellerOrderStatus = newStatus;
-            customerOrder.save();
+            updateOrderStatus(sellerOrder, sellerData, customerOrder, userData, newStatus);
             
             // FEEDBACK
             res.json({msg:"order cancelld successfully, stock increased"})
@@ -337,11 +345,7 @@ const updateDeliverStatus = async(req, res)=>{
         if(lastSellerOrderStatus == "Pending"){
 
             // ONLY UPDATE STATUS
-            sellerOrder.status = newStatus;
-            sellerData.save(); 
-
-            lastSellerOrderStatus = newStatus;
-            customerOrder.save();
+            updateOrderStatus(sellerOrder, sellerData, customerOrder, userData, newStatus);
 
             // FEEDBACK
             res.json({msg:"order cancelld successfully, stock no change"})
@@ -376,7 +380,7 @@ const updateDeliverStatus = async(req, res)=>{
             for (const p of sellerOrder.products) { 
 
                 // access inserted product
-                const insertedProduct = await findById(p.pid);
+                const insertedProduct = await productModel.findById(p.pid);
                 if (!insertedProduct) {res.json({ msg: "updateDeliverStatus: product not exist when trying to increase the stock" });}
             
                 // check quantity: 
@@ -391,16 +395,11 @@ const updateDeliverStatus = async(req, res)=>{
             }
 
             /* UPDATE STATUS
-            ----------------------------------*/
-            sellerOrder.status = newStatus;
-            sellerData.save(); 
-
-            lastSellerOrderStatus = newStatus;
-            customerOrder.save();
-            
-            //---FEEDBACK-------------------------------------------------
-            res.json({msg:"order cancelld successfully, stock decreased"})
+            ----------------------------------------------------------------------------*/
+            updateOrderStatus(sellerOrder, sellerData, customerOrder, userData, newStatus);
+            res.json({msg:"order processed successfully, stock decreased"})
             return;
+
 
         }
 
@@ -426,11 +425,9 @@ const updateDeliverStatus = async(req, res)=>{
         if(lastSellerOrderStatus == "Processing"){
 
             // UPDATE STATUS    
-            sellerOrder.status = newStatus;
-            sellerData.save(); 
-
-            lastSellerOrderStatus = newStatus;
-            customerOrder.save();
+            updateOrderStatus(sellerOrder, sellerData, customerOrder, userData, newStatus); 
+            res.json({msg:"order shipped successfully"})
+            return;
             
         }
         
@@ -452,9 +449,9 @@ const updateDeliverStatus = async(req, res)=>{
         return;
     }
 
-    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    //|||||||||| DELIVERD ||||||||||
-    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    //|||||||||| DELIVERD |||||||||||
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     else if(newStatus == "Delivered"){
 
 
@@ -478,15 +475,11 @@ const updateDeliverStatus = async(req, res)=>{
         if(lastSellerOrderStatus == "Shipped"){
 
             // UPDATE STATUS    
-            sellerOrder.status = newStatus;
-            sellerData.save(); 
-
-            lastSellerOrderStatus = newStatus;
-            customerOrder.save();
+            updateOrderStatus(sellerOrder, sellerData, customerOrder, userData, newStatus);
+            res.json({msg:"order delivered successfully"})
+            return;
 
         }
-        
-
     }
 
 
@@ -510,9 +503,5 @@ const updateDeliverStatus = async(req, res)=>{
 
 */
 
-
-
-    
-    
 
 }
