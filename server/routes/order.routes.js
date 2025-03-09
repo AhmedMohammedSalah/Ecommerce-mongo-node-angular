@@ -11,4 +11,10 @@ orderRoutes.post('/orders/', createOrder);
 // UPDATE ORDER DELIVERY
 orderRoutes.post("/orders/seller/update", updateDeliverStatus);
 
+
+// READ ORDER: CHECK ROLE : USER => ORDER | (SELLER OR ADMIN) => ORDER
+orderRoutes.get("/orders/", ()=>{});
+
+
+
 export default orderRoutes

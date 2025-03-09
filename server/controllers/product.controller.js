@@ -1,6 +1,9 @@
 import adminModel from '../database/models/admin.model.js';
 import { productModel } from '../database/models/product.model.js';
 import sellerModel from '../database/models/seller.model.js';
+import  jwt  from 'jsonwebtoken';
+import mongoose from "mongoose";
+
 
 
 /*
@@ -189,7 +192,6 @@ export const getSellerProducts = async (req, res) =>{
  *  @param: ON URL: product id
  * @returns Promise
  */ 
-import mongoose from "mongoose";
 
 export const getProductById = async (req, res) => {
 

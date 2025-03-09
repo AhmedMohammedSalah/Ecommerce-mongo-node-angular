@@ -9,11 +9,14 @@ export async function tokenVerify(req, res, next) {
   }
   jwt.verify(token, "ARAF", (err, decoded) => {
     if (err) {
-      return res.status(401).json({ message: "Invalid token" });
+      return res.status(401).json({ message: "tokenVerify: Invalid token" });
     }
     // console.log(decoded.user);
 
     req.user = decoded.user;
+
+    req.user.id = req.user._id;
+
     next();
   });
 }

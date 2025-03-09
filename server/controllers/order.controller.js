@@ -5,9 +5,19 @@ import { promoModel } from "../database/models/promotion.model.js";
 import { productModel } from "../database/models/product.model.js";
 import sellerModel from "../database/models/seller.model.js";
 import adminModel from "../database/models/admin.model.js";
-import mongoose from 'mongoose'
+import customerModel from "../database/models/customer.model.js"
 
 
+
+/*
+working token
+eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY3Y2FmYzA1ZDI3M2NjMjg1YmIyYWU5ZiIsIm5hbWUiOiJtb2hhbWVkIGVsVXNlciIsImVtYWlsIjoibW9oYW1lZEVsVXNlckdkYW5AZXhhbXBsZS5jb20iLCJwYXNzd29yZCI6IlVzZXJQYXNzMTIzIiwicm9sZSI6InVzZXIiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0RlbGV0ZWQiOmZhbHNlfQ.DVAUJPxKJGrOIIIY87gTou7RHshOj8NzLyxBVc65kww
+*/
+
+
+/*
+target token
+eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7Il9pZCI6IjY3Y2FmYzA1ZDI3M2NjMjg1YmIyYWU5ZiIsIm5hbWUiOiJtb2hhbWVkIGVsVXNlciIsImVtYWlsIjoibW9oYW1lZEVsVXNlckdkYW5AZXhhbXBsZS5jb20iLCJwYXNzd29yZCI6IlVzZXJQYXNzMTIzIiwicm9sZSI6InVzZXIiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0RlbGV0ZWQiOmZhbHNlfX0.KoeBRFO5PFbtLUnUTCzl1e9wHEQqCpVAp3yNJ5yC1xo
 // IMP INFO: find return the refernece to the order so it act at the original object
 
 // NEED TO BE DONE
@@ -159,7 +169,7 @@ export const createOrder = async (req, res) => {
     let promoDiscount = 0;
 
     // DECRYPT TOKEN
-    const userData = decryptToken(req.headers.token);
+    var userData = req.user;
 
     // CHECK ROLE
     if (userData.role !== "user") {
@@ -168,6 +178,9 @@ export const createOrder = async (req, res) => {
 
     // GET USER CART
     const userCart = await cartModel.findOne({ userId: userData.id });
+
+    //debug
+    console.log("")
 
     // CHECK EXIST OR EMPTY
     if (!userCart || !userCart.items.length) {
@@ -208,6 +221,13 @@ export const createOrder = async (req, res) => {
 
     // add to stateList
     savedOrder.stateList = stateList;
+
+
+    // [NEW] store order id in the customer's orders array 
+    const customerProfile = await customerModel.findById(userData.id);
+    if(!customerProfile){return res.json({err:"createOrder: customer not exist. check token"})}
+    customerProfile.orders.push(savedOrder.id);
+    customerProfile.save();
 
     //save
     await savedOrder.save()
@@ -526,3 +546,35 @@ export const updateDeliverStatus = async(req, res)=>{
     
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////////READING///////////////////////
+
+
+
+// export const getOrders =  async (req, res) =>{
+    
+//     // get user
+//     const userData = 
+    
+
+// }
