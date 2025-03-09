@@ -217,6 +217,15 @@ export const createOrder = async (req, res) => {
     // add to stateList
     savedOrder.stateList = stateList;
 
+
+
+    // [NEW] store order id in the customer's orders array 
+    const customerProfile = await customerModel.findById(userData.id);
+    if(!customerProfile){return res.json({err:"createOrder: customer not exist. check token"})}
+    customerProfile.orders.push(savedOrder.id);
+    customerProfile.save()
+
+
     //save
     await savedOrder.save()
     res.json({ msg: "Order created, and the orders sent to the sellers successfully", order: savedOrder });
