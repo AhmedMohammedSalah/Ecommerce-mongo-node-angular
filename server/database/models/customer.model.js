@@ -41,6 +41,10 @@ const customerSchema = new Schema(
       type: Object,
       default: {},
     },
+
+    // ORDERS
+    orders: { type: Array, default: [] }
+
   },
   { timestamps: true, versionKey: false }
 );

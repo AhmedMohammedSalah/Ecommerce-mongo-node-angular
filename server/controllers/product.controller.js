@@ -1,14 +1,13 @@
 import adminModel from '../database/models/admin.model.js';
 import { productModel } from '../database/models/product.model.js';
 import sellerModel from '../database/models/seller.model.js';
-import jwt from 'jsonwebtoken';
 import User from '../database/models/user.model.js';
+import mongoose from "mongoose";
+import jwt from 'jsonwebtoken';
+
+// FOR CONTEXT [SENU COMMENT]
 const userModel = User;
 
-/*
-IN READING PRODUCT
-NEED TO FILTER THE SOFT DELETED PRODUCT AND THE OUT-OF-STOCK
-*/
 
 
 /** function: ADD PRODUCT FOR  ADMIN/SELLER
@@ -213,7 +212,6 @@ export const getSellerProducts = async (req, res) =>{
  *  @param: ON URL: product id
  * @returns Promise
  */ 
-import mongoose from "mongoose";
 
 export const getProductById = async (req, res) => {
 

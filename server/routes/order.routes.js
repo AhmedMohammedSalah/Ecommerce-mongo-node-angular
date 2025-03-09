@@ -14,4 +14,10 @@ orderRoutes.post("/orders", tokenVerify, createOrder);
 // UPDATE ORDER DELIVERY
 orderRoutes.post("/orders/seller/update", updateDeliverStatus);
 
-export default orderRoutes;
+
+// READ ORDER: CHECK ROLE : USER => ORDER | (SELLER OR ADMIN) => ORDER
+orderRoutes.get("/orders/", ()=>{});
+
+
+
+export default orderRoutes

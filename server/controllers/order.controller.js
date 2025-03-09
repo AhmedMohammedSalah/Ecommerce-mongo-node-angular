@@ -1,13 +1,23 @@
 import cartModel from "../database/models/cart.model.js";
-import orderModel from "../database/models/order.model.js"; 
+import orderModel from "../database/models/order.model.js";
 import jwt from "jsonwebtoken";
 import { promoModel } from "../database/models/promotion.model.js";
 import { productModel } from "../database/models/product.model.js";
 import sellerModel from "../database/models/seller.model.js";
 import adminModel from "../database/models/admin.model.js";
-import mongoose from 'mongoose'
+import customerModel from "../database/models/customer.model.js"
 
 
+
+/*
+working token
+eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY3Y2FmYzA1ZDI3M2NjMjg1YmIyYWU5ZiIsIm5hbWUiOiJtb2hhbWVkIGVsVXNlciIsImVtYWlsIjoibW9oYW1lZEVsVXNlckdkYW5AZXhhbXBsZS5jb20iLCJwYXNzd29yZCI6IlVzZXJQYXNzMTIzIiwicm9sZSI6InVzZXIiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0RlbGV0ZWQiOmZhbHNlfQ.DVAUJPxKJGrOIIIY87gTou7RHshOj8NzLyxBVc65kww
+*/
+
+
+/*
+target token
+eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7Il9pZCI6IjY3Y2FmYzA1ZDI3M2NjMjg1YmIyYWU5ZiIsIm5hbWUiOiJtb2hhbWVkIGVsVXNlciIsImVtYWlsIjoibW9oYW1lZEVsVXNlckdkYW5AZXhhbXBsZS5jb20iLCJwYXNzd29yZCI6IlVzZXJQYXNzMTIzIiwicm9sZSI6InVzZXIiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0RlbGV0ZWQiOmZhbHNlfX0.KoeBRFO5PFbtLUnUTCzl1e9wHEQqCpVAp3yNJ5yC1xo
 // IMP INFO: find return the refernece to the order so it act at the original object
 
 // NEED TO BE DONE
@@ -70,7 +80,7 @@ const calculateTotalPrice = (cartItems, promoDiscount) => {
     return totalPrice * (1 - promoDiscount / 100);
 };
 
-const getSellerByPID = async (PID) => 
+const getSellerByPID = async (PID) =>
     (await productModel.findById(PID).select("sellerId")).sellerId;
 
 /**helper function take the itemscart and 
@@ -84,10 +94,10 @@ const collectSellersAndTheirProducts = async (items) => {
     for (const itm of items) {
 
         // seller id for the product [who sell it]
-        const SID = await getSellerByPID(itm.pid); 
+        const SID = await getSellerByPID(itm.pid);
 
         // key: SID => value: [{Pinfo}]
-        if (!sellersProducts[SID]) {sellersProducts[SID] = [];}
+        if (!sellersProducts[SID]) { sellersProducts[SID] = []; }
         sellersProducts[SID].push(itm);
     }
 
@@ -98,7 +108,7 @@ const collectSellersAndTheirProducts = async (items) => {
  * DIVIDE ORDER INTO SELLER ORDERS AND STORE IT ON THEM 
  
 */
-const sendOrder2sellers = async(items, parentOrderId, UID) => {
+const sendOrder2sellers = async (items, parentOrderId, UID) => {
 
     // provide unique sellers and its own products
     const sellersProducts = await collectSellersAndTheirProducts(items);
@@ -120,20 +130,20 @@ const sendOrder2sellers = async(items, parentOrderId, UID) => {
         }
 
 
-        findSeller = await sellerModel.findOne({userId: SID});
+        findSeller = await sellerModel.findOne({ userId: SID });
 
         // if not exist in seller schema search on admin schema
-        if(!findSeller){ findSeller = await adminModel.findById(SID)}
+        if (!findSeller) { findSeller = await adminModel.findById(SID) }
 
         // none of them : raise error
-        if(!findSeller){return false}
+        if (!findSeller) { return false }
 
         // add the order to the order array for the seller
         findSeller.orders.push(sellerOrder);
         await findSeller.save();
 
         // adding the state for the state list for the seller
-        stateList.push({[SID]:"Pending"});
+        stateList.push({ [SID]: "Pending" });
 
     }
 
@@ -155,70 +165,86 @@ const sendOrder2sellers = async(items, parentOrderId, UID) => {
  * - Returns final order details
  */
 export const createOrder = async (req, res) => {
-        let promoDiscount = 0;
 
-        // DECRYPT TOKEN
+    let promoDiscount = 0;
+
+    // DECRYPT TOKEN
     const userData = req.user;
-    console.log(userData)
 
-        // CHECK ROLE
-        if ( userData.role !== "user" ) {
-            return res.json( { msg: "Account is not customer type" } );
+    // CHECK ROLE
+    if (userData.role !== "user") {
+        return res.json({ msg: "Account is not customer type" });
+    }
+
+    // GET USER CART
+    const userCart = await cartModel.findOne({ userId: userData.id });
+
+
+    // CHECK EXIST OR EMPTY
+    if (!userCart || !userCart.items.length) {
+        return res.json({ msg: "Cart not found or empty" });
+    }
+
+    // CHECK PROMO CODE
+    if (userCart.promoCode) {
+
+        // CHECK EXIST | VALID + GET IT
+        const promo = await findPromoByCode({ body: { code: userCart.promoCode } }, res);
+
+        if (promo && promo.discount) {
+            promoDiscount = promo.discount;
         }
 
         // GET USER CART
-        const userCart = await cartModel.findOne( { userId: userData.id } );
+        const userCart = await cartModel.findOne({ userId: userData.id });
 
         // CHECK EXIST OR EMPTY
-        if ( !userCart || !userCart.items.length ) {
-            return res.json( { msg: "Cart not found or empty" } );
+        if (!userCart || !userCart.items.length) {
+            return res.json({ msg: "Cart not found or empty" });
         }
 
         // CHECK PROMO CODE
-        if ( userCart.promoCode ) {
+        if (userCart.promoCode) {
 
             // CHECK EXIST | VALID + GET IT
-            const promo = await findPromoByCode( { body: { code: userCart.promoCode } }, res );
+            const promo = await findPromoByCode({ body: { code: userCart.promoCode } }, res);
 
-            if ( promo && promo.discount ) {
+            if (promo && promo.discount) {
                 promoDiscount = promo.discount;
             }
         }
 
         // CALCULATE TOTAL PRICE WITH ALL DISCOUNTS
-        let finalTotalPrice = calculateTotalPrice( userCart.items, promoDiscount );
+        let finalTotalPrice = calculateTotalPrice(userCart.items, promoDiscount);
 
-        // CREATE ORDER OBJECT
-        const orderDetails = new orderModel( {
-            userId: userData.id,
-            items: userCart.items,
-            total: finalTotalPrice,
-            shippingAddress: req.body.shippingAddress,
-            paymentMethod: req.body.paymentMethod,
-            paymentId: req.body.paymentId
-        } );
+
+        // [NEW] store order id in the customer's orders array 
+        const customerProfile = await customerModel.findById(userData.id);
+        if (!customerProfile) { return res.json({ err: "createOrder: customer not exist. check token" }) }
+        customerProfile.orders.push(savedOrder.id);
+        await customerProfile.save();
+
+        //save
+        await savedOrder.save()
+        res.json({ msg: "Order created, and the orders sent to the sellers successfully", order: savedOrder });
 
         // SAVE ORDER TO DATABASE
         const savedOrder = await orderDetails.save();
 
         // SEND THE ORDER TO THE SELLERS [DIVIDE IT INTO SMALL ORDERS]
-        const stateList = await sendOrder2sellers( userCart.items, savedOrder._id, userData.id );
+        const stateList = await sendOrder2sellers(userCart.items, savedOrder._id, userData.id);
 
-        if ( !stateList ) { res.json( { msg: "seller not exist" } ) };
+        if (!stateList) { res.json({ msg: "seller not exist" }) };
 
         // add to stateList
         savedOrder.stateList = stateList;
 
         //save
         await savedOrder.save()
-        res.json( { msg: "Order created, and the orders sent to the sellers successfully", order: savedOrder } );
-     
-};
+        res.json({ msg: "Order created, and the orders sent to the sellers successfully", order: savedOrder });
 
-
-
-
-
+    };
+}
 
 
 
@@ -247,11 +273,11 @@ function updateOrderStatus(sellerOrder, sellerData, customerOrder, userData, new
 
     // Update seller order status
     sellerOrder.status = newStatus;
-    sellerData.markModified("orders"); 
-    sellerData.save(); 
+    sellerData.markModified("orders");
+    sellerData.save();
 
     // Update customer order state list
-    customerOrder.stateList.forEach(e => { if (e[userData.id]) {e[userData.id] = newStatus;} });
+    customerOrder.stateList.forEach(e => { if (e[userData.id]) { e[userData.id] = newStatus; } });
     customerOrder.markModified("stateList");
     customerOrder.save();
 
@@ -266,25 +292,25 @@ function updateOrderStatus(sellerOrder, sellerData, customerOrder, userData, new
 */
 
 // for sellers
-export const updateDeliverStatus = async(req, res)=>{
+export const updateDeliverStatus = async (req, res) => {
 
     /*FIRST: GETTING ALL DATA YOU NEED
     -----------------------------------*/
 
     // body data
-    const orderId = req.body.oid;       
-    const newStatus = req.body.status   
+    const orderId = req.body.oid;
+    const newStatus = req.body.status
 
     // decrypt token
     const userData = decryptToken(req.headers.token);
-    if(!userData){res.json({msg:"updateDeliverStatus: user not exist, check id in the token"});  return; };
+    if (!userData) { res.json({ msg: "updateDeliverStatus: user not exist, check id in the token" }); return; };
 
 
 
     // get seller profile
-    var sellerData = await sellerModel.findOne({userId: userData.id});
-    if(!sellerData){ sellerData =  await adminModel.findById(userData.id); }; // check it on admin profile
-    if(!sellerData){ res.json({msg: "updateDeliverStatus: user is not a seller. check the token"}); return; }; // raise error
+    var sellerData = await sellerModel.findOne({ userId: userData.id });
+    if (!sellerData) { sellerData = await adminModel.findById(userData.id); }; // check it on admin profile
+    if (!sellerData) { res.json({ msg: "updateDeliverStatus: user is not a seller. check the token" }); return; }; // raise error
 
 
     // get seller order
@@ -293,7 +319,7 @@ export const updateDeliverStatus = async(req, res)=>{
 
     // get customer order
     const customerOrder = await orderModel.findById(orderId);
-    if(!customerOrder){ res.json({msg:"order not exist. check id"}); return; }
+    if (!customerOrder) { res.json({ msg: "order not exist. check id" }); return; }
 
 
     // get seller element in customerOrder for the seller
@@ -303,57 +329,57 @@ export const updateDeliverStatus = async(req, res)=>{
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     //|||||||||| CANCEL ||||||||||
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    if (newStatus == "Cancelled"){
+    if (newStatus == "Cancelled") {
 
 
         /* [ SHIPPED  |  DELIVERED ]: can't cancel
         ---------------------------------------------------------------*/
         if (["Shipped", "Delivered"].includes(lastSellerOrderStatus)) {
-            res.json({msg:"TERMINATED: order cannot be cancelled at this stage"})
+            res.json({ msg: "TERMINATED: order cannot be cancelled at this stage" })
             return;
         }
 
 
         /* [ PROCESSING ]: increase stock + cancel
         ---------------------------------------------*/
-        if (lastSellerOrderStatus == "Processing"){
+        if (lastSellerOrderStatus == "Processing") {
 
 
             /* INCREASE STOCK
             -----------------------------------------*/
-            for (const p of sellerOrder.products) { 
+            for (const p of sellerOrder.products) {
 
                 // access inserted product
                 const insertedProduct = await productModel.findById(p.pid);
-                if (!insertedProduct) {res.json({ msg: "updateDeliverStatus: product not exist when trying to increase the stock" });  return;}
-            
+                if (!insertedProduct) { res.json({ msg: "updateDeliverStatus: product not exist when trying to increase the stock" }); return; }
+
                 // increase the quantity
                 insertedProduct.stockQuantity += p.quantity;
-                insertedProduct.save(); 
+                insertedProduct.save();
             }
 
             /* CANCEL: change status
             ----------------------------------*/
             updateOrderStatus(sellerOrder, sellerData, customerOrder, userData, newStatus);
-            
+
             // FEEDBACK
-            res.json({msg:"order cancelld successfully, stock increased"})
+            res.json({ msg: "order cancelld successfully, stock increased" })
             //return;
 
         }
 
         // CANCEL + STOCK NO CHANGE
-        if(lastSellerOrderStatus == "Pending"){
+        if (lastSellerOrderStatus == "Pending") {
 
             // ONLY UPDATE STATUS
             updateOrderStatus(sellerOrder, sellerData, customerOrder, userData, newStatus);
 
             // FEEDBACK
-            res.json({msg:"order cancelld successfully, stock no change"})
+            res.json({ msg: "order cancelld successfully, stock no change" })
             //return;
         }
 
-        res.json({msg:"TERMINATED: order already cancelled"})
+        res.json({ msg: "TERMINATED: order already cancelled" })
         return;
     }
 
@@ -362,49 +388,49 @@ export const updateDeliverStatus = async(req, res)=>{
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     //|||||||||| PROCESS ||||||||||
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    else if(newStatus == "Processing"){
+    else if (newStatus == "Processing") {
 
         /*[ SHIPPED - DELIVERED ]
         ------------------------------*/ //NO
-        if(["Shipped", "Delivered"].includes(lastSellerOrderStatus)){
-            res.json({msg:"TERMINATED: order now in higher stage. can't return to processing"});
+        if (["Shipped", "Delivered"].includes(lastSellerOrderStatus)) {
+            res.json({ msg: "TERMINATED: order now in higher stage. can't return to processing" });
             //return;
         }
 
         /*[ PENDING ] decrease stock + update status
         ----------------------------------------------*/ //OK
-        if(["Pending","Cancelled"].includes(lastSellerOrderStatus)){
+        if (["Pending", "Cancelled"].includes(lastSellerOrderStatus)) {
 
 
             /* DECREASE STOCK
             -----------------------------------------*/
-            for (const p of sellerOrder.products) { 
+            for (const p of sellerOrder.products) {
 
                 // access inserted product
                 const insertedProduct = await productModel.findById(p.pid);
-                if (!insertedProduct) {res.json({ msg: "updateDeliverStatus: product not exist when trying to increase the stock" });}
-            
+                if (!insertedProduct) { res.json({ msg: "updateDeliverStatus: product not exist when trying to increase the stock" }); }
+
                 // check quantity: 
-                if(insertedProduct.stockQuantity < p.quantity){
-                    res.json({msg:"TERMINATED: one of product out of stock."});
+                if (insertedProduct.stockQuantity < p.quantity) {
+                    res.json({ msg: "TERMINATED: one of product out of stock." });
                     return;
                 }
-                
+
                 // decrease the quantity
                 insertedProduct.stockQuantity -= p.quantity;
-                insertedProduct.save(); 
+                insertedProduct.save();
             }
 
             /* UPDATE STATUS
             ----------------------------------------------------------------------------*/
             updateOrderStatus(sellerOrder, sellerData, customerOrder, userData, newStatus);
-            res.json({msg:"order processed successfully, stock decreased"})
+            res.json({ msg: "order processed successfully, stock decreased" })
             //return;
 
 
         }
 
-        if(lastSellerOrderStatus=="Processing"){res.json({msg:"already Processing"}) };
+        if (lastSellerOrderStatus == "Processing") { res.json({ msg: "already Processing" }) };
 
     }
 
@@ -412,83 +438,83 @@ export const updateDeliverStatus = async(req, res)=>{
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     //|||||||||| SHIPPED ||||||||||
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    else if(newStatus == "Shipped"){
+    else if (newStatus == "Shipped") {
 
         /*[ PENDING ]: no, lower stage
         --------------------------------*/ //NO: LOWER STAGE
-        if(lastSellerOrderStatus == "Pending"){
-            res.json({msg:"TERMINATED: order, in very low stage to be shipped."})
+        if (lastSellerOrderStatus == "Pending") {
+            res.json({ msg: "TERMINATED: order, in very low stage to be shipped." })
             return;
         }
 
         /*[ PROCESSING ]:ok <change status>
         ------------------------------------*/  //OK
-        if(lastSellerOrderStatus == "Processing"){
+        if (lastSellerOrderStatus == "Processing") {
 
             // UPDATE STATUS    
-            updateOrderStatus(sellerOrder, sellerData, customerOrder, userData, newStatus); 
-            res.json({msg:"order shipped successfully"})
+            updateOrderStatus(sellerOrder, sellerData, customerOrder, userData, newStatus);
+            res.json({ msg: "order shipped successfully" })
             //return;
-            
+
         }
-        
+
 
         /*[ DELIVERED ]: no, higher stage
         ------------------------------------*/ // NO: HIGHER STAGE
-        if(lastSellerOrderStatus == "Delivered"){
-            res.json({msg:"TERMINATED: already delivered"});
+        if (lastSellerOrderStatus == "Delivered") {
+            res.json({ msg: "TERMINATED: already delivered" });
             return;
         }
 
         /*[ CANCELED ]:
         ------------------------------------*/ // CANNOT SHIP CANCELLED PRODUCT
-        if(lastSellerOrderStatus == "Cancelled"){
-            res.json({msg:"TERMINATED: can not ship cancelled product"});
+        if (lastSellerOrderStatus == "Cancelled") {
+            res.json({ msg: "TERMINATED: can not ship cancelled product" });
             return;
         }
 
-        if(lastSellerOrderStatus=="Shipped"){res.json({msg:"already Shipped"}) };
+        if (lastSellerOrderStatus == "Shipped") { res.json({ msg: "already Shipped" }) };
     }
 
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     //|||||||||| DELIVERD |||||||||||
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    else if(newStatus == "Delivered"){
+    else if (newStatus == "Delivered") {
 
 
         /*[ PENDING - PROCESSING ]: no, lower stages
         -------------------------------------------------*/
-        if(["Pending", "Processing"].includes(lastSellerOrderStatus)){
-            res.json({msg:"TERMINATED: lower stages to be delivered."});
+        if (["Pending", "Processing"].includes(lastSellerOrderStatus)) {
+            res.json({ msg: "TERMINATED: lower stages to be delivered." });
             return;
         }
 
         /*[ CANCEL]: no, cannot deliver a cancelld order
         -------------------------------------------------*/
-        if(lastSellerOrderStatus == "Cancelled"){
-            res.json({msg:"TERMINATED: cannot deliver a cancelld order."});
+        if (lastSellerOrderStatus == "Cancelled") {
+            res.json({ msg: "TERMINATED: cannot deliver a cancelld order." });
             return;
         }
 
 
         /*[ SHIPPING ]: ok, <change status>
         ------------------------------------------------*/
-        if(lastSellerOrderStatus == "Shipped"){
+        if (lastSellerOrderStatus == "Shipped") {
 
             // UPDATE STATUS    
             updateOrderStatus(sellerOrder, sellerData, customerOrder, userData, newStatus);
-            res.json({msg:"order delivered successfully"})
+            res.json({ msg: "order delivered successfully" })
             //return;
 
         }
 
-        if(lastSellerOrderStatus=="Delivered"){res.json({msg:"already Delivered"}) };
+        if (lastSellerOrderStatus == "Delivered") { res.json({ msg: "already Delivered" }) };
     }
 
 
-    else{ 
-        res.json({msg:"wrong status."}); 
-        return; 
+    else {
+        res.json({ msg: "wrong status." });
+        return;
     }
 
 
@@ -500,8 +526,8 @@ export const updateDeliverStatus = async(req, res)=>{
     const statusPriority = ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"];
 
     // default
-    let foundStatus = "Cancelled"; 
-    
+    let foundStatus = "Cancelled";
+
     // PICK VALUE
     for (let priority of statusPriority) {
 
@@ -510,19 +536,18 @@ export const updateDeliverStatus = async(req, res)=>{
 
             let value = Object.values(e)[0];
 
-            if (value == priority) { 
+            if (value == priority) {
 
                 foundStatus = value;
-                if (value === "Pending") break; 
+                if (value === "Pending") break;
             }
         }
-        if (foundStatus === "Pending") break; 
+        if (foundStatus === "Pending") break;
     }
-    
+
     // UPDATE THE STATUS FOR THE ORDER
     customerOrder.status = foundStatus;
     customerOrder.markModified("status");
     customerOrder.save();
-    
 
 }
