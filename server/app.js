@@ -31,6 +31,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // ---------without token verify 
 app.use( authRouter );
 app.use(cartRoutes);
+app.use(orderRoutes);
 //------------------------------
 app.use(categoryRouter);
 app.use(promoRouter);
@@ -38,10 +39,9 @@ app.use(productRoutes);
 app.use(reviewRouter);
 app.use(userRouter);
 app.use(sellerRoutes);
-app.use(orderRoutes);
 app.use(customerRouter)
 
-app.listen(senuPort, () => {
+app.listen(defaultPort, () => {
   console.log(`Server is running on port`);
 });
 
