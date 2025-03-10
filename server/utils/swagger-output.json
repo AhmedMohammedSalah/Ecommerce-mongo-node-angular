@@ -11,7 +11,7 @@
     "http"
   ],
   "paths": {
-    "/auth/signup": {
+    "/auth": {
       "post": {
         "description": "User registration.",
         "parameters": [
@@ -118,9 +118,7 @@
             "description": "Unauthorized"
           }
         }
-      }
-    },
-    "/cart/{id}": {
+      },
       "post": {
         "description": "Create a new cart for a user.",
         "parameters": [

@@ -12,6 +12,6 @@ yarn-error.log*
 dist/
 build/
 coverage/
-
+uploads/
 # macOS specific
 .DS_Store
