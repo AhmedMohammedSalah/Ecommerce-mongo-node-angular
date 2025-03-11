@@ -56,6 +56,9 @@ export const updateSeller = async (req, res) => {
   }
 };
 
+
+
+
 /**
  * @description function to get seller profile
  * @route
@@ -102,3 +105,46 @@ export const softDeleteSeller = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+/**
+ * @author Ahmed M.Salah
+ * @param {*} req 
+ * @param {*} res
+ * @returns make seller draw from his mony
+ */
+export async function draw ( req, res ) {
+  if (req.user.role!=="seller")res.status(400).send({message:"you are not allowed to visit this page"})
+  const sellerId = req.user._id;
+  const seller = await sellerModel.findOne( { userId: sellerId } );
+  // console.log(seller)
+  const { amount } = req.body;
+  if (amount > seller.balance) {
+    return res.status(400).send({
+      message: "your balance is not enough  ",
+      "your balace": seller.money,
+    });
+  }
+
+  seller.balance -= amount;
+  seller.draws.push({
+    money:amount
+  });
+    await seller.save();
+    res.status(200).send({
+      message: "you have drawed your money",
+      amount,
+      rest_balance: seller.balance,
+      lastDraw: seller.draws[seller.draws.length-1]
+    });
+  }
+export async function getMyDraws ( req, res ) {
+   if (req.user.role !== "seller"){
+    return res
+       .status(400)
+       .send({ message: "you are not allowed to visit this page" });}
+   const sellerId = req.user._id;
+  const seller = await sellerModel.findOne( { userId: sellerId } );
+  res.status(200).send({
+    message: "success fetched your draws ",
+    draws: seller.draws
+  });
+  }
