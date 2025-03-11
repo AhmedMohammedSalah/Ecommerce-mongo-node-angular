@@ -23,6 +23,7 @@ app.use(express.json());
 // [AMS] 🚀 using swagger for documentation api
 import fs from "fs";
 import path from "path";
+import { paymentRouter } from "./routes/payment.routes.js";
 const swaggerFilePath = path.resolve("./utils/swagger-output.json");
 const swaggerDocument = JSON.parse(fs.readFileSync(swaggerFilePath, "utf-8"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
@@ -40,6 +41,8 @@ app.use(reviewRouter);
 app.use(userRouter);
 app.use(sellerRoutes);
 app.use(customerRouter)
+
+app.use(paymentRouter)
 
 // app.listen(defaultPort, () => {
 //   console.log(`Server is running on port`);

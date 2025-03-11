@@ -1,7 +1,37 @@
 import { Schema, model } from "mongoose";
+const drawSchema = new Schema(
+  {
+    money: {
+      type: Number,
+      required: true,
+    },
+  },
 
+  {
+    timestamps: true,
+    versionKey: false,
+  }
+);
 const SellerSchema = new Schema(
   {
+// -----------------------------------------------------|
+// ||||||| [AMS] Payment  Addition     🤑 🤑    ||||| |||
+// -----------------------------------------------------|
+    _id: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+    // balance of seller
+    balance: {
+      type: Number,
+      default: 0,
+    },
+    // the draws is object {id,date,money}
+    draws: {
+      type: [drawSchema],
+      default: [],
+    },
+// ---------------------------------------------------------
     // UID FK CONSTRAINT
     userId: {
       type: Schema.Types.ObjectId,
@@ -55,7 +85,6 @@ const SellerSchema = new Schema(
     //--[SENU]-:-[LOGIC ADDED]----store the orders of customer to seller product-----
     orders: { type: Array, default: [] },
     //-------------------------------------------------------------------------------
-
   },
 
   {
@@ -63,6 +92,14 @@ const SellerSchema = new Schema(
     versionKey: false,
   }
 );
+// Pre-save hook to set _id to userId
+SellerSchema.pre("save", function (next) {
+  if (this.isNew) {
+    // Only set _id if the document is new
+    this._id = this.userId;
+  }
+  next();
+});
 
 const sellerModel = model("Seller", SellerSchema);
 

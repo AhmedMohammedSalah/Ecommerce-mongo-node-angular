@@ -16,7 +16,6 @@ const productSchema = new Schema({
     sellerId:       str, // AUTO ADDED: from token <sellerID will be stored there>
     stockQuantity:  num,
     discount: {type: Number, min: 0, max: 100, default: 0}, //NEWLY ADDED [DISCOUNT LOGIC]
-
     // REVIEWS:  review for each customer on the produt contain the txt and the rating <time bounded>
     reviews: [
         {

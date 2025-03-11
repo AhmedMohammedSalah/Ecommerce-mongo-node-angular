@@ -21,6 +21,7 @@ eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7Il9pZCI6IjY3Y2FmYzA1ZDI3M2NjMjg1YmIyYWU5ZiIsIm5
 // NEED TO BE DONE
 /* verify layer using joi need to be added on the order data on the request body */
 
+//
 /** function decrypt the token
  *
  * @param: token:
@@ -84,38 +85,60 @@ const calculateTotalPrice = (cartItems, promoDiscount) => {
 
 ////////////////////////////////////////////////////////////////////////////
 
-const getSellerByPID = async (PID) =>
+export const getSellerByPID = async (PID) =>
   (await productModel.findById(PID).select("sellerId")).sellerId;
 
 /**helper function take the itemscart and
  * send the sellers and product in dictionary
  * key is the seller id and the value is array of product
- * {"sid": [{},{}], "sid": [{}]} */
-const collectSellersAndTheirProducts = async (items) => {
+ * {"sid": [{},{}], "sid": [{}]} 
+ * @reuse in payment controller by [AMS] 
+ */
+// export const collectSellersAndTheirProducts = async (items) => {
+//   const sellersProducts = {};
+
+//   for (const itm of items) {
+//       // seller id for the product [who sell it]
+//       if (!itm.pid) itm.pid = itm.productId;
+//     //   console.log( itm.pid );
+//     const SID = await getSellerByPID(itm.pid);
+
+//     for (const itm of items) {
+
+//         // seller id for the product [who sell it]
+//         if (!itm.pid) itm.pid = itm.productId; //<<<<<<<<<<<<<<<<<<HERE SOMETHING ADDED
+//         const SID = await getSellerByPID(itm.pid);
+
+//         // key: SID => value: [{Pinfo}]
+//         if (!sellersProducts[SID]) { sellersProducts[SID] = []; }
+//         sellersProducts[SID].push(itm);
+//     }
+//     sellersProducts[SID].push(itm);
+//   }
+
+//   return sellersProducts;
+// };
+export const collectSellersAndTheirProducts = async (items) => {
   const sellersProducts = {};
 
   for (const itm of items) {
-      // seller id for the product [who sell it]
-      if (!itm.pid) itm.pid = itm.productId;
-    //   console.log( itm.pid );
+    // Ensure `pid` is set correctly
+    if (!itm.pid) itm.pid = itm.productId;
+
+    // Get the seller ID for the product
     const SID = await getSellerByPID(itm.pid);
 
-    for (const itm of items) {
-
-        // seller id for the product [who sell it]
-        if (!itm.pid) itm.pid = itm.productId; //<<<<<<<<<<<<<<<<<<HERE SOMETHING ADDED
-        const SID = await getSellerByPID(itm.pid);
-
-        // key: SID => value: [{Pinfo}]
-        if (!sellersProducts[SID]) { sellersProducts[SID] = []; }
-        sellersProducts[SID].push(itm);
+    // Initialize the seller's array if it doesn't exist
+    if (!sellersProducts[SID]) {
+      sellersProducts[SID] = [];
     }
+
+    // Add the product to the seller's array
     sellersProducts[SID].push(itm);
   }
 
   return sellersProducts;
 };
-
 // DIVIDE ORDER INTO SELLER ORDERS AND STORE IT ON THEM
 const sendOrder2sellers = async (items, parentOrderId, UID) => {
   // provide unique sellers and its own products
@@ -173,7 +196,7 @@ const sendOrder2sellers = async (items, parentOrderId, UID) => {
 
 export const createOrder = async (req, res) => {
   let promoDiscount = 0;
-
+;
   // DECRYPT TOKEN
   const userData = req.user;
 
@@ -647,3 +670,7 @@ export const getAllOrders = async(req, res) => {
     if(!allOrders) {return res.json({msg: "getAllOrders: coudn't get the orders from orderModel"});}
     res.json(allOrders);
 }
+// --------------------------------------------------------
+// |||||||    [AMS]🤑 Payment  Addition           |||||||||
+// --------------------------------------------------------
+  
