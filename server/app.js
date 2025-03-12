@@ -27,7 +27,7 @@ const swaggerFilePath = path.resolve("./utils/swagger-output.json");
 const swaggerDocument = JSON.parse(fs.readFileSync(swaggerFilePath, "utf-8"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// [AMS] 🚀 using of all routers
+// [AMS] 🚀 using of all routers`
 
 app.use(authRouter);
 app.use(categoryRouter);

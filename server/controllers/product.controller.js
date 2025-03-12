@@ -1,7 +1,6 @@
 import adminModel from '../database/models/admin.model.js';
 import { productModel } from '../database/models/product.model.js';
 import sellerModel from '../database/models/seller.model.js';
-import  jwt  from 'jsonwebtoken';
 import mongoose from "mongoose";
 
 
@@ -56,6 +55,17 @@ export const updateProduct = async (req, res) => {
 
   const productId = req.params.id;
   const updates = req.body;
+
+
+  // get the seller using seller id
+  const sellerToken = req.user;
+  const sellerData = await sellerToken.findOne({userId: sellerToken.id})
+
+  
+  // [NEW]check if seller own this product [SENU]
+  if(!sellerData.includes(productId)){
+    return res.json({msg:"updateProduct :permision denied"});
+  }
 
   // CHECK EMPTY DATA 
   if (Object.keys(updates).length === 0) {
