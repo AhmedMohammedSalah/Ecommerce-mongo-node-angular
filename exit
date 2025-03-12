@@ -1,0 +1,233 @@
+[1mdiff --cc server/app.js[m
+[1mindex 934a88c,2f9bd66..0000000[m
+mode 100644,100644..100755[m
+[1m--- a/server/app.js[m
+[1m+++ b/server/app.js[m
+[36m@@@ -27,9 -27,12 +27,9 @@@[m [mconst swaggerFilePath = path.resolve(".[m
+  const swaggerDocument = JSON.parse(fs.readFileSync(swaggerFilePath, "utf-8"));[m
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));[m
+  [m
+[31m--// [AMS] 🚀 using of all routers[m
+[31m -// ---------without token verify [m
+[31m -app.use( authRouter );[m
+[31m -app.use(cartRoutes);[m
+[31m -app.use(orderRoutes);[m
+[31m -//------------------------------[m
+[32m++// [AMS] 🚀 using of all routers`[m
+[32m +[m
+[32m +app.use(authRouter);[m
+  app.use(categoryRouter);[m
+  app.use(promoRouter);[m
+  app.use(productRoutes);[m
+[1mdiff --git a/.gitignore b/.gitignore[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/README.md b/README.md[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/.gitignore b/server/.gitignore[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/Email/email.js b/server/Email/email.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/Email/email.template.js b/server/Email/email.template.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/controllers/admin.controller.js b/server/controllers/admin.controller.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/controllers/auth.controller.js b/server/controllers/auth.controller.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/controllers/cart.controller.js b/server/controllers/cart.controller.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/controllers/category.controller.js b/server/controllers/category.controller.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/controllers/customer.controller.js b/server/controllers/customer.controller.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/controllers/order.controller.js b/server/controllers/order.controller.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/controllers/product.controller.js b/server/controllers/product.controller.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mindex 87e3810..212ef8b[m
+[1m--- a/server/controllers/product.controller.js[m
+[1m+++ b/server/controllers/product.controller.js[m
+[36m@@ -1,7 +1,6 @@[m
+ import adminModel from '../database/models/admin.model.js';[m
+ import { productModel } from '../database/models/product.model.js';[m
+ import sellerModel from '../database/models/seller.model.js';[m
+[31m-import  jwt  from 'jsonwebtoken';[m
+ import mongoose from "mongoose";[m
+ [m
+ [m
+[36m@@ -57,6 +56,17 @@[m [mexport const updateProduct = async (req, res) => {[m
+   const productId = req.params.id;[m
+   const updates = req.body;[m
+ [m
+[32m+[m
+[32m+[m[32m  // get the seller using seller id[m
+[32m+[m[32m  const sellerToken = req.user;[m
+[32m+[m[32m  const sellerData = await sellerToken.findOne({userId: sellerToken.id})[m
+[32m+[m
+[32m+[m[41m  [m
+[32m+[m[32m  // [NEW]check if seller own this product [SENU][m
+[32m+[m[32m  if(!sellerData.includes(productId)){[m
+[32m+[m[32m    return res.json({msg:"updateProduct :permision denied"});[m
+[32m+[m[32m  }[m
+[32m+[m
+   // CHECK EMPTY DATA [m
+   if (Object.keys(updates).length === 0) {[m
+       return res.json({ msg: "At least one attribute must be provided for update" });[m
+[1mdiff --git a/server/controllers/promo.controller.js b/server/controllers/promo.controller.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/controllers/review.controller.js b/server/controllers/review.controller.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/controllers/seller.controller.js b/server/controllers/seller.controller.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/controllers/user.controller.js b/server/controllers/user.controller.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/database/dbConnection.js b/server/database/dbConnection.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/database/models/admin.model.js b/server/database/models/admin.model.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/database/models/cart.model.js b/server/database/models/cart.model.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/database/models/category.model.js b/server/database/models/category.model.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/database/models/customer.model.js b/server/database/models/customer.model.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/database/models/order.model.js b/server/database/models/order.model.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/database/models/product.model.js b/server/database/models/product.model.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/database/models/promotion.model.js b/server/database/models/promotion.model.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/database/models/review.model.js b/server/database/models/review.model.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/database/models/seller.model.js b/server/database/models/seller.model.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/database/models/user.model.js b/server/database/models/user.model.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/middleware/addProduct_valid.js b/server/middleware/addProduct_valid.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/middleware/authValidation.js b/server/middleware/authValidation.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/middleware/checkExsistMail.js b/server/middleware/checkExsistMail.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/middleware/tokenVerify.js b/server/middleware/tokenVerify.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/middleware/updateProduct_valid.js b/server/middleware/updateProduct_valid.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/package-lock.json b/server/package-lock.json[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/package.json b/server/package.json[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/routes/admin.routes.js b/server/routes/admin.routes.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/routes/auth.routes.js b/server/routes/auth.routes.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/routes/cart.routes.js b/server/routes/cart.routes.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/routes/category.routes.js b/server/routes/category.routes.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/routes/customer.routes.js b/server/routes/customer.routes.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/routes/order.routes.js b/server/routes/order.routes.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/routes/product.routes.js b/server/routes/product.routes.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/routes/promo.routes.js b/server/routes/promo.routes.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/routes/review.routes.js b/server/routes/review.routes.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/routes/seller.routes.js b/server/routes/seller.routes.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/routes/user.routes.js b/server/routes/user.routes.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/uploads/67c99e3368cfad3f8c151b72/549555-01-1.webp b/server/uploads/67c99e3368cfad3f8c151b72/549555-01-1.webp[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/uploads/67c99e3368cfad3f8c151b72/Quotefancy-28384-3840x2160.jpg b/server/uploads/67c99e3368cfad3f8c151b72/Quotefancy-28384-3840x2160.jpg[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/uploads/67c99e3368cfad3f8c151b72/SONY.webp b/server/uploads/67c99e3368cfad3f8c151b72/SONY.webp[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/uploads/67c99e3368cfad3f8c151b72/ps-galaxy-s25-s938-sm-s938bzbimec-thumb-544714744.avif b/server/uploads/67c99e3368cfad3f8c151b72/ps-galaxy-s25-s938-sm-s938bzbimec-thumb-544714744.avif[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/uploads/admin/Quotefancy-28384-3840x2160.jpg b/server/uploads/admin/Quotefancy-28384-3840x2160.jpg[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/uploads/undefined/Quotefancy-28384-3840x2160.jpg b/server/uploads/undefined/Quotefancy-28384-3840x2160.jpg[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/utils/swagger-output.json b/server/utils/swagger-output.json[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/utils/swagger.js b/server/utils/swagger.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/validators/auth.validator.js b/server/validators/auth.validator.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/validators/productUpdateValidSchema.js b/server/validators/productUpdateValidSchema.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/server/validators/productValidSchema.js b/server/validators/productValidSchema.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/structure/development-steps.md b/structure/development-steps.md[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/structure/mongodb-erd.svg b/structure/mongodb-erd.svg[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/structure/mongodb-schema.js b/structure/mongodb-schema.js[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/structure/readme-md.md b/structure/readme-md.md[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mdiff --git a/tokenSheet.txt b/tokenSheet.txt[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
