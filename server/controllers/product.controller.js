@@ -55,6 +55,17 @@ export const updateProduct = async (req, res) => {
   const productId = req.params.id;
   const updates = req.body;
 
+
+  // get the seller using seller id
+  const sellerToken = req.user;
+  const sellerData = await sellerToken.findOne({userId: sellerToken.id})
+
+  
+  // [NEW]check if seller own this product [SENU]
+  if(!sellerData.includes(productId)){
+    return res.json({msg:"updateProduct :permision denied"});
+  }
+
   // CHECK EMPTY DATA 
   if (Object.keys(updates).length === 0) {
       return res.json({ msg: "At least one attribute must be provided for update" });
