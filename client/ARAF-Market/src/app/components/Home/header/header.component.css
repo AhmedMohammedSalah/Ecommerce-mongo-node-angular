@@ -1,0 +1,80 @@
+/* Custom styles for the header component */
+.header {
+  background-color: #343a40;
+  color: #ffffff;
+}
+
+.contact-info a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.contact-info a:hover {
+  text-decoration: underline;
+}
+
+.user-actions a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.user-actions a:hover {
+  text-decoration: underline;
+}
+
+.navbar-brand {
+  font-weight: bold;
+}
+
+.navbar-nav .nav-link {
+  color: #ffffff;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #dc3545;
+}
+
+.shopping-cart {
+  color: #ffffff;
+  position: relative;
+}
+
+.shopping-cart .badge {
+  background-color: #dc3545;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+}
+
+.text-danger {
+  color: #dc3545;
+}
+
+.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+}
+
+/* Dropdown styles */
+.dropdown-toggle {
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  background-color: #343a40;
+  border: 1px solid #dc3545;
+}
+
+.dropdown-item {
+  color: #ffffff;
+}
+
+.dropdown-item:hover {
+  background-color: #dc3545;
+  color: #ffffff;
+}
