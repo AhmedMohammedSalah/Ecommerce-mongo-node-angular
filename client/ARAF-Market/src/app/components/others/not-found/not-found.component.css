@@ -16,3 +16,113 @@
   background-color: #0b5ed7;
   border-color: #0a58ca;
 }
+
+
+html {
+  text-align: center;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  box-sizing: border-box;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  background-color: #222;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+.travolta {
+  z-index: -1;
+  width: 100vw;
+  height: 100vh;
+  opacity: 0.9;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-top:20vh;
+  background: url('https://assets-9gag-fun.9cache.com/s/fab0aa49/033037194a549b0bf83e2ac4ba90706a52a9132e/static/dist/web6/img/404/bg.gif') center center no-repeat;
+  background-size: cover;
+  background-color: black;
+}
+
+h1 {
+  font-size: 775%;
+  padding-top: 25vh;
+  margin-bottom: 1vh;
+  z-index: 2;
+}
+
+p {
+  font-size: 125%;
+}   
+
+a {
+  text-decoration: none;
+  color: white;
+  z-index: 2;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+body {
+  background-color: #fff;
+  /*   background: radial-gradient(at 50% -20%, #908392, #0d060e) fixed; */
+}
+
+
+#handboy {
+  animation: swing ease-in-out 1.3s infinite alternate;
+  transform-origin: 98% 98%;
+  transform-box: fill-box;
+
+}
+
+
+#girllight {
+  animation: swing ease-in-out 1.3s infinite alternate;
+  transform-origin: 0% 97%;
+  transform-box: fill-box;
+}
+
+#hairgirl {
+  animation: swinghair ease-in-out 1.3s infinite alternate;
+  transform-origin: 60% 0%;
+  transform-box: fill-box;
+
+}
+
+#zero {
+  transform-origin: bottom;
+  transform-box: fill-box;
+
+}
+
+/*************swing************/
+@keyframes swing {
+  0% {
+    transform: rotate(10deg);
+  }
+
+  100% {
+    transform: rotate(-10deg);
+  }
+}
+
+
+/*************swing hair************/
+@keyframes swinghair {
+  0% {
+    transform: rotate(6deg);
+  }
+
+  100% {
+    transform: rotate(-6deg);
+  }
+}
