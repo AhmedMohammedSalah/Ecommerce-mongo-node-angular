@@ -1,34 +1,28 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ValidationErrors, AbstractControl, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RegisterService } from '../../../services/API/register.service';
+
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule ],
+  imports: [CommonModule, ReactiveFormsModule],
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
   registerForm: FormGroup;
   submitted = false;
+  isSubmitting = false; 
 
   constructor(private fb: FormBuilder, private router: Router, private registerService: RegisterService) {
     this.registerForm = this.fb.group({
       role: ['', Validators.required],
-      username: ['', [Validators.required, Validators.minLength(3)]],
+      username: ['', [Validators.required, Validators.minLength(3)]], 
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', Validators.required],
-      terms: [false, Validators.requiredTrue]
-    }, { validators: this.passwordMatchValidator });
-  }
-
-  passwordMatchValidator(form: AbstractControl): ValidationErrors | null {
-    const password = form.get('password')?.value;
-    const confirmPassword = form.get('confirmPassword')?.value;
-    return password === confirmPassword ? null : { passwordMismatch: true };
+    });
   }
 
   onReset(): void {
@@ -38,18 +32,28 @@ export class RegisterComponent {
 
   onSubmit(): void {
     this.submitted = true;
-
-    if (this.registerForm.valid) {
-      this.registerService.registerUser(this.registerForm.value).subscribe({
-        next: (response) => {
-          alert('Registration successful! Redirecting to login page...');
-          this.router.navigate(['/login']);
-        },
-        error: (error) => {
-          console.error('Registration failed:', error);
-          alert('Registration failed. Please try again.');
-        }
-      });
+  
+    if (this.registerForm.invalid) {
+      return;
     }
+  
+    const formData = {
+      name: this.registerForm.value.username, 
+      email: this.registerForm.value.email,
+      password: this.registerForm.value.password,
+      role: this.registerForm.value.role,
+    };
+  
+    this.registerService.registerUser(formData).subscribe({
+      next: () => {
+        alert('Registration successful! Redirecting to login page...');
+        this.router.navigate(['/login']);
+      },
+      error: (error: any) => {
+        console.error('Registration failed:', error);
+        alert(error.error?.errors?.join('\n') || 'Registration failed. Please try again.');
+      }
+    });
   }
+  
 }
