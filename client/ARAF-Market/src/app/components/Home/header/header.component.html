@@ -1,33 +1,41 @@
 <header class="header bg-dark text-light py-2">
-  <div class="container d-flex justify-content-between align-items-center">
-    <div class="contact-info">
-      <i class="fas fa-phone-alt text-danger"></i>
-      Call us: <strong>20-1014085759</strong>
-      <span class="mx-2">|</span>
-      <i class="fas fa-envelope text-danger"></i>
-      Email: <a href="mailto:amhmdslah104@gmail.com" class="text-light">amhmdslah104gmail.com</a>
-    </div>
-    <div class="user-actions d-flex align-items-center">
-      <!-- My Account Dropdown -->
-      <div class="dropdown" ngbDropdown>
-        <a class="text-light mx-2 dropdown-toggle" ngbDropdownToggle>
-          <i class="fas fa-user"></i> My Account
-        </a>
-        <div class="dropdown-menu" ngbDropdownMenu>
-          <a class="dropdown-item" routerLink="/login">Login</a>
-          <a class="dropdown-item" routerLink="/register">Register</a>
+  <div class="container">
+    <!-- Top Row: Contact Info and User Actions -->
+    <div class="row align-items-center">
+      <div class="col-md-6 col-12 text-center text-md-start mb-2 mb-md-0">
+        <div class="contact-info">
+          <i class="fas fa-phone-alt text-danger"></i>
+          Call us: <strong>20-1014085759</strong>
+          <span class="mx-2">|</span>
+          <i class="fas fa-envelope text-danger"></i>
+          Email: <a href="mailto:amhmdslah104@gmail.com" class="text-light">amhmdslah104gmail.com</a>
         </div>
       </div>
-      <a href="#" class="text-light mx-2"><i class="fas fa-heart"></i> My Wishlist</a>
-      <a href="#" class="text-light mx-2"><i class="fas fa-globe"></i> English</a>
-      <a href="#" class="text-light mx-2"><i class="fas fa-dollar-sign"></i> USD</a>
+      <div class="col-md-6 col-12 text-center text-md-end">
+        <div class="user-actions d-flex justify-content-center justify-content-md-end align-items-center">
+          <!-- My Account Dropdown -->
+          <div class="dropdown" ngbDropdown>
+            <a class="text-light mx-2 dropdown-toggle" ngbDropdownToggle>
+              <i class="fas fa-user"></i> My Account
+            </a>
+            <div class="dropdown-menu" ngbDropdownMenu>
+              <a class="dropdown-item" routerLink="/login">Login</a>
+              <a class="dropdown-item" routerLink="/register">Register</a>
+            </div>
+          </div>
+          <a href="#" class="text-light mx-2"><i class="fas fa-heart"></i> My Wishlist</a>
+          <a href="#" class="text-light mx-2"><i class="fas fa-globe"></i> English</a>
+          <a href="#" class="text-light mx-2"><i class="fas fa-dollar-sign"></i> USD</a>
+        </div>
+      </div>
     </div>
   </div>
 
+  <!-- Navigation Bar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark mt-2">
     <div class="container">
       <a class="navbar-brand text-danger fw-bold" routerLink="/">
-        ARAF <span class="text-white"> Market</span>
+        ARAF <span class="text-white">Market</span>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,8 +55,19 @@
       </div>
       <!-- Shopping Cart with Number Above -->
       <div class="shopping-cart d-flex align-items-center position-relative">
-        <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">12</span>
+        <span
+          class="badge bg-danger position-absolute top-0 start-100 translate-middle p-2 rounded-circle d-flex justify-content-center align-items-center"
+          style="width: 24px; height: 24px;">
+          12
+        </span>
         <i class="fas fa-shopping-cart text-light fs-4"></i>
+      </div>
+      <!-- Fixed Bag Icon -->
+      <div class="fixed-bag">
+        <a href="#" class="bag-icon">
+          <i class="fas fa-shopping-cart fs-4"></i>
+          <span class="badge bg-danger">12</span> <!-- Notification badge -->
+        </a>
       </div>
     </div>
   </nav>
