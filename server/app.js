@@ -11,6 +11,7 @@ import { reviewRouter } from "./routes/review.routes.js";
 import swaggerUi from "swagger-ui-express";
 import orderRoutes from "./routes/order.routes.js";
 import customerRouter from "./routes/customer.routes.js";
+import cors from "cors";
 
 const app = express();
 // [AMS] 😒 naming ports
@@ -19,6 +20,14 @@ const defaultPort = 3000;
 
 dbConnection();
 app.use(express.json());
+// enable cors
+app.use(
+  cors({
+    origin: "*", // Allow all origins (not recommended for production)
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allowed HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
+  })
+);
 
 // [AMS] 🚀 using swagger for documentation api
 import fs from "fs";
@@ -29,25 +38,24 @@ const swaggerDocument = JSON.parse(fs.readFileSync(swaggerFilePath, "utf-8"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // [AMS] 🚀 using of all routers
-// ---------without token verify 
-app.use( authRouter );
+// ---------without token verify
+app.use(authRouter);
 app.use(cartRoutes);
 app.use(orderRoutes);
+app.use(productRoutes);
 //------------------------------
 app.use(categoryRouter);
 app.use(promoRouter);
-app.use(productRoutes);
 app.use(reviewRouter);
 app.use(userRouter);
 app.use(sellerRoutes);
-app.use(customerRouter)
+app.use(customerRouter);
 
-app.use(paymentRouter)
+app.use(paymentRouter);
 
 // app.listen(defaultPort, () => {
 //   console.log(`Server is running on port`);
 // });
-
 
 app.listen(defaultPort, () => {
   console.log(`Server is running on port`);

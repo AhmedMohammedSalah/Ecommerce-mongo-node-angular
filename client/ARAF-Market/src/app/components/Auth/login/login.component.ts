@@ -33,22 +33,22 @@ export class LoginComponent {
   constructor(private loginService: LoginService, private router: Router) {}
 
   onLogin() {
-    if (this.loginForm.invalid) return;
+    // if (this.loginForm.invalid) return;
 
-    this.loading = true;
-    const { email, password, role } = this.loginForm.value;
+    // this.loading = true;
+    // const { email, password, role } = this.loginForm.value;
 
-    this.loginService.login(email!, password!, role!).subscribe({
-      next: () => {
-        this.loading = false;
-        if (role === 'admin') this.router.navigate(['/admin']);
-        else if (role === 'seller') this.router.navigate(['/seller']);
-        else this.router.navigate(['/home']);
-      },
-      error: () => {
-        this.errorMessage = 'Invalid credentials';
-        this.loading = false;
-      },
-    });
+    // this.loginService.login(email!, password!, role!).subscribe({
+    //   next: () => {
+    //     this.loading = false;
+    //     if (role === 'admin') this.router.navigate(['/admin']);
+    //     else if (role === 'seller') this.router.navigate(['/seller']);
+    //     else this.router.navigate(['/home']);
+    //   },
+    //   error: () => {
+    //     this.errorMessage = 'Invalid credentials';
+    //     this.loading = false;
+    //   },
+    // });
   }
 }
