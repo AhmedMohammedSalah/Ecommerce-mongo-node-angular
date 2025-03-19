@@ -47,9 +47,19 @@ export class LoginComponent {
 
     this.loginService.loginUser(user).subscribe({
       next: (response) => {
+        if (response.token && response.user) {
+        console.log(response);
         localStorage.setItem('token', response.token);
+        localStorage.setItem('user', JSON.stringify(response.user));
         alert('Login successful! Redirecting to dashboard...');
-        this.router.navigate(['/dashboard']);
+        if (response.user.role == 'user')
+          this.router.navigate(['/']);
+        else if (response.user.role == 'seller')
+          this.router.navigate(['/seller-dashboard']);
+        else if (response.user.role == 'admin')
+          this.router.navigate(['/seller-dashboard']);
+
+      }
       },
       error: (error) => {
         this.isSubmitting = false;
