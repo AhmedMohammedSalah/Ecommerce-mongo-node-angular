@@ -65,6 +65,10 @@ export async function signin(req, res) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
     // [AMS]🔐 security layer to check if user is verified or not
+
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
     if (!user.isVerified) {
       return res
         .status(401)
