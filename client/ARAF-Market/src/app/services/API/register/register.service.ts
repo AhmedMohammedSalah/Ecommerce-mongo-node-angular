@@ -20,7 +20,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { RegisteredUser } from '../../types/regijster.interface';
+import { RegisteredUser } from '../../../types/regijster.interface';
 
 @Injectable({
   providedIn: 'root'

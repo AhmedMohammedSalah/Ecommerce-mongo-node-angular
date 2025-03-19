@@ -1,1 +1,90 @@
-<p>profile works!</p>
+<!-- profile.component.html -->
+<div class="container py-5" *ngIf="!isLoading">
+  <div class="card shadow-lg">
+    <div class="card-header bg-primary text-white">
+      <h3 class="mb-0">Account Settings</h3>
+    </div>
+
+    <div class="card-body">
+      <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+        <!-- Basic Info Section -->
+        <div class="mb-5">
+          <h4 class="mb-4 border-bottom pb-2">Personal Information</h4>
+          <div formGroupName="basicInfo">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-control" formControlName="name">
+                <div *ngIf="profileForm.controls.basicInfo?.get('name')?.errors" class="text-danger mt-1">
+                  Name is required
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Email Address</label>
+                <input type="email" class="form-control" formControlName="email">
+                <div *ngIf="profileForm.controls.basicInfo?.get('email')?.errors" class="text-danger mt-1">
+                  Valid email is required
+                </div>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label">New Password</label>
+                <input type="password" class="form-control" formControlName="password">
+                <small class="text-muted">Leave blank to keep current password</small>
+                <div *ngIf="profileForm.controls.basicInfo?.get('password')?.errors" class="text-danger mt-1">
+                  Password must be at least 6 characters
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preferences Section -->
+        <div class="mb-4">
+          <h4 class="mb-4 border-bottom pb-2">Preferences</h4>
+          <div formGroupName="preferences">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Preferred Language</label>
+                <select class="form-select" formControlName="preferredLanguage">
+                  <option *ngFor="let lang of languageOptions" [value]="lang">
+                    {{ lang | uppercase }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Payment Methods</label>
+                <div class="form-check" *ngFor="let method of paymentOptions">
+                  <input class="form-check-input" type="checkbox" [value]="method"
+                    [checked]="profileForm.controls.preferences?.get('paymentMethods')?.value.includes(method)"
+                    (change)="updatePaymentMethods(method, ($event.target as HTMLInputElement).checked)">
+                  <label class="form-check-label">
+                    {{ method }}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="d-flex justify-content-end gap-3 mt-5">
+          <button type="button" class="btn btn-secondary" routerLink="/">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="isUpdating">
+            <span *ngIf="!isUpdating">Save Changes</span>
+            <span *ngIf="isUpdating" class="spinner-border spinner-border-sm"></span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div *ngIf="isLoading" class="text-center py-5">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>

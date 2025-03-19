@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule  } from '@angular/forms';
 import { Router } from '@angular/router';
-import { RegisterService } from '../../../services/API/register.service';
+import { RegisterService } from '../../../services/API/register/register.service';
 import { RegisteredUser } from '../../../types/regijster.interface';
 
 @Component({
