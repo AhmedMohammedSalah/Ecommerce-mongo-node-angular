@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -9,18 +9,19 @@ import { Router } from '@angular/router';
 import { LoginService } from '../../../services/API/login/login.service';
 import { CommonModule } from '@angular/common';
 import { LoginUser } from '../../../types/login.interface';
-
+import { AuthServiceService } from '../../../services/DATA/auth-service.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   imports: [ReactiveFormsModule, CommonModule],
 })
+
 export class LoginComponent {
   loginForm: FormGroup;
   submitted = false;
   isSubmitting = false;
-
+  authServiceService=inject(AuthServiceService)
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -49,8 +50,8 @@ export class LoginComponent {
       next: (response) => {
         if (response.token && response.user) {
         console.log(response);
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
+          localStorage.setItem('token', response.token);
+          this.authServiceService.login(response.user);
         alert('Login successful! Redirecting to dashboard...');
         if (response.user.role == 'user')
           this.router.navigate(['/']);

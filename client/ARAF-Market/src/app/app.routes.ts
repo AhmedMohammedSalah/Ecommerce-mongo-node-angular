@@ -3,6 +3,7 @@ import { HomeComponent } from './components/Home/home/home.component';
 import { NotFoundComponent } from './components/others/not-found/not-found.component';
 import { RegisterComponent } from './components/Auth/register/register.component';
 import { LoginComponent } from './components/Auth/login/login.component';
+import { ProfileComponent } from './components/customer/profile/profile.component';
 
 export const routes: Routes = [
   {
@@ -20,6 +21,11 @@ export const routes: Routes = [
     path: 'login',
     component: LoginComponent,
     title:"Login"
+  },
+  {
+    path: 'profile',
+    component: ProfileComponent,
+    title:"profile"
   },
   {
 			path:'**' ,
