@@ -1,28 +1,16 @@
-<form
-  [formGroup]="loginForm"
-  (ngSubmit)="onSubmit()"
-  class="p-4 border rounded bg-white shadow-sm"
-  style="max-width: 400px; margin: auto"
->
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="p-4 border rounded bg-white shadow-sm"
+  style="max-width: 400px; margin: auto">
   <h2 class="text-center mb-4">Login</h2>
 
   <!-- Email Field -->
   <div class="mb-3">
     <label class="form-label"><i class="fas fa-envelope"></i> Email</label>
-    <input
-      type="email"
-      formControlName="email"
-      class="form-control"
-      placeholder="Enter your email"
-    />
-    <div
-      *ngIf="
+    <input type="email" formControlName="email" class="form-control" placeholder="Enter your email" />
+    <div *ngIf="
         (loginForm.controls['email'].invalid &&
           loginForm.controls['email'].touched) ||
         (submitted && loginForm.controls['email'].invalid)
-      "
-      class="text-danger"
-    >
+      " class="text-danger">
       Please enter a valid email.
     </div>
   </div>
@@ -30,20 +18,12 @@
   <!-- Password Field -->
   <div class="mb-3">
     <label class="form-label"><i class="fas fa-lock"></i> Password</label>
-    <input
-      type="password"
-      formControlName="password"
-      class="form-control"
-      placeholder="Enter your password"
-    />
-    <div
-      *ngIf="
+    <input type="password" formControlName="password" class="form-control" placeholder="Enter your password" />
+    <div *ngIf="
         (loginForm.controls['password'].invalid &&
           loginForm.controls['password'].touched) ||
         (submitted && loginForm.controls['password'].invalid)
-      "
-      class="text-danger"
-    >
+      " class="text-danger">
       Password must be at least 6 characters.
     </div>
   </div>

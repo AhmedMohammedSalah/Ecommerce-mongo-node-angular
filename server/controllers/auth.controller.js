@@ -5,7 +5,7 @@ import { sendEmail } from "../Email/email.js";
 import { createCustomerProfile } from "./customer.controller.js";
 import { createSellerProfile } from "./seller.controller.js";
 
-const userModel = User;// [AMS] 😒 correct naming
+const userModel = User; // [AMS] 😒 correct naming
 
 export async function signup(req, res) {
   try {
@@ -45,8 +45,6 @@ export async function signup(req, res) {
     }
     // fetch user
     // call create profile (id )
-
-    
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -55,7 +53,7 @@ export async function signup(req, res) {
 export async function signin(req, res) {
   try {
     console.log("enter sign in ");
-    
+
     const { email, password } = req.body;
 
     // [AMS]🤔 => define .select("+password") ??
@@ -63,14 +61,14 @@ export async function signin(req, res) {
       "+password"
     );
 
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
     // [AMS]🔐 security layer to check if user is verified or not
     if (!user.isVerified) {
       return res
         .status(401)
         .json({ message: "User is not verified , please confirm your mail " });
-    }
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).json({ message: "Invalid credentials" });
     }
     const token = jwt.sign({ user }, "ARAF");
     res.status(200).json({ user, token });

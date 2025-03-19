@@ -3,6 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { LoginUser } from '../../../types/login.interface';
 
+// [FM] Edit : This service is used to make API calls to the server
+
 @Injectable({
   providedIn: 'root',
 })

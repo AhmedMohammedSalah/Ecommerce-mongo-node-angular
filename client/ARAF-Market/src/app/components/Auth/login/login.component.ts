@@ -8,6 +8,7 @@ import {
 import { Router } from '@angular/router';
 import { LoginService } from '../../../services/API/login/login.service';
 import { CommonModule } from '@angular/common';
+import { LoginUser } from '../../../types/login.interface';
 
 @Component({
   selector: 'app-login',
@@ -39,7 +40,7 @@ export class LoginComponent {
     }
 
     this.isSubmitting = true;
-    const user = {
+    const user:LoginUser = {
       email: this.loginForm.value.email,
       password: this.loginForm.value.password,
     };
@@ -55,6 +56,7 @@ export class LoginComponent {
         alert(
           error.error?.errors?.join('\n') || 'Login failed. Please try again.'
         );
+        console.log(error);
       },
     });
   }
