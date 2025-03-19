@@ -1,54 +1,61 @@
 import { Component } from '@angular/core';
 import {
-  ReactiveFormsModule,
-  FormControl,
+  FormBuilder,
   FormGroup,
   Validators,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import { LoginService } from '../../../services/API/login/login.service';
+import { CommonModule } from '@angular/common';
 
-/*
- * (FM) Edit : This component is used to display the login form
- */
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css'],
+  imports: [ReactiveFormsModule, CommonModule],
 })
 export class LoginComponent {
-  loginForm = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [
-      Validators.required,
-      Validators.minLength(6),
-    ]),
-    role: new FormControl('', [Validators.required]),
-  });
+  loginForm: FormGroup;
+  submitted = false;
+  isSubmitting = false;
 
-  loading = false;
-  errorMessage = '';
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private loginService: LoginService
+  ) {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+    });
+  }
 
-  constructor(private loginService: LoginService, private router: Router) {}
+  onSubmit(): void {
+    this.submitted = true;
 
-  onLogin() {
-    // if (this.loginForm.invalid) return;
+    if (this.loginForm.invalid) {
+      return;
+    }
 
-    // this.loading = true;
-    // const { email, password, role } = this.loginForm.value;
+    this.isSubmitting = true;
+    const user = {
+      email: this.loginForm.value.email,
+      password: this.loginForm.value.password,
+    };
 
-    // this.loginService.login(email!, password!, role!).subscribe({
-    //   next: () => {
-    //     this.loading = false;
-    //     if (role === 'admin') this.router.navigate(['/admin']);
-    //     else if (role === 'seller') this.router.navigate(['/seller']);
-    //     else this.router.navigate(['/home']);
-    //   },
-    //   error: () => {
-    //     this.errorMessage = 'Invalid credentials';
-    //     this.loading = false;
-    //   },
-    // });
+    this.loginService.loginUser(user).subscribe({
+      next: (response) => {
+        localStorage.setItem('token', response.token);
+        alert('Login successful! Redirecting to dashboard...');
+        this.router.navigate(['/dashboard']);
+      },
+      error: (error) => {
+        this.isSubmitting = false;
+        alert(
+          error.error?.errors?.join('\n') || 'Login failed. Please try again.'
+        );
+      },
+    });
   }
 }

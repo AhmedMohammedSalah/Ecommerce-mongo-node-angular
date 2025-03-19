@@ -1,80 +1,61 @@
-<!-- (FM) Edit -->
+<form
+  [formGroup]="loginForm"
+  (ngSubmit)="onSubmit()"
+  class="p-4 border rounded bg-white shadow-sm"
+  style="max-width: 400px; margin: auto"
+>
+  <h2 class="text-center mb-4">Login</h2>
 
-<!-- Bind the form to the reactive FormGroup and trigger the onLogin() method when the form is submitted -->
-<form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-  <!-- Email -->
+  <!-- Email Field -->
   <div class="mb-3">
-    <label for="email">Email</label>
+    <label class="form-label"><i class="fas fa-envelope"></i> Email</label>
     <input
-      id="email"
       type="email"
+      formControlName="email"
       class="form-control"
-      [formControl]="loginForm.controls.email"
+      placeholder="Enter your email"
     />
     <div
-      class="text-danger"
-      [hidden]="
-        loginForm.controls.email.valid || loginForm.controls.email.pristine
+      *ngIf="
+        (loginForm.controls['email'].invalid &&
+          loginForm.controls['email'].touched) ||
+        (submitted && loginForm.controls['email'].invalid)
       "
+      class="text-danger"
     >
-      Valid email required.
+      Please enter a valid email.
     </div>
   </div>
 
-  <!-- Password -->
+  <!-- Password Field -->
   <div class="mb-3">
-    <label for="password">Password</label>
+    <label class="form-label"><i class="fas fa-lock"></i> Password</label>
     <input
-      id="password"
       type="password"
+      formControlName="password"
       class="form-control"
-      [formControl]="loginForm.controls.password"
+      placeholder="Enter your password"
     />
     <div
-      class="text-danger"
-      [hidden]="
-        loginForm.controls.password.valid ||
-        loginForm.controls.password.pristine
+      *ngIf="
+        (loginForm.controls['password'].invalid &&
+          loginForm.controls['password'].touched) ||
+        (submitted && loginForm.controls['password'].invalid)
       "
+      class="text-danger"
     >
-      Minimum 6 characters required.
+      Password must be at least 6 characters.
     </div>
   </div>
 
-  <!-- Role -->
-  <div class="mb-3">
-    <label for="role">Role</label>
-    <select
-      id="role"
-      class="form-select"
-      [formControl]="loginForm.controls.role"
-    >
-      <option value="" disabled>Select role</option>
-      <option value="customer">Customer</option>
-      <option value="seller">Seller</option>
-      <option value="admin">Admin</option>
-    </select>
-    <div
-      class="text-danger"
-      [hidden]="
-        loginForm.controls.role.valid || loginForm.controls.role.pristine
-      "
-    >
-      Role is required.
-    </div>
+  <!-- Buttons -->
+  <div class="d-flex justify-content-between">
+    <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
+      <i class="fas fa-sign-in-alt"></i>
+      {{ isSubmitting ? "Logging in..." : "Login" }}
+    </button>
+    <button type="button" class="btn btn-warning" (click)="loginForm.reset()">
+      <i class="fas fa-redo"></i> Reset
+    </button>
   </div>
-
-  <!-- Error -->
-  <div class="alert alert-danger" [hidden]="!errorMessage">
-    {{ errorMessage }}
-  </div>
-
-  <!-- Submit -->
-  <button
-    class="btn btn-dark w-100"
-    type="submit"
-    [disabled]="loginForm.invalid || loading"
-  >
-    {{ loading ? "Logging in..." : "Login" }}
-  </button>
 </form>
