@@ -1,16 +1,71 @@
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="p-4 border rounded bg-white shadow-sm"
-  style="max-width: 400px; margin: auto">
+<div
+  *ngIf="showAlert"
+  class="alert alert-{{ alertType }} alert-dismissible fade show"
+  role="alert"
+>
+  {{ alertMessage }}
+  <button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="alert"
+    aria-label="Close"
+    (click)="showAlert = false"
+  ></button>
+</div>
+
+<form
+  [formGroup]="loginForm"
+  (ngSubmit)="onSubmit()"
+  class="p-4 border rounded bg-white shadow-sm"
+  style="max-width: 400px; margin: auto"
+>
   <h2 class="text-center mb-4">Login</h2>
 
   <!-- Email Field -->
   <div class="mb-3">
     <label class="form-label"><i class="fas fa-envelope"></i> Email</label>
-    <input type="email" formControlName="email" class="form-control" placeholder="Enter your email" />
-    <div *ngIf="
+    <div class="input-group">
+      <input
+        type="email"
+        formControlName="email"
+        class="form-control"
+        placeholder="Enter your email"
+        [ngClass]="{
+          'is-valid':
+            loginForm.controls['email'].valid &&
+            loginForm.controls['email'].touched,
+          'is-invalid':
+            loginForm.controls['email'].invalid &&
+            loginForm.controls['email'].touched
+        }"
+      />
+      <span
+        *ngIf="
+          loginForm.controls['email'].valid &&
+          loginForm.controls['email'].touched
+        "
+        class="input-group-text text-success"
+      >
+        <i class="fas fa-check"></i>
+      </span>
+      <span
+        *ngIf="
+          loginForm.controls['email'].invalid &&
+          loginForm.controls['email'].touched
+        "
+        class="input-group-text text-danger"
+      >
+        <i class="fas fa-times"></i>
+      </span>
+    </div>
+    <div
+      *ngIf="
         (loginForm.controls['email'].invalid &&
           loginForm.controls['email'].touched) ||
         (submitted && loginForm.controls['email'].invalid)
-      " class="text-danger">
+      "
+      class="text-danger"
+    >
       Please enter a valid email.
     </div>
   </div>
@@ -18,12 +73,48 @@
   <!-- Password Field -->
   <div class="mb-3">
     <label class="form-label"><i class="fas fa-lock"></i> Password</label>
-    <input type="password" formControlName="password" class="form-control" placeholder="Enter your password" />
-    <div *ngIf="
+    <div class="input-group">
+      <input
+        type="password"
+        formControlName="password"
+        class="form-control"
+        placeholder="Enter your password"
+        [ngClass]="{
+          'is-valid':
+            loginForm.controls['password'].valid &&
+            loginForm.controls['password'].touched,
+          'is-invalid':
+            loginForm.controls['password'].invalid &&
+            loginForm.controls['password'].touched
+        }"
+      />
+      <span
+        *ngIf="
+          loginForm.controls['password'].valid &&
+          loginForm.controls['password'].touched
+        "
+        class="input-group-text text-success"
+      >
+        <i class="fas fa-check"></i>
+      </span>
+      <span
+        *ngIf="
+          loginForm.controls['password'].invalid &&
+          loginForm.controls['password'].touched
+        "
+        class="input-group-text text-danger"
+      >
+        <i class="fas fa-times"></i>
+      </span>
+    </div>
+    <div
+      *ngIf="
         (loginForm.controls['password'].invalid &&
           loginForm.controls['password'].touched) ||
         (submitted && loginForm.controls['password'].invalid)
-      " class="text-danger">
+      "
+      class="text-danger"
+    >
       Password must be at least 6 characters.
     </div>
   </div>
