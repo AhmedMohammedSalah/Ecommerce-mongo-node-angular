@@ -1,4 +1,3 @@
-// profile.component.ts
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProfileService } from '../../../services/API/customer-profile/customer-profile.service';
@@ -6,15 +5,17 @@ import { CommonModule, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-profile',
-  imports:[NgIf,ReactiveFormsModule, CommonModule],
+    imports: [CommonModule, ReactiveFormsModule,NgIf],
+
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.scss']
+  styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
   profileForm: FormGroup;
   userData: any;
   isLoading = true;
   isUpdating = false;
+  showSuccessMessage = false; // Add this property
   languageOptions = ['en', 'fr', 'es', 'de'];
   paymentOptions = ['Credit Card', 'PayPal', 'Apple Pay', 'Google Pay'];
 
@@ -24,8 +25,8 @@ export class ProfileComponent implements OnInit {
   ) {
     this.profileForm = this.fb.group({
       basicInfo: this.fb.group({
-        name: ['', Validators.required],
-        email: ['', [Validators.required, Validators.email]],
+        name: [''],
+        email: [{ value: '', disabled: true }],
         password: ['', [Validators.minLength(6)]]
       }),
       preferences: this.fb.group({
@@ -40,26 +41,25 @@ export class ProfileComponent implements OnInit {
   }
 
   private loadProfileData(): void {
-    this.profileService.getUserProfile().subscribe({
-      next: (data) => {
-        this.userData = data;
-        this.profileForm.patchValue({
-          basicInfo: {
-            name: data.name,
-            email: data.email
-          },
-          preferences: {
-            preferredLanguage: data.preferredLanguage || 'en',
-            paymentMethods: data.paymentMethods || []
-          }
-        });
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Error loading profile:', err);
-        this.isLoading = false;
-      }
-    });
+    const user = this.profileService.getUserProfile(); // Call the synchronous method
+
+    if (user) {
+      this.userData = user;
+      this.profileForm.patchValue({
+        basicInfo: {
+          name: user.name,
+          email: user.email
+        },
+        preferences: {
+          preferredLanguage: user.preferredLanguage || 'en', // Fallback to 'en' if not available
+          paymentMethods: user.paymentMethods || [] // Fallback to an empty array if not available
+        }
+      });
+    } else {
+      console.error('No user data found in localStorage.');
+    }
+
+    this.isLoading = false; // Set loading to false
   }
 
   onSubmit(): void {
@@ -69,15 +69,14 @@ export class ProfileComponent implements OnInit {
     const basicInfo = this.profileForm.get('basicInfo')?.value;
     const preferences = this.profileForm.get('preferences')?.value;
 
-    // Update user info
     this.profileService.updateUserInfo(basicInfo).subscribe({
       next: () => {
-        // Update customer profile
         this.profileService.updateCustomerProfile(preferences).subscribe({
           next: () => {
             this.isUpdating = false;
-            // Show success message
-            this.loadProfileData(); // Refresh data
+            this.showSuccessMessage = true; // Show success message
+            setTimeout(() => this.showSuccessMessage = false, 3000); // Hide after 3 seconds
+            this.loadProfileData();
           },
           error: (err) => {
             console.error('Error updating preferences:', err);
@@ -91,12 +90,13 @@ export class ProfileComponent implements OnInit {
       }
     });
   }
-  updatePaymentMethods(method: string, isChecked: boolean): void {
-  const currentMethods = this.profileForm.get('preferences.paymentMethods')?.value;
-  const updatedMethods = isChecked
-    ? [...currentMethods, method]
-    : currentMethods.filter((m: string) => m !== method);
 
-  this.profileForm.get('preferences.paymentMethods')?.setValue(updatedMethods);
-}
+  updatePaymentMethods(method: string, isChecked: boolean): void {
+    const currentMethods = this.profileForm.get('preferences.paymentMethods')?.value;
+    const updatedMethods = isChecked
+      ? [...currentMethods, method]
+      : currentMethods.filter((m: string) => m !== method);
+
+    this.profileForm.get('preferences.paymentMethods')?.setValue(updatedMethods);
+  }
 }

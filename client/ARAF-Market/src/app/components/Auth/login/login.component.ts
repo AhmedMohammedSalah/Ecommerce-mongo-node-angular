@@ -89,11 +89,18 @@ export class LoginComponent {
         this.isSubmitting = false;
 
         this.showAlert = true;
+        if (error.status=401)
+        {
+          this.alertMessage = "User is not verified , please confirm your mail ";
+        this.alertType = 'danger';
+        }
+        else{
         this.alertMessage =
           error.error?.errors?.join('\n') || 'Login failed. Please try again.';
         this.alertType = 'danger';
 
-        console.log(error);
+          console.log(error);
+        }
       },
     });
   }
