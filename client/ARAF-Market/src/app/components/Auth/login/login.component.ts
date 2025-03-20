@@ -71,7 +71,7 @@ export class LoginComponent {
       next: (response) => {
         if (response.token && response.user) {
           console.log(response);
-          localStorage.setItem('token', response.token);
+          localStorage.setItem('token', response.token); // [SENU]: 🙂 SHOULD BE PUT IN HEADER!!!!!!![your fault took me 2 hours to catch]
           this.authServiceService.login(response.user);
 
           this.showAlert = true;
