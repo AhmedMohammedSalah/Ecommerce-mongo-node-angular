@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <!-- Design 1: Modern and Minimalist -->
+  <g transform="translate(50, 50)">
+    <!-- Logo Background -->
+    <rect x="0" y="0" width="200" height="200" rx="10" fill="#3498db" />
+    
+    <!-- Letters -->
+    <text x="100" y="110" font-family="Arial, sans-serif" font-size="70" font-weight="bold" fill="white" text-anchor="middle">A</text>
+    <text x="100" y="130" font-family="Arial, sans-serif" font-size="16" fill="white" text-anchor="middle">RAF</text>
+    
+    <!-- Shopping Cart Icon -->
+    <circle cx="150" cy="50" r="20" fill="white" opacity="0.3"/>
+    <path d="M140,45 L160,45 L155,60 L145,60 Z M145,62 L155,62 L153,70 L147,70 Z" fill="white"/>
+    
+    <!-- Title -->
+    <text x="100" y="180" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white" text-anchor="middle">ARAF-MARKET</text>
+  </g>
+  
+  <!-- Design 2: Bold and Geometric -->
+  <g transform="translate(300, 50)">
+    <!-- Logo Background -->
+    <polygon points="100,0 200,100 100,200 0,100" fill="#e74c3c" />
+    
+    <!-- Letters -->
+    <text x="100" y="100" font-family="Impact, sans-serif" font-size="50" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="middle">A</text>
+    <text x="100" y="130" font-family="Impact, sans-serif" font-size="20" fill="white" text-anchor="middle">R.A.F</text>
+        
+    <!-- Title -->
+    <text x="100" y="230" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#e74c3c" text-anchor="middle">ARAF-MARKET</text>
+  </g>
+  
+  <!-- Design 3: Circular and Dynamic -->
+  <g transform="translate(550, 50)">
+    <!-- Logo Background -->
+    <circle cx="100" cy="100" r="100" fill="#27ae60" />
+    <circle cx="100" cy="100" r="80" fill="white" />
+    <circle cx="100" cy="100" r="60" fill="#27ae60" />
+    
+    <!-- Letters -->
+    <text x="100" y="110" font-family="Verdana, sans-serif" font-size="40" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="middle">A</text>
+    <path d="M130,90 L145,90 A 50 50 0 0 1 145,110 L130,110" fill="none" stroke="white" stroke-width="5"/>
+    
+    <!-- Title -->
+    <text x="100" y="230" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#27ae60" text-anchor="middle">ARAF-MARKET</text>
+  </g>
+  
+  <!-- Design 4: Tech and Modern -->
+  <g transform="translate(50, 300)">
+    <!-- Logo Background -->
+    <rect x="0" y="0" width="200" height="200" fill="#9b59b6" />
+    
+    <!-- Letters -->
+    <text x="35" y="80" font-family="Courier New, monospace" font-size="40" font-weight="bold" fill="white">A</text>
+    <text x="70" y="80" font-family="Courier New, monospace" font-size="40" font-weight="bold" fill="white">R</text>
+    <text x="105" y="80" font-family="Courier New, monospace" font-size="40" font-weight="bold" fill="white">A</text>
+    <text x="140" y="80" font-family="Courier New, monospace" font-size="40" font-weight="bold" fill="white">F</text>
+    
+    <!-- Digital Elements -->
+    <rect x="30" y="100" width="140" height="5" fill="white" />
+    <rect x="30" y="115" width="140" height="5" fill="white" />
+    <rect x="30" y="130" width="140" height="5" fill="white" />
+    
+    <!-- Title -->
+    <text x="100" y="180" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white" text-anchor="middle">ARAF-MARKET</text>
+  </g>
+  
+  <!-- Design 5: Package/Box Concept -->
+  <g transform="translate(300, 300)">
+    <!-- Logo Background - Box -->
+    <path d="M100,0 L200,50 L200,150 L100,200 L0,150 L0,50 Z" fill="#f39c12" />
+    <path d="M100,0 L200,50 L100,100 L0,50 Z" fill="#f1c40f" />
+    <path d="M100,100 L200,50 L200,150 L100,200 Z" fill="#e67e22" />
+    
+    <!-- Letters -->
+    <text x="100" y="95" font-family="Arial, sans-serif" font-size="40" font-weight="bold" fill="white" text-anchor="middle">A</text>
+    <text x="100" y="125" font-family="Arial, sans-serif" font-size="16" fill="white" text-anchor="middle">RAF</text>
+    
+    <!-- Title -->
+    <text x="100" y="230" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#f39c12" text-anchor="middle">ARAF-MARKET</text>
+  </g>
+  
+  <!-- Design 6: Letter Focused -->
+  <g transform="translate(550, 300)">
+    <!-- Letters Stacked -->
+    <text x="100" y="60" font-family="Georgia, serif" font-size="60" font-weight="bold" fill="#2c3e50" text-anchor="middle">A</text>
+    <text x="100" y="110" font-family="Georgia, serif" font-size="60" font-weight="bold" fill="#2980b9" text-anchor="middle">R</text>
+    <text x="100" y="160" font-family="Georgia, serif" font-size="60" font-weight="bold" fill="#16a085" text-anchor="middle">A</text>
+    <text x="100" y="210" font-family="Georgia, serif" font-size="60" font-weight="bold" fill="#c0392b" text-anchor="middle">F</text>
+    
+    <!-- Connecting Elements -->
+    <rect x="40" y="30" width="120" height="5" fill="#2c3e50" />
+    <rect x="40" y="215" width="120" height="5" fill="#c0392b" />
+    
+    <!-- Title -->
+    <text x="100" y="250" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#333333" text-anchor="middle">ARAF-MARKET</text>
+  </g>
+</svg>
