@@ -21,13 +21,15 @@ const defaultPort = 3000;
 dbConnection();
 app.use(express.json());
 // enable cors
+
 app.use(
   cors({
-    origin: "*", // Allow all origins (not recommended for production)
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allowed HTTP methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
+    origin: "http://localhost:4200", // Allow requests from this origin
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // Allowed HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization", "token"], // Allow the 'token' header
   })
 );
+app.options("*", cors()); // Handle preflight requests for all routes
 
 // [AMS] 🚀 using swagger for documentation api
 import fs from "fs";

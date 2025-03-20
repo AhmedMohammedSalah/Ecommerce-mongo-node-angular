@@ -1,4 +1,5 @@
 import User from "../database/models/user.model.js";
+import bcrypt from "bcrypt";
 
 export async function getUser(req, res) {
   try {
@@ -10,9 +11,12 @@ export async function getUser(req, res) {
   }
 }
 
-export async function updateUser(req, res) {
+export async function updateUser ( req, res ) {
+  console.log("Enter Update user");
+  
   try {
     const { id } = req.params;
+
     const updates = req.body;
     const user = await User.findById(id); //.active();
     if (!user) return res.status(404).json({ message: "User not found" });
@@ -24,15 +28,18 @@ export async function updateUser(req, res) {
     }
     // Allow users to update their own profile
     if (req.user.role === "user" && req.user.id !== id) {
+
       return res.status(403).json({ message: "Unauthorized" });
     }
     // Update allowed fields
     const allowedUpdates = ["name", "email", "password"];
+    req.body.password = await bcrypt.hash(req.body.password, 10);
     allowedUpdates.forEach((field) => {
       if (updates[field] !== undefined) {
         user[field] = updates[field];
       }
     });
+
     await user.save();
     res.status(200).json(user);
   } catch (err) {
