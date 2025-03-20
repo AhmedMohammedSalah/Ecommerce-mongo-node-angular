@@ -6,6 +6,7 @@ import { LoginComponent } from './components/Auth/login/login.component';
 import { ProfileComponent } from './components/customer/profile/profile.component';
 import { loginedGuard } from './guards/logined.guard';
 import { UnauthorizedComponent } from './components/others/unauthorized/unauthorized.component';
+import { SellerProfileComponent } from './components/seller/seller-profile/seller-profile.component';
 
 export const routes: Routes = [
   {
@@ -33,6 +34,13 @@ export const routes: Routes = [
   {
     path: 'unauthorized',
     component: UnauthorizedComponent,
+  },
+  // [SENU] seller routes adding
+  {
+    path: "seller-dashboard",
+    component: SellerProfileComponent,
+    title: "Seller Dashboard"
+
   },
   {
 			path:'**' ,

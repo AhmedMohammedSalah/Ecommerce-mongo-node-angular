@@ -1,0 +1,61 @@
+<div class="container mt-4">
+    <!-- Name and Balance in the same row -->
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h2>Hala, {{ userData?.name }}! 👋</h2>
+        </div>
+        <div class="col-md-6 text-end">
+            <h3 class="text-success fw-bold">Balance: {{ sellerData?.balance }}$</h3>
+        </div>
+    </div>
+
+    <!-- Cards in One Horizontal Row -->
+    <div class="row mt-4 justify-content-center">
+        <!-- Orders -->
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">Orders 📦</h4>
+                </div>
+                <div class="card-body text-center larger-text">
+                    @if (sellerData?.orders?.length === 0) {
+                        <p class="text-muted">No Orders Yet</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Products -->
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="card shadow-lg">
+                <div class="card-header bg-success text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Products <i class="fa-solid fa-tag" style="color: #ecdbba;"></i></h4>
+                        <button class="btn btn-danger">ADD</button>
+                    </div>
+                </div>
+                <div class="card-body text-center larger-text">
+                    @if (sellerData?.products?.length === 0) {
+                        <p class="text-muted">No Products Added Yet</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Reviews -->
+        <div class="col-lg-4 col-md-12 mb-3">
+            <div class="card shadow-lg">
+                <div class="card-header bg-warning text-white text-center">
+                    <h4 class="mb-0">
+                        Reviews <i class="fa-solid fa-star"></i>
+                    </h4>
+                </div>
+                <div class="card-body text-center larger-text">
+                    @if (sellerData?.reviews?.length === 0) {
+                        <p class="text-muted">No Reviews Yet</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

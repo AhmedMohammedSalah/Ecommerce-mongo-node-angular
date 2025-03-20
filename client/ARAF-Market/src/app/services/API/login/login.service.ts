@@ -13,6 +13,6 @@ export class LoginService {
 
   loginUser(user: LoginUser): Observable<any> {
     console.log(user);
-    return this.http.post('http://127.0.0.1:3000/auth/signin', user);
+    return this.http.post('http://127.0.0.1:3030/auth/signin', user); // [SENU] PORT
   }
 }
