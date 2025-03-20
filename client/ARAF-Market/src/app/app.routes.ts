@@ -4,6 +4,8 @@ import { NotFoundComponent } from './components/others/not-found/not-found.compo
 import { RegisterComponent } from './components/Auth/register/register.component';
 import { LoginComponent } from './components/Auth/login/login.component';
 import { ProfileComponent } from './components/customer/profile/profile.component';
+import { loginedGuard } from './guards/logined.guard';
+import { UnauthorizedComponent } from './components/others/unauthorized/unauthorized.component';
 
 export const routes: Routes = [
   {
@@ -25,7 +27,12 @@ export const routes: Routes = [
   {
     path: 'profile',
     component: ProfileComponent,
-    title:"profile"
+    title: "profile",
+    canActivate:[loginedGuard]
+  },
+  {
+    path: 'unauthorized',
+    component: UnauthorizedComponent,
   },
   {
 			path:'**' ,
