@@ -68,6 +68,10 @@ export const updateSeller = async (req, res) => {
  */
 
 export const getSeller = async (req, res) => {
+
+
+  console.log("hello in getting the seller by id function")
+
   try {
     const { sellerId } = req.params;
 

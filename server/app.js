@@ -61,7 +61,7 @@ app.use(customerRouter);
 
 app.use(paymentRouter);
 
-// app.listen(defaultPort, () => {
+// app.listen(senuPort, () => {
 //   console.log(`Server is running on port`);
 // });
 
