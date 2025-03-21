@@ -1,0 +1,34 @@
+<div class="product-card">
+  <!-- Discount Badge (static example: -11%) -->
+  <div class="discount-badge">-11%</div>
+
+  <!-- Product Image -->
+  <img [src]="'http://127.0.0.1:3000/' + product.imagePath" alt="{{ product.productName }}" class="product-img" />
+
+  <!-- Product Name -->
+  <h5 class="product-title">{{ product.productName }}</h5>
+
+  <!-- Prices (new price & old price) -->
+  <div class="price-section">
+    <span class="new-price">${{ product.price }}</span>
+    <span class="old-price">$85.00</span>
+  </div>
+
+  <!-- Action Buttons (heart, add to cart, search) -->
+  <div class="action-buttons">
+    <!-- Wishlist Button -->
+    <button class="wishlist-btn" (click)="addToWishList(product)">
+      <i class="fa fa-heart"></i>
+    </button>
+
+    <!-- Add to Cart Button -->
+    <button class="add-to-cart-btn" (click)="addToCart(product)">
+      Add to cart
+    </button>
+
+    <!-- View (Search) Button -->
+    <button class="view-btn" [routerLink]="['/product-details', product._id]">
+      <i class="fa fa-search"></i>
+    </button>
+  </div>
+</div>

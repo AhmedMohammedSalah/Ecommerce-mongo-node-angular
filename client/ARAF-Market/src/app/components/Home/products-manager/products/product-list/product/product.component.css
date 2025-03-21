@@ -1,0 +1,117 @@
+/* Container for the entire product card */
+.product-card {
+  position: relative;
+  width: 200px;
+  /* Adjust as needed or use responsive grid */
+  padding: 16px;
+  border: 1px solid #eee;
+  /* Light border */
+  border-radius: 8px;
+  background-color: #fff;
+  /* White background */
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+}
+
+/* Discount badge in the top-left corner */
+.discount-badge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #ff3a44;
+  /* Red color matching the reference */
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 0 0 8px 0;
+}
+
+/* Product image styling */
+.product-img {
+  width: 100%;
+  max-height: 180px;
+  object-fit: contain;
+  /* or cover, depending on your preference */
+  margin-bottom: 12px;
+}
+
+/* Product name/title */
+.product-title {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+/* Price section (new price + old price) */
+.price-section {
+  margin-bottom: 12px;
+}
+
+.new-price {
+  color: #ff3a44;
+  /* Red color for the new price */
+  font-weight: 700;
+  margin-right: 8px;
+  font-size: 1.2rem;
+}
+
+.old-price {
+  color: #999;
+  text-decoration: line-through;
+  font-size: 0.95rem;
+}
+
+/* Action buttons container (heart, add to cart, search) */
+.action-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* Wishlist (heart) & View (search) buttons: small circular icons */
+.wishlist-btn,
+.view-btn {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ff3a44;
+  /* Red border */
+  background-color: #fff;
+  /* White background */
+  color: #ff3a44;
+  /* Red icon color */
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+}
+
+.wishlist-btn:hover,
+.view-btn:hover {
+  background-color: #ff3a44;
+  color: #fff;
+}
+
+/* Add to cart button: red background, pill shape */
+.add-to-cart-btn {
+  background-color: #ff3a44;
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.add-to-cart-btn:hover {
+  background-color: #e2323b;
+  /* Slightly darker red on hover */
+}
