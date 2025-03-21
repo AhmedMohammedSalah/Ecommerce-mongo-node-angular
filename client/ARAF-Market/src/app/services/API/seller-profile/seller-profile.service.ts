@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { SellerPI } from '../../../interfaces/sellerInterfaces';
 import { HttpHeaders } from '@angular/common/http';
 
-const port = '3030'  // [SENU]: CHANGE IT TO (3000)
+const port = '3000'  
 
 
 

@@ -17,6 +17,7 @@ import { AuthServiceService } from '../../../services/DATA/auth-service.service'
   styleUrls: ['./login.component.css'],
   imports: [ReactiveFormsModule, CommonModule],
 })
+
 export class LoginComponent {
   loginForm: FormGroup;
   submitted = false;

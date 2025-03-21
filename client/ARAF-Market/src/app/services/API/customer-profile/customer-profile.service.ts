@@ -7,7 +7,7 @@ import { Observable, throwError } from 'rxjs';
   providedIn: 'root'
 })
 export class ProfileService {
-  private apiUrl = 'http://127.0.0.1:3030'; //[SENU] PORT
+  private apiUrl = 'http://127.0.0.1:3000'; //[SENU] PORT
   
 
   constructor(private http: HttpClient) { }

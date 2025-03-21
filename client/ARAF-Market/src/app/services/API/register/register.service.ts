@@ -31,6 +31,6 @@ export class RegisterService {
 
   registerUser(user: RegisteredUser): Observable<any> {
     console.log(user)
-    return this.http.post('http://127.0.0.1:3030/auth/signup', user); //[SENU] PORT
+    return this.http.post('http://127.0.0.1:3000/auth/signup', user);
   }
 }

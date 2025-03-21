@@ -21,7 +21,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 // [AMS] 😒 naming ports
-const senuPort = 3030;
+const senuPort = 3000;
 const defaultPort = 3000;
 
 dbConnection();
@@ -61,10 +61,10 @@ app.use(customerRouter);
 
 app.use(paymentRouter);
 
-// app.listen(senuPort, () => {
-//   console.log(`Server is running on port`);
-// });
-
-app.listen(defaultPort, () => {
+app.listen(senuPort, () => {
   console.log(`Server is running on port`);
 });
+
+// app.listen(defaultPort, () => {
+//   console.log(`Server is running on port`);
+// });
