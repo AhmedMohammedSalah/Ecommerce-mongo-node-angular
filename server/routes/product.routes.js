@@ -19,7 +19,7 @@ import { addProduct,
 //#region Middleware
 import { validateProduct, verifyUser }                          from "../middleware/addProduct_valid.js";
 import {checkProductExist, validateUpdatedProduct}  from "../middleware/updateProduct_valid.js";
-import { tokenVerify } from "../middleware/tokenVerify.js";
+
 //#endregion
 //================================================================================================
 
