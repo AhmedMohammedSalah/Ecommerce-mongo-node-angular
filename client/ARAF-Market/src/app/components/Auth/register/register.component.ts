@@ -1,4 +1,10 @@
-
+/**
+ * rehabkamal
+ * add all validation rules here
+ *  connect to database done
+ * 
+ * 
+ */
 import { Component } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule  } from '@angular/forms';

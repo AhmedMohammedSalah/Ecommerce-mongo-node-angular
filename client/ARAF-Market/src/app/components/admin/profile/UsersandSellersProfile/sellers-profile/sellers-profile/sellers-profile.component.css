@@ -1,0 +1,38 @@
+/* .container {
+    max-width: 800px;
+    margin: auto;
+  }
+  
+  h2 {
+    text-align: center;
+    color: #343a40;
+  }
+  
+  .table {
+    margin-top: 20px;
+  }
+  
+  .text-muted {
+    text-align: center;
+    font-style: italic;
+  }
+  
+  .alert {
+    text-align: center;
+  }
+   */
+
+   .container {
+    max-width: 800px;
+    margin: auto;
+  }
+  
+  .table {
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  th, td {
+    text-align: center;
+  }
+  
