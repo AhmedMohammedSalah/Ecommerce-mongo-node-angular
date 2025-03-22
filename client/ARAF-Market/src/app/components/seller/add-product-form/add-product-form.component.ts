@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient, httpResource } from '@angular/common/http';
+import { HttpClient, HttpHeaders, httpResource } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CategoryResponse, Category } from '../../../interfaces/categoryInterface';
@@ -17,6 +17,8 @@ export class AddProductFormComponent implements OnInit {
   productForm: FormGroup;
   categories : Category[] | null = null;
   catNames : string[] = [];
+  successMsg : any = '';
+  showModal : string = '';
 
   ngOnInit(){
     this.getCategories();
@@ -39,11 +41,11 @@ export class AddProductFormComponent implements OnInit {
     this.productForm = fb.group({
       productImage: [null, [req]],
       category:       [''],
-      productName:    ['', [req, min(2), max(40)]],
-      productDesc:    ['', [req, min(2), max(100)]],
-      stocks:         [0, min(0)],
-      productPrice:   [0, [req, min(0)]],
-      productDiscount:[0,[min(0), max(100)]]
+      productName:    ['speaker', [req, min(2), max(40)]],
+      productDesc:    ['this is the most speaker I liked ever', [req, min(2), max(100)]],
+      stocks:         [20, min(0)],
+      productPrice:   [100, [req, min(0)]],
+      productDiscount:[5,[min(0), max(100)]]
     });
   }
 
@@ -69,8 +71,60 @@ export class AddProductFormComponent implements OnInit {
 
 
 
+
   /** 📨 Submit the form */
   onSubmit() {
+    // Get the token from localStorage
+    const token = localStorage.getItem('token');
+  
+    // Ensure token is not null
+    if (!token) {
+      console.error("Token is missing!");
+      return;
+    }
+  
+    let headers = new HttpHeaders({
+      'token': token,
+      'enctype': 'multipart/form-data'
+    });
     
+  
+    // Get category ID
+    const catName = this.productForm.get('category')?.value;
+    const catId = this.categories?.find(c => c.name == catName)?._id;
+  
+    // Create the data object
+    const data = {
+      "productName": this.productForm.get("productName")?.value,
+      "description": this.productForm.get("productDesc")?.value, 
+      "price": this.productForm.get("productPrice")?.value,
+      "discount": this.productForm.get("productDiscount")?.value,
+      "stockQuantity": this.productForm.get("stocks")?.value,
+      "categoryId": catId || ''
+    };
+  
+    // Create FormData
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(data)); // Convert object to string
+    formData.append("productImg", this.productForm.get("productImage")?.value);
+
+    console.log("Token being sent:", token);
+    console.log("Headers:", headers);
+
+  
+    // Send the request
+    this.http.post('http://127.0.0.1:3000/products', formData, { headers })
+      .subscribe(response => {
+        if('msg' in response){
+          this.successMsg =  response.msg;
+          this.showModal = "success";
+        }
+
+      });
   }
+  
+
+
+
 }
+  

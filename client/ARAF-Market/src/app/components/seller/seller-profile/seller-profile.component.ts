@@ -30,19 +30,6 @@ export class SellerProfileComponent {
   }
 
 
-  // Adding product
-  addProduct(){
-
-
-    // get data from the HTML form 
-
-
-    // send it [POST] to the endpoint that add product + [TOKEN IN HEADER]
-
-  }
-
-
-
 }
 
 
