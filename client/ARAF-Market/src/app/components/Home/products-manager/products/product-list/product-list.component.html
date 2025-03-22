@@ -1,21 +1,39 @@
 <div class="row">
-  <div class="col-md-4 mb-4" *ngFor="let product of products">
-    <app-product [product]="product"></app-product>
+  <div *ngIf="isLoading" class="col-12 text-center mt-5">
+    <app-loading></app-loading>
+  </div>
+
+  <div class="col-sm-12 col-md-6 col-lg-4 mb-4" *ngFor="let product of products">
+    <app-product class="card product-card shadow-sm" [product]="product"></app-product>
+  </div>
+
+  <!-- No Products Found Message -->
+  <div *ngIf="products.length === 0 && !isLoading " class="col-12 text-center mt-5">
+
+    <div class="card shadow-sm p-5">
+      <i class="fas fa-box-open fa-4x text-muted mb-4"></i> <!-- Icon for no products -->
+      <h3>No Products Found</h3>
+      <p class="lead">We couldn't find any products matching your criteria.</p>
+    </div>
   </div>
 </div>
 
-<!-- Pagination controls -->
-<nav aria-label="Page navigation">
+<!-- Pagination Controls -->
+<nav *ngIf="!isLoading && products.length > 6"  aria-label="Page navigation" class="mt-5">
   <ul class="pagination justify-content-center">
     <li class="page-item" [class.disabled]="currentPage === 1" (click)="changePage(currentPage - 1)">
-      <a class="page-link" href="#">Previous</a>
+      <a class="page-link" href="#">
+        <i class="fas fa-chevron-left"></i> Previous
+      </a>
     </li>
     <li class="page-item" *ngFor="let page of totalPagesArray" [class.active]="page === currentPage"
       (click)="changePage(page)">
       <a class="page-link" href="#">{{ page }}</a>
     </li>
     <li class="page-item" [class.disabled]="currentPage === totalPages" (click)="changePage(currentPage + 1)">
-      <a class="page-link" href="#">Next</a>
+      <a class="page-link" href="#">
+        Next <i class="fas fa-chevron-right"></i>
+      </a>
     </li>
   </ul>
 </nav>

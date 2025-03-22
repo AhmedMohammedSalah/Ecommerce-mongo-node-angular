@@ -1,0 +1,157 @@
+/* Custom CSS for the product list */
+.product-card {
+  border: 1px solid #e9ecef;
+  /* Light border for the card */
+  border-radius: 8px;
+  /* Slightly rounded corners */
+  overflow: hidden;
+  /* Ensures the border-radius is applied */
+  transition: box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  /* Subtle shadow on hover */
+}
+
+.card-img-top {
+  border-radius: 8px 8px 0 0;
+  /* Rounded corners for the top of the image */
+  height: 180px;
+  /* Fixed height for consistency */
+  object-fit: cover;
+  /* Ensures the image covers the area */
+}
+
+.card-body {
+  padding: 16px;
+}
+
+.card-title {
+  font-size: 1rem;
+  /* Controlled font size */
+  font-weight: 600;
+  /* Semi-bold for emphasis */
+  margin-bottom: 8px;
+  color: #333;
+  /* Dark text for readability */
+}
+
+.card-text.text-danger {
+  color: #ff3a44 !important;
+  /* Primary color for price */
+  font-size: 1.1rem;
+  /* Slightly larger for emphasis */
+}
+
+.card-text.small {
+  font-size: 0.875rem;
+  /* Smaller text for description */
+  color: #666;
+  /* Muted color for secondary text */
+  margin-bottom: 12px;
+}
+
+.btn-primary {
+  background-color: #ff3a44;
+  /* Primary color for the button */
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  /* Slightly rounded corners */
+  font-size: 0.875rem;
+  /* Controlled font size */
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #e6333d;
+  /* Darker shade on hover */
+}
+
+.btn-outline-secondary {
+  border: 1px solid #ddd;
+  /* Light border for the button */
+  padding: 8px 16px;
+  border-radius: 4px;
+  /* Slightly rounded corners */
+  font-size: 0.875rem;
+  /* Controlled font size */
+  transition: background-color 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #f8f9fa;
+  /* Light background on hover */
+}
+
+/* Custom CSS for pagination */
+.pagination {
+  margin-top: 24px;
+}
+
+.page-item {
+  margin: 0 4px;
+  /* Controlled spacing between pagination items */
+}
+
+.page-link {
+  border: 1px solid #ddd;
+  /* Light border for pagination links */
+  border-radius: 4px;
+  /* Slightly rounded corners */
+  color: #333;
+  /* Dark text for readability */
+  padding: 6px 12px;
+  /* Controlled padding */
+  font-size: 0.875rem;
+  /* Controlled font size */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.page-link:hover {
+  background-color: #f8f9fa;
+  /* Light background on hover */
+  color: #ff3a44;
+  /* Primary color on hover */
+}
+
+.page-item.active .page-link {
+  background-color: #ff3a44;
+  /* Primary color for active page */
+  border-color: #ff3a44;
+  color: white;
+  /* White text for contrast */
+}
+
+.page-item.disabled .page-link {
+  color: #999;
+  /* Muted color for disabled links */
+  pointer-events: none;
+}
+/* No Products Found Message */
+.card.shadow-sm {
+  border: none;
+  border-radius: 10px;
+  /* Rounded corners */
+  background-color: #f8f9fa;
+  /* Light background */
+}
+
+.card.shadow-sm i {
+  color: #6c757d;
+  /* Muted color for the icon */
+}
+
+.card.shadow-sm h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  /* Dark text for the heading */
+}
+
+.card.shadow-sm p.lead {
+  font-size: 1.1rem;
+  color: #666;
+  /* Muted text for the message */
+}

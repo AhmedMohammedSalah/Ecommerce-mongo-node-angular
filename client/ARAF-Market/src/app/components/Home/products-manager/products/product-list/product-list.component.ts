@@ -1,17 +1,20 @@
 import { Component } from '@angular/core';
 import { ProductService } from '../../../../../services/API/product.service';
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { ProductComponent } from "./product/product.component";
+import { LoadingComponent } from "../../../../others/loading/loading.component";
 
 @Component({
   selector: 'app-product-list',
-  imports: [NgFor, ProductComponent],
+  imports: [NgIf, NgFor, ProductComponent, LoadingComponent],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css'
 })
 export class ProductListComponent {
   products: any[] = [];
   currentPage: number = 1;
+
+  isLoading: boolean = true; 
   pageSize: number = 6; // number of products per page
   totalProducts: number = 0;
   totalPages: number = 0;
@@ -20,12 +23,19 @@ export class ProductListComponent {
   constructor(private productService: ProductService) {}
 
   ngOnInit(): void {
+    this.isLoading = true;
     // Subscribe to any filter changes
     this.productService.products$.subscribe((data) => {
       this.products = data;
       this.totalProducts = data.length;
       this.updatePagination();
-    });
+      this.isLoading = false;
+    },
+      (error) => {
+        console.error('Error fetching products:', error);
+        this.isLoading = false; // Hide loading animation
+      }
+    );
 
     // Initial fetch of all products
     this.productService.fetchAllProducts();

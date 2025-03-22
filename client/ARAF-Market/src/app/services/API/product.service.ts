@@ -41,7 +41,7 @@ export class ProductService {
       this.fetchAllProducts();
       return;
     }
-    const url = `${this.baseUrl}/category/${this.categoryId}`;
+    const url = `http://127.0.0.1:3000/products/category/${this.categoryId}`;
     this.http.get<any[]>(url).subscribe((data) => {
       this.allProducts = data;
       this.productsSubject.next(data);
@@ -88,20 +88,24 @@ export class ProductService {
 
   // 5) Get product by ID
   getProductById(id: string): Observable<any> {
-    const url = `${this.baseUrl}/${id}`;
+    const url = `http://127.0.0.1:3000/product/${id}`;
     return this.http.get<any>(url);
   }
 
   // 6) (Optional) getCategories
   getCategories(): Observable<any> {
     // If you have an endpoint for categories, call it
-    // e.g. return this.http.get('http://127.0.0.1:3000/categories');
+    // e.g.
+    return this.http.get('http://127.0.0.1:3000/categories');
     // Otherwise, return a static list for demonstration:
-    return new BehaviorSubject([
-      { id: 'smartphone', name: 'Smartphone' },
-      { id: 'computer', name: 'Computer' },
-      { id: 'camera', name: 'Camera & Photo' },
-      // ...
-    ]).asObservable();
+    // return new BehaviorSubject([
+    //   { id: 'smartphone', name: 'Smartphone' },
+    //   { id: 'computer', name: 'Computer' },
+    //   { id: 'camera', name: 'Camera & Photo' },
+    //   // ...
+    // ]).asObservable();
+  }
+  getProductsByIds(productIds: string[]): Observable<any[]> {
+    return this.http.post<any[]>('http://127.0.0.1:3000/products/by-ids', { ids: productIds });
   }
 }

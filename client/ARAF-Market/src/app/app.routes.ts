@@ -7,6 +7,8 @@ import { ProfileComponent } from './components/customer/profile/profile.componen
 import { loginedGuard } from './guards/logined.guard';
 import { UnauthorizedComponent } from './components/others/unauthorized/unauthorized.component';
 import { SellerProfileComponent } from './components/seller/seller-profile/seller-profile.component';
+import { ProductDetailsComponent } from './components/Home/products-manager/products/product-details/product-details.component';
+import { WhichlistComponent } from './components/Home/whichlist/whichlist.component';
 
 export const routes: Routes = [
   {
@@ -31,6 +33,7 @@ export const routes: Routes = [
     title: "profile",
     canActivate:[loginedGuard]
   },
+
   {
     path: 'unauthorized',
     component: UnauthorizedComponent,
@@ -41,6 +44,16 @@ export const routes: Routes = [
     component: SellerProfileComponent,
     title: "Seller Dashboard"
 
+  },
+    {
+    path: 'product-details/:id',
+    component: ProductDetailsComponent,
+    title: "product-details",
+  },
+    {
+    path: 'whichlist',
+    component: WhichlistComponent,
+    title: "whichlist",
   },
   {
 			path:'**' ,

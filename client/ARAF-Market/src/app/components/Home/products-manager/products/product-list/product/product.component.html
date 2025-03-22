@@ -1,34 +1,48 @@
-<div class="product-card">
-  <!-- Discount Badge (static example: -11%) -->
-  <div class="discount-badge">-11%</div>
+<div class="card product-card shadow-sm">
+  <!-- Discount Badge -->
+  <div class="discount-badge" *ngIf="product.discount">-{{ product.discount }}%</div>
 
   <!-- Product Image -->
-  <img [src]="'http://127.0.0.1:3000/' + product.imagePath" alt="{{ product.productName }}" class="product-img" />
+  <img [src]="'http://127.0.0.1:3000/' + product.imagePath" alt="{{ product.productName }}" class="card-img-top" />
 
-  <!-- Product Name -->
-  <h5 class="product-title">{{ product.productName }}</h5>
+  <!-- Card Body -->
+  <div class="card-body">
+    <!-- Product Name -->
+    <h5 class="card-title">{{ product.productName }}</h5>
 
-  <!-- Prices (new price & old price) -->
-  <div class="price-section">
-    <span class="new-price">${{ product.price }}</span>
-    <span class="old-price">$85.00</span>
-  </div>
+    <!-- Prices -->
+    <div class="price-section">
+      <span class="new-price text-danger fw-bold">${{ product.price }}</span>
+      <span *ngIf="product.discount" class="old-price text-muted text-decoration-line-through ms-2">
+        ${{ product.price + (product.price * product.discount / 100) }}
+      </span>
+    </div>
 
-  <!-- Action Buttons (heart, add to cart, search) -->
-  <div class="action-buttons">
-    <!-- Wishlist Button -->
-    <button class="wishlist-btn" (click)="addToWishList(product)">
-      <i class="fa fa-heart"></i>
-    </button>
+    <!-- Product Description -->
+    <p class="card-text small text-muted">{{ product.description }}</p>
 
-    <!-- Add to Cart Button -->
-    <button class="add-to-cart-btn" (click)="addToCart(product)">
-      Add to cart
-    </button>
+    <!-- Action Buttons -->
+    <div class="action-buttons d-flex justify-content-between align-items-center">
+      <!-- Wishlist Button -->
+      <button class="btn" [ngClass]="{
+          'btn-outline-secondary': !isInWishlist(product._id),
+          'btn-outline-danger': isInWishlist(product._id)
+        }" (click)="addToWhichlist(product)">
+        <i [ngClass]="{
+            'far fa-heart': !isInWishlist(product._id),
+            'fas fa-heart': isInWishlist(product._id)
+          }"></i>
+      </button>
+      <!-- Add to Cart Button -->
+      <button class="btn btn-primary" (click)="addToCart(product)">
+        <i class="fas fa-shopping-cart me-2"></i> Add to Cart
+      </button>
 
-    <!-- View (Search) Button -->
-    <button class="view-btn" [routerLink]="['/product-details', product._id]">
-      <i class="fa fa-search"></i>
-    </button>
+      <!-- View (Search) Button -->
+      <button class="btn btn-outline-secondary"
+      [routerLink]="['/product-details', product._id]">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
   </div>
 </div>

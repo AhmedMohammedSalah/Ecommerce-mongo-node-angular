@@ -18,10 +18,8 @@ export class CategoryComponent {
   }
 
   getCategories() {
-    // If you have an endpoint for categories, fetch them
-    // or define them statically for now
     this.productService.getCategories().subscribe((data: any) => {
-      this.categories = data;
+      this.categories = data.categories;
     });
   }
 

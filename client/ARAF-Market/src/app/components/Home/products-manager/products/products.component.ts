@@ -3,6 +3,7 @@ import { CategoryComponent } from "./category/category.component";
 import { SearchComponent } from "./search/search.component";
 import { PriceFilterComponent } from "./price-filter/price-filter.component";
 import { ProductListComponent } from "./product-list/product-list.component";
+import { ProductComponent } from "./product-list/product/product.component";
 
 @Component({
   selector: 'app-products',
