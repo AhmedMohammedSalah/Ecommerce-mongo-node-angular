@@ -1,0 +1,87 @@
+<form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="container p-0 ">
+
+    <!-- clickable Card as File Input -->
+    <div class="card w-100 p-0" style="cursor: pointer;" (click)="fileInput.click()">
+        <div class="card-img-top d-flex justify-content-center align-items-center overflow-hidden"
+            [ngStyle]="{'background': imagePreview ? 'transparent' : `url('http://thepatternlibrary.com/img/ao.gif')`, 'height': '250px'}">
+
+            
+            @if (imagePreview) {
+                <img [src]="imagePreview" class="img-fluid"
+                    style="max-width: 100%; max-height: 100%; object-fit: contain;" />
+            } @else {
+                <i class="fa-solid fa-upload text-white fa-4x"></i>
+            }
+        </div>
+    </div>
+
+    <div class="container p-3">
+    <!-- Hidden File Input : the only way to make div as input type file -->
+    <input type="file" #fileInput [hidden]="true" (change)="onFileSelected($event)" />
+        
+
+    <!-- category -->
+    <div class="mt-3 ">
+        <label for="categorySelect" class="form-label fw-bold">Category</label>
+        <select class="form-select" formControlName="category" id="categorySelect">
+        <option value="" disabled selected>Select a category</option>
+        <option>
+            @for (c of catNames; track $index) {
+                {{c}}
+            }
+        </option>
+        </select>
+    </div>
+  
+      
+
+    <!-- Product Details -->
+    <div class="mt-3">
+      <label class="form-label fw-bold" for="productName">Product Name:</label>
+      <input type="text" formControlName="productName" class="form-control" placeholder="type here...">
+    </div>
+  
+    <div class="mt-3">
+      <label class="form-label fw-bold" for="productDesc">Product Description:</label>
+      <textarea id="productDesc" formControlName="productDesc" class="form-control" placeholder="write desciption for the product..."></textarea>
+    </div>
+
+
+
+    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-3">
+
+        <!-- num of stocks -->
+        <div class="col mt-3 mb-3 col-md-12">
+            <label class="form-label fw-bold" for="prodcutStock">Number of stocks:</label>
+            <input type="number" formControlName="stocks" class="form-control">
+        </div>
+    
+        <!-- price -->
+        <div class="col mt-3 mb-3 col-md-6">
+            <label class="form-label fw-bold" for="productPrice">Price:</label>
+            <input type="number" formControlName="productPrice" class="form-control">
+        </div>
+    
+        <!-- discount -->
+        <div class="col mt-3 mb-3 col-md-6">
+            <label class="form-label fw-bold" for="prodcutDiscount">Discount:</label>
+            <input type="number" formControlName="productDiscount" class="form-control">
+        </div>
+    </div>
+    
+
+
+  
+
+    <!-- FOOTER -->
+    <div class="modal-footer pe-0">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+    </div>
+</div>
+
+  </form>
+
+
+
+  

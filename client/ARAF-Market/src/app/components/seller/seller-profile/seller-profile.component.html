@@ -27,18 +27,26 @@
 
         <!-- Products -->
         <div class="col-lg-4 col-md-6 mb-3">
+
             <div class="card shadow-lg">
                 <div class="card-header bg-success text-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <h4 class="mb-0">Products <i class="fa-solid fa-tag" style="color: #ecdbba;"></i></h4>
-                        <button class="btn btn-danger">ADD</button>
+
+                        <!-- click appear add product modal  -->
+                        <button 
+                        class="btn btn-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#addProductModal"
+                        >ADD</button>
                     </div>
                 </div>
+
                 <div class="card-body text-center larger-text">
                     @if (sellerData?.products?.length === 0) {
                         <p class="text-muted">No Products Added Yet</p>
                     }
-                </div>
+                </div> 
             </div>
         </div>
 
@@ -59,3 +67,39 @@
         </div>
     </div>
 </div>
+
+
+<!----------------------MODALS------------------------->
+
+
+
+<div class="modal modal-md fade p-0"
+    id="addProductModal" 
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false">
+
+    <!-- DIALOG -->
+    <div class="modal-dialog p-0">
+        
+        <!-- CONTENT -->
+        <div class="modal-content p-0">
+            
+            <!-- HEADER -->
+            <!-- <div class="modal-header">
+                <h1 class="modal-title fs-5" id="addProductModalLabel">ADD PRODUCT</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div> -->
+
+            <!-- BODY -->
+            <div class="modal-body p-0">
+                <app-add-product-form></app-add-product-form>
+            </div>
+
+        </div>
+
+    </div>
+
+  </div>
+  
