@@ -14,15 +14,15 @@ const cartRoutes = Router();
 // [AMS] => :id means session id
 cartRoutes.post("/cart/:sessionId", createCart);
 
+cartRoutes.post( "/addtocart", addItemToCart );
+cartRoutes.post("/removefromcart", removeItemFromCart);
+cartRoutes.put("/cart/", updateCart);
 // Get cart by userId
 cartRoutes.get("/cart/",tokenVerify, getCartByUserId);
 
 // Update cart
-cartRoutes.put("/cart/", updateCart);
 
 cartRoutes.put( "/cart/set-user/", tokenVerify, setUserToCart );
 
-cartRoutes.post( "/addtocart", addItemToCart );
 
-cartRoutes.post("/removefromcart", removeItemFromCart);
 export default cartRoutes;

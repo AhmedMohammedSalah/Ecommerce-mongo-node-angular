@@ -47,12 +47,12 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // [AMS] 🚀 using of all routers
 // ---------without token verify
 app.get("", (req, res) => res.send("Hello"));
-app.use(productRoutes);
 app.use(authRouter);
+app.use(categoryRouter);
+app.use(productRoutes);
+//------------------------------
 app.use(cartRoutes);
 app.use(orderRoutes);
-//------------------------------
-app.use(categoryRouter);
 app.use(promoRouter);
 app.use(reviewRouter);
 app.use(userRouter);

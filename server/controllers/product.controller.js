@@ -291,3 +291,12 @@ export const softDelProduct = async (req, res) => {
   
 };
 */
+ export async function getProductsByIds(req, res) {
+   const { ids } = req.body;
+   try {
+     const products = await productModel.find({ _id: { $in: ids } });
+     res.json(products);
+   } catch (error) {
+     res.status(500).json({ message: "Error fetching products" });
+   }
+ }

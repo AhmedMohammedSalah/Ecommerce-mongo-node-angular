@@ -10,12 +10,12 @@ import { tokenVerify } from "../middleware/tokenVerify.js";
 
 const categoryRouter = Router();
 
-// [AMS] 🪪 using of verify token on all routes
-categoryRouter.use(tokenVerify);
-categoryRouter.post("/categories", createCategory);
 categoryRouter.get("/categories", getAllCategories);
 categoryRouter.get("/categories/:id", getCategoryById);
-categoryRouter.put("/categories/:id", updateCategory);
-categoryRouter.delete("/categories/:id", deleteCategory);
+
+// [AMS] 🪪 using of verify token on all routes
+categoryRouter.post("/categories",tokenVerify, createCategory);
+categoryRouter.put("/categories/:id",tokenVerify, updateCategory);
+categoryRouter.delete("/categories/:id",tokenVerify, deleteCategory);
 
 export default categoryRouter;
