@@ -5,12 +5,14 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule  }
 import { Router } from '@angular/router';
 import { RegisterService } from '../../../services/API/register/register.service';
 import { RegisteredUser } from '../../../types/regijster.interface';
+import { HeaderComponent } from "../../Home/header/header.component";
+import { FooterComponent } from "../../Home/footer/footer.component";
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgIf, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, NgIf, FormsModule, HeaderComponent, FooterComponent],
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
@@ -18,7 +20,7 @@ export class RegisterComponent {
   submitted = false;
   isSubmitting = false;
   errorMessage: string = '';
-  successMessage: string = ''; 
+  successMessage: string = '';
 
   constructor(private fb: FormBuilder, private router: Router, private registerService: RegisterService) {
     this.registerForm = this.fb.group({
@@ -51,7 +53,7 @@ export class RegisterComponent {
 
     this.isSubmitting = true;
     this.errorMessage = '';
-    this.successMessage = ''; 
+    this.successMessage = '';
 
     const formData: RegisteredUser = {
       name: this.registerForm.value.name,

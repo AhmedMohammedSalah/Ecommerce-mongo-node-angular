@@ -10,12 +10,14 @@ import { LoginService } from '../../../services/API/login/login.service';
 import { CommonModule } from '@angular/common';
 import { LoginUser } from '../../../types/login.interface';
 import { AuthServiceService } from '../../../services/DATA/auth-service.service';
+import { HeaderComponent } from "../../Home/header/header.component";
+import { FooterComponent } from "../../Home/footer/footer.component";
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, HeaderComponent, FooterComponent],
 })
 
 export class LoginComponent {

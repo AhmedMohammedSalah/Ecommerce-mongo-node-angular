@@ -19,7 +19,7 @@
 </div>
 
 <!-- Pagination Controls -->
-<nav *ngIf="!isLoading && products.length > 6"  aria-label="Page navigation" class="mt-5">
+<nav aria-label="Page navigation" class="mt-5">
   <ul class="pagination justify-content-center">
     <li class="page-item" [class.disabled]="currentPage === 1" (click)="changePage(currentPage - 1)">
       <a class="page-link" href="#">
