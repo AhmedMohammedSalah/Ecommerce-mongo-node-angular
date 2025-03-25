@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { WishlistService } from '../../../services/DATA/WhichList/whichlist.service';
 import { ProductService } from '../../../services/API/product.service';
-import { CurrencyPipe, NgForOf, NgIf } from '@angular/common';
+import { CommonModule, NgForOf, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { LoadingComponent } from "../../others/loading/loading.component";
 
 @Component({
   selector: 'app-whichlist',
-  imports: [NgIf, NgForOf, CurrencyPipe, RouterLink, LoadingComponent],
+  imports: [NgIf, NgForOf, RouterLink, LoadingComponent, CommonModule],
   templateUrl: './whichlist.component.html',
   styleUrl: './whichlist.component.css'
 })

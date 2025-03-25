@@ -9,6 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-product',
+  standalone: true,
   imports: [RouterLink, NgClass,CommonModule],
   templateUrl: './product.component.html',
   styleUrl: './product.component.css'

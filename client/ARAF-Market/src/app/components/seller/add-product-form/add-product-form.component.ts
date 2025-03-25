@@ -23,6 +23,12 @@ export class AddProductFormComponent implements OnInit {
     this.getCategories();
   }
 
+
+  // get the formControls directly 
+  get formControls(){
+    return this.productForm.controls
+  }
+
   // fetch categories
   getCategories(){
     this.http.get <CategoryResponse>('http://127.0.0.1:3000/categories').subscribe( res => {
@@ -36,15 +42,17 @@ export class AddProductFormComponent implements OnInit {
     const req = Validators.required;
     const min = Validators.minLength;
     const max = Validators.maxLength;
+    const minN = Validators.min;
+    const maxN = Validators.max;
 
     this.productForm = fb.group({
       productImage: [null, [req]],
       category:       [''],
-      productName:    ['', [req, min(2), max(40)]],
-      productDesc:    ['', [req, min(2), max(100)]],
-      stocks:         [0, min(0)],
-      productPrice:   [0, [req, min(0)]],
-      productDiscount:[0,[min(0), max(100)]]
+      productName:    ['', [req, min(3), max(40)]],
+      productDesc:    ['', [req, min(20), max(100)]],
+      stocks:         [0, minN(0)],
+      productPrice:   [0, [req, minN(0)]],
+      productDiscount:[0,[minN(0), maxN(100)]]
     });
   }
 
@@ -71,8 +79,9 @@ export class AddProductFormComponent implements OnInit {
 
   /** Submit the form */
   onSubmit() {
+
     const token = localStorage.getItem('token');
-  
+
     if (!token) {
       console.error("Token is missing!");
       return;
@@ -84,6 +93,9 @@ export class AddProductFormComponent implements OnInit {
     });
   
     const catName = this.productForm.get('category')?.value;
+    
+    // check category choosed
+    if(!catName){return console.log("category is required")}
     const catId = this.categories?.find(c => c.name == catName)?._id;
   
     const data = {
@@ -94,11 +106,13 @@ export class AddProductFormComponent implements OnInit {
       "stockQuantity":  this.productForm.get("stocks")?.value,
       "categoryId": catId || ''
     };
+
   
     const formData = new FormData();
     formData.append("data", JSON.stringify(data));
     formData.append("productImg", this.productForm.get("productImage")?.value);
   
+
     this.http.post('http://127.0.0.1:3000/products', formData, { headers })
       .subscribe(response => {
         this.response = response;
@@ -111,6 +125,7 @@ export class AddProductFormComponent implements OnInit {
           }, 3000);
         }
       });
+
   }
     
 

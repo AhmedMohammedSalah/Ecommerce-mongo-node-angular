@@ -6,6 +6,7 @@ import { LoadingComponent } from "../../../../others/loading/loading.component";
 
 @Component({
   selector: 'app-product-list',
+  standalone: true,
   imports: [NgIf, NgFor, ProductComponent, LoadingComponent],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css'
