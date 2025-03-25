@@ -71,44 +71,22 @@
     
 
 
-  
+    <div class="container">
+        <div class="row">
+   
+            <!-- Submit Button -->
+            <div class="col-12 col-lg-4">
+                <button type="submit" class="btn btn-primary w-100">Save changes</button>
+            </div>
 
-    <!-- FOOTER -->
-    <button type="submit" class="btn btn-primary">Save changes</button>
+            <!-- Message -->
+            <div class="col-12  col-lg-8 p-2 text-center">
+                <span class="text-success fw-bold">{{response.msg}}</span>
+                <span class="text-danger fw-bold">{{response.err}}</span>
+            </div>
 
-    </div>
-
-  
-</form>
-
-
-
-
-@if(showModal=="success"){
-
-    <div class="modal" tabindex="-1">
-
-        <!-- DIALOG -->
-        <div class="modal-dialog">
-            
-            <!-- CONTENT -->
-            <div class="modal-content">
-    
-                <!-- HEADER -->
-                <div class="modal-header">
-                    <h5 class="modal-title">SUCCESS</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-    
-                <!-- BODY -->
-                <div class="modal-body">
-                    <p>{{successMsg}}</p>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-    
-          </div>
         </div>
-      </div>
-        
-}
+    </div>
+    </div>
+</form>
 
