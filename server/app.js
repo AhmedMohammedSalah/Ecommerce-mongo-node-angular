@@ -21,7 +21,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 // [AMS] 😒 naming ports
-const senuPort = 3000;
+const senuPort = 3030;
 const defaultPort = 3000;
 
 dbConnection();
@@ -33,7 +33,7 @@ app.use(
   cors({
     origin: "http://localhost:4200", // Allow requests from this origin
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // Allowed HTTP methods
-    allowedHeaders: ["Content-Type", "Authorization", "token"], // Allow the 'token' header
+    allowedHeaders: ["Content-Type", "Authorization", "token", "enctype"], // Allow the 'token' header
   })
 );
 app.options("*", cors()); // Handle preflight requests for all routes
@@ -61,10 +61,8 @@ app.use(customerRouter);
 
 app.use(paymentRouter);
 
-app.listen(senuPort, () => {
+
+
+app.listen(defaultPort, () => {
   console.log(`Server is running on port`);
 });
-
-// app.listen(defaultPort, () => {
-//   console.log(`Server is running on port`);
-// });

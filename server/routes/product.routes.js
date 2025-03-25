@@ -20,11 +20,8 @@ import {
 //#endregion
 
 //#region Middleware
-import { validateProduct, verifyUser } from "../middleware/addProduct_valid.js";
-import {
-  checkProductExist,
-  validateUpdatedProduct,
-} from "../middleware/updateProduct_valid.js";
+import { validateProduct, verifyUser }              from "../middleware/addProduct_valid.js";
+import {checkProductExist, validateUpdatedProduct}  from "../middleware/updateProduct_valid.js";
 
 //#endregion
 //================================================================================================
@@ -42,9 +39,6 @@ productRoutes.post("/products/by-ids",getProductsByIds);
 // get seller its own products
 productRoutes.get("/products/admin/", getAdminProducts);
 productRoutes.get("/products/seller/:sellerId?", getSellerProducts);
-
-// get product by id (endpoint without "s" 😉)
-productRoutes.get("/product/:id?", getProductById);
 
 // get product by id (endpoint without "s" 😉)
 productRoutes.get("/product/:id?", getProductById);
