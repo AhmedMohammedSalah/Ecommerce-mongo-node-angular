@@ -17,8 +17,7 @@ export class AddProductFormComponent implements OnInit {
   productForm: FormGroup;
   categories : Category[] | null = null;
   catNames : string[] = [];
-  successMsg : any = '';
-  showModal : string = '';
+  response : any = [];
 
   ngOnInit(){
     this.getCategories();
@@ -41,11 +40,11 @@ export class AddProductFormComponent implements OnInit {
     this.productForm = fb.group({
       productImage: [null, [req]],
       category:       [''],
-      productName:    ['speaker', [req, min(2), max(40)]],
-      productDesc:    ['this is the most speaker I liked ever', [req, min(2), max(100)]],
-      stocks:         [20, min(0)],
-      productPrice:   [100, [req, min(0)]],
-      productDiscount:[5,[min(0), max(100)]]
+      productName:    ['', [req, min(2), max(40)]],
+      productDesc:    ['', [req, min(2), max(100)]],
+      stocks:         [0, min(0)],
+      productPrice:   [0, [req, min(0)]],
+      productDiscount:[0,[min(0), max(100)]]
     });
   }
 
@@ -70,14 +69,10 @@ export class AddProductFormComponent implements OnInit {
   }
 
 
-
-
-  /** 📨 Submit the form */
+  /** Submit the form */
   onSubmit() {
-    // Get the token from localStorage
     const token = localStorage.getItem('token');
   
-    // Ensure token is not null
     if (!token) {
       console.error("Token is missing!");
       return;
@@ -87,42 +82,37 @@ export class AddProductFormComponent implements OnInit {
       'token': token,
       'enctype': 'multipart/form-data'
     });
-    
   
-    // Get category ID
     const catName = this.productForm.get('category')?.value;
     const catId = this.categories?.find(c => c.name == catName)?._id;
   
-    // Create the data object
     const data = {
-      "productName": this.productForm.get("productName")?.value,
-      "description": this.productForm.get("productDesc")?.value, 
-      "price": this.productForm.get("productPrice")?.value,
-      "discount": this.productForm.get("productDiscount")?.value,
-      "stockQuantity": this.productForm.get("stocks")?.value,
+      "productName":    this.productForm.get("productName")?.value,
+      "description":    this.productForm.get("productDesc")?.value, 
+      "price":          this.productForm.get("productPrice")?.value,
+      "discount":       this.productForm.get("productDiscount")?.value,
+      "stockQuantity":  this.productForm.get("stocks")?.value,
       "categoryId": catId || ''
     };
   
-    // Create FormData
     const formData = new FormData();
-    formData.append("data", JSON.stringify(data)); // Convert object to string
+    formData.append("data", JSON.stringify(data));
     formData.append("productImg", this.productForm.get("productImage")?.value);
-
-    console.log("Token being sent:", token);
-    console.log("Headers:", headers);
-
   
-    // Send the request
     this.http.post('http://127.0.0.1:3000/products', formData, { headers })
       .subscribe(response => {
-        if('msg' in response){
-          this.successMsg =  response.msg;
-          this.showModal = "success";
+        this.response = response;
+        
+        if ("msg" in response) {
+          setTimeout(() => { 
+            this.productForm.reset();
+            this.imagePreview = null;
+            this.response.msg = '';
+          }, 3000);
         }
-
       });
   }
-  
+    
 
 
 
