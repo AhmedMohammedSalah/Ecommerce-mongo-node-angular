@@ -41,22 +41,24 @@ app.options("*", cors()); // Handle preflight requests for all routes
 // [AMS] 🚀 using swagger for documentation api
 import fs from "fs";
 import { paymentRouter } from "./routes/payment.routes.js";
+import { getSeller } from "./controllers/seller.controller.js";
 const swaggerFilePath = path.resolve("./utils/swagger-output.json");
 const swaggerDocument = JSON.parse(fs.readFileSync(swaggerFilePath, "utf-8"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // [AMS] 🚀 using of all routers
+app.get("/user/seller/:sellerId", getSeller);
 // ---------without token verify
 app.get("", (req, res) => res.send("Hello"));
 app.use(authRouter);
 app.use(categoryRouter);
 app.use(productRoutes);
-//------------------------------
 app.use(cartRoutes);
+//------------------------------
+app.use(sellerRoutes);
 app.use(orderRoutes);
 app.use(promoRouter);
 app.use(reviewRouter);
 app.use(userRouter);
-app.use(sellerRoutes);
 app.use(customerRouter);
 
 app.use(paymentRouter);

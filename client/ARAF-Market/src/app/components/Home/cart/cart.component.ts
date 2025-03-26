@@ -2,57 +2,96 @@ import { CurrencyPipe, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { CartService } from '../../../services/API/cart.service';
 import { AuthServiceService } from '../../../services/DATA/auth-service.service';
+import { ProductService } from '../../../services/API/product.service';
+import { CartItemComponent } from './cart-item/cart-item.component';
+import { Subject, takeUntil } from 'rxjs';
+import { HeaderComponent } from "../header/header.component";
+import { FooterComponent } from "../footer/footer.component";
 
 @Component({
   selector: 'app-cart',
-  imports: [NgIf,NgFor,CurrencyPipe],
+  imports: [NgIf, NgFor, CurrencyPipe, CartItemComponent, HeaderComponent, FooterComponent],
   templateUrl: './cart.component.html',
-  styleUrl: './cart.component.css'
+  styleUrl: './cart.component.css',
 })
 export class CartComponent {
   cartItems: any[] = [];
   loading = true;
+  productsIds: any[] = [];
+  products: any[] = [];
 
+  private destroy$ = new Subject<void>();
   constructor(
     public cartService: CartService,
-    public authService: AuthServiceService
+    public authService: AuthServiceService,
+    public productService: ProductService
   ) {}
 
   ngOnInit(): void {
     this.loadCart();
   }
 
-  loadCart() {
-    this.cartService.getCart().subscribe({
-      next: (response: any) => {
-        this.cartItems = response.items;
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error loading cart:', err);
-        this.loading = false;
-      }
-    });
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  updateQuantity(item: any, newQuantity: number) {
-    if (newQuantity > 0 && newQuantity <= item.stockQuantity) {
-      this.cartService.updateQuantity(item.productId, newQuantity).subscribe({
-        next: () => {
-          item.quantity = newQuantity;
+  loadCart(): void {
+    this.cartService
+      .getCart()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: any) => {
+          this.cartItems = response.items;
+          this.loadProducts();
+          this.loading = false;
         },
-        error: (err) => console.error('Update failed:', err)
+        error: (err) => {
+          console.error('Error loading cart:', err);
+          this.loading = false;
+        },
       });
-    }
   }
 
-  removeItem(productId: string) {
-    this.cartService.removeFromCart(productId).subscribe({
-      next: () => {
-        this.cartItems = this.cartItems.filter(item => item.productId !== productId);
-      },
-      error: (err) => console.error('Remove failed:', err)
-    });
+  private loadProducts(): void {
+    if (!this.cartItems.length) return;
+
+    const productIds = this.cartItems.map((item) => item.productId);
+
+    this.productService
+      .getProductsByIds(productIds)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (products: any[]) => {
+          this.products = products;
+        },
+        error: (err) => {
+          console.error('Error loading cart products:', err);
+        },
+      });
+  }
+
+  getProduct(productId: string): any | undefined {
+    return this.products.find((prod) => prod._id === productId);
+  }
+
+  handleItemRemoved(productId: string): void {
+    this.cartItems = this.cartItems.filter(
+      (item) => item.productId !== productId
+    );
+    this.products = this.products.filter((prod) => prod._id !== productId);
+  }
+  calculateTotal(): number {
+    if (!this.cartItems.length) return 0;
+
+    return this.cartItems.reduce((total, item) => {
+      return total + item.price * item.quantity;
+    }, 0);
+  }
+  calculateSubtotal(): number {
+    return this.cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
   }
 }
-

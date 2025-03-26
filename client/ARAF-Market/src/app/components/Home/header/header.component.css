@@ -114,7 +114,7 @@
   position: relative;
   display: inline-block;
   background-color: #ffffff;
-  color: #000000;
+  color: #dc3545;
   padding: 15px;
   border-radius: 50%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -123,10 +123,13 @@
 }
 
 .bag-icon:hover {
-  background-color: #000000;
+  background-color: #dc3545;
   color: #ffffff;
-  transform: scale(1.1);
-  /* Scale up on hover */
+  transform: scale(1.2);
+  -webkit-transform: scale(1.2);
+  -moz-transform: scale(1.2);
+  -ms-transform: scale(1.2);
+  -o-transform: scale(1.2);
 }
 
 .bag-icon .badge {
@@ -161,3 +164,9 @@
 .bag-icon.animated {
   animation: bounce 1s ease-in-out;
 }
+/* 
+
+
+
+
+*/

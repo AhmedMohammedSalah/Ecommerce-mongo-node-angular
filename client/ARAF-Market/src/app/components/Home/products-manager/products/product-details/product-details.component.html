@@ -1,3 +1,4 @@
+<app-header></app-header>
 <div class="container mt-5">
   <div *ngIf="isLoading" class="loading-grid">
     <div class="grid">
@@ -5,25 +6,37 @@
     </div>
     <p>Loading product details...</p>
   </div>
-  @if (!isLoading && product;)
-  {
-    <!-- Product Details -->
+  @if (!isLoading && product;) {
+  <!-- Product Details -->
   <div *ngIf="!isLoading && product">
     <div class="row">
       <!-- Product Image -->
       <div class="col-md-6">
         <div class="product-image-container">
-          <img [src]="'http://127.0.0.1:3000/' + product.imagePath" class="img-fluid rounded"
-            alt="{{ product.productName }}" />
-          <div *ngIf="product.discount" class="discount-badge">-{{ product.discount }}%</div>
+          <img
+            [src]="'http://127.0.0.1:3000/' + product.imagePath"
+            class="img-fluid rounded"
+            alt="{{ product.productName }}"
+          />
+          <div *ngIf="product.discount" class="discount-badge">
+            -{{ product.discount }}%
+          </div>
         </div>
         <!-- Add Review Form (if logged in) -->
         <div class="add-review-section mt-5" *ngIf="isLoggedIn">
           <h4>Add a Review</h4>
           <form (ngSubmit)="submitReview()">
             <div class="mb-3">
-              <label for="rating" class="form-label"><strong>Rating:</strong></label>
-              <select id="rating" class="form-control" [(ngModel)]="newReview.rating" name="rating" required>
+              <label for="rating" class="form-label"
+                ><strong>Rating:</strong></label
+              >
+              <select
+                id="rating"
+                class="form-control"
+                [(ngModel)]="newReview.rating"
+                name="rating"
+                required
+              >
                 <option value="1">1 Star</option>
                 <option value="2">2 Stars</option>
                 <option value="3">3 Stars</option>
@@ -32,9 +45,17 @@
               </select>
             </div>
             <div class="mb-3">
-              <label for="reviewTxt" class="form-label"><strong>Review:</strong></label>
-              <textarea id="reviewTxt" class="form-control" [(ngModel)]="newReview.comment" name="reviewTxt" rows="4"
-                required></textarea>
+              <label for="reviewTxt" class="form-label"
+                ><strong>Review:</strong></label
+              >
+              <textarea
+                id="reviewTxt"
+                class="form-control"
+                [(ngModel)]="newReview.comment"
+                name="reviewTxt"
+                rows="4"
+                required
+              ></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Submit Review</button>
           </form>
@@ -49,20 +70,32 @@
         <h1 class="product-title">{{ product.productName }}</h1>
 
         <!-- Rating -->
-        <div class="rating mb-3" *ngIf="product.reviews && product.reviews.length > 0">
+        <div
+          class="rating mb-3"
+          *ngIf="product.reviews && product.reviews.length > 0"
+        >
           <strong>Rating:</strong>
           <span class="stars">
-            <i *ngFor="let star of getStars(averageRating)" [class.fas]="star === 1" [class.far]="star === 0"
-              class="fa-star text-warning"></i>
+            <i
+              *ngFor="let star of getStars(averageRating)"
+              [class.fas]="star === 1"
+              [class.far]="star === 0"
+              class="fa-star text-warning"
+            ></i>
           </span>
-          <span class="ms-2">({{ averageRating | number: '1.1-1' }})</span>
+          <span class="ms-2">({{ averageRating | number : "1.1-1" }})</span>
         </div>
 
         <!-- Price -->
         <div class="price-section mb-3">
-          <span class="new-price text-danger fw-bold">${{ product.price }}</span>
-          <span *ngIf="product.discount" class="old-price text-muted text-decoration-line-through ms-2">
-            ${{ product.price + (product.price * product.discount / 100) }}
+          <span class="new-price text-danger fw-bold"
+            >${{ product.price }}</span
+          >
+          <span
+            *ngIf="product.discount"
+            class="old-price text-muted text-decoration-line-through ms-2"
+          >
+            ${{ product.price + (product.price * product.discount) / 100 }}
           </span>
         </div>
 
@@ -72,17 +105,25 @@
         <!-- Availability -->
         <div class="availability mb-3">
           <strong>Availability:</strong>
-          <span class="text-success fw-bold" *ngIf="product.stockQuantity > 0"> In stock</span>
-          <span class="text-danger fw-bold" *ngIf="product.stockQuantity === 0"> Out of stock</span>
+          <span class="text-success fw-bold" *ngIf="product.stockQuantity > 0">
+            In stock</span
+          >
+          <span class="text-danger fw-bold" *ngIf="product.stockQuantity === 0">
+            Out of stock</span
+          >
         </div>
-
-
 
         <!-- Quantity Input -->
         <div class="quantity-input mb-4">
           <label for="quantity"><strong>Qty:</strong></label>
-          <input type="number" id="quantity" [(ngModel)]="quantity" class="form-control w-25" min="1"
-            [max]="product.stockQuantity" />
+          <input
+            type="number"
+            id="quantity"
+            [(ngModel)]="quantity"
+            class="form-control w-25"
+            min="1"
+            [max]="product.stockQuantity"
+          />
         </div>
 
         <!-- Action Buttons -->
@@ -108,40 +149,110 @@
         </div>
 
         <!-- Additional Product Details -->
-        <div class="additional-details mt-4">
-          <h4>Product Details</h4>
-          <ul class="list-unstyled">
-            <li><strong>Category ID:</strong> {{ product.categoryId }}</li>
-            <li><strong>Seller ID:</strong> {{ product.sellerId }}</li>
-            <li><strong>Stock Quantity:</strong> {{ product.stockQuantity }}</li>
-            <li><strong>Created At:</strong> {{ product.createdAt | date: 'medium' }}</li>
-            <li><strong>Updated At:</strong> {{ product.updatedAt | date: 'medium' }}</li>
-          </ul>
+        <div class="product-details card border-0 shadow-sm mt-4">
+          <div class="card-header bg-danger text-white">
+            <h4 class="mb-0">
+              <i class="fas fa-info-circle me-2"></i>Product Details
+            </h4>
+          </div>
+          <div class="card-body">
+            <div class="details-grid">
+              <div class="detail-item" *ngIf="product.category">
+                <div class="detail-icon text-danger">
+                  <i class="fas fa-tag"></i>
+                </div>
+                <div class="detail-content">
+                  <h6 class="detail-label">Category</h6>
+                  <p class="detail-value">{{ product.category.name }}</p>
+                </div>
+              </div>
+
+              <div class="detail-item">
+                <div class="detail-icon text-danger">
+                  <i class="fas fa-store"></i>
+                </div>
+                <div class="detail-content">
+                  <h6 class="detail-label">Seller</h6>
+                  <p class="detail-value">{{ seller.userId.name }}</p>
+                </div>
+              </div>
+
+              <div class="detail-item">
+                <div class="detail-icon text-danger">
+                  <i class="fas fa-boxes"></i>
+                </div>
+                <div class="detail-content">
+                  <h6 class="detail-label">Stock Quantity</h6>
+                  <p class="detail-value">
+                    {{ product.stockQuantity }} available
+                  </p>
+                </div>
+              </div>
+
+              <div class="detail-item">
+                <div class="detail-icon text-danger">
+                  <i class="fas fa-calendar-plus"></i>
+                </div>
+                <div class="detail-content">
+                  <h6 class="detail-label">Created</h6>
+                  <p class="detail-value">
+                    {{ product.createdAt | date : "medium" }}
+                  </p>
+                </div>
+              </div>
+
+              <div class="detail-item">
+                <div class="detail-icon text-danger">
+                  <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="detail-content">
+                  <h6 class="detail-label">Last Updated</h6>
+                  <p class="detail-value">
+                    {{ product.updatedAt | date : "medium" }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-
-
-
         <!-- Reviews Section -->
-        <div class="reviews-section mt-5" *ngIf="product.reviews && product.reviews.length > 0">
+        <div
+          class="reviews-section mt-5"
+          *ngIf="product.reviews && product.reviews.length > 0"
+        >
           <h4><i class="fas fa-comments me-2"></i> Customer Reviews</h4>
 
           <!-- Display Visible Reviews -->
           <div class="review" *ngFor="let review of visibleReviews">
             <div class="review-header">
-              <i class="fas fa-user-circle me-2"></i> <!-- User icon -->
+              <i class="fas fa-user-circle me-2"></i>
+              <!-- User icon -->
               <span class="review-rating">
-                <i *ngFor="let star of getStars(review.rating)" [class.fas]="star === 1" [class.far]="star === 0"
-                  class="fa-star text-warning"></i>
+                <i
+                  *ngFor="let star of getStars(review.rating)"
+                  [class.fas]="star === 1"
+                  [class.far]="star === 0"
+                  class="fa-star text-warning"
+                ></i>
               </span>
-              <span class="review-date ms-2">{{ review.createdAt | date: 'mediumDate' }}</span>
+              <span class="review-date ms-2">{{
+                review.createdAt | date : "mediumDate"
+              }}</span>
             </div>
             <p class="review-text">{{ review.reviewTxt }}</p>
           </div>
 
           <!-- Show More Link (if more reviews are available) -->
-          <div class="text-center mt-3" *ngIf="visibleReviews.length < product.reviews.length">
-            <a href="javascript:void(0)" class="show-more-link" (click)="loadMoreReviews()">
+          <div
+            class="text-center mt-3"
+            *ngIf="visibleReviews.length < product.reviews.length"
+          >
+            <a
+              href="javascript:void(0)"
+              class="show-more-link"
+              (click)="loadMoreReviews()"
+            >
               Show More <i class="fas fa-chevron-down ms-2"></i>
             </a>
           </div>
@@ -149,23 +260,26 @@
       </div>
     </div>
   </div>
-  }
-  @else if (!isLoading && !product) {
-<!-- Product Not Found Template -->
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-8 text-center">
-      <div class="card shadow-lg p-5">
-        <i class="fas fa-exclamation-triangle fa-5x text-warning mb-4"></i>
-        <h2 class="mb-3">Product Not Found</h2>
-        <p class="lead">We're sorry, but the product you're looking for doesn't exist or may have been removed.</p>
-        <a routerLink="/" class="btn btn-danger mt-3">
-          <i class="fas fa-home me-2"></i>Return to Home
-        </a>
+  } @else if (!isLoading && !product) {
+  <!-- Product Not Found Template -->
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8 text-center">
+        <div class="card shadow-lg p-5">
+          <i class="fas fa-exclamation-triangle fa-5x text-warning mb-4"></i>
+          <h2 class="mb-3">Product Not Found</h2>
+          <p class="lead">
+            We're sorry, but the product you're looking for doesn't exist or may
+            have been removed.
+          </p>
+          <a routerLink="/" class="btn btn-danger mt-3">
+            <i class="fas fa-home me-2"></i>Return to Home
+          </a>
+        </div>
       </div>
     </div>
   </div>
-</div>
   }
+</div>
 
-
+<app-footer></app-footer>

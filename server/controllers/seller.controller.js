@@ -1,24 +1,24 @@
 import sellerModel from "../database/models/seller.model.js";
 
 // AMS create  function createSellerProfile(usaerId){
-  export const createSellerProfile = async (userId) => {
-    try {
-      // Check if the user already has a seller profile
-      const existingSeller = await sellerModel.findOne({ userId });
-      if (existingSeller) {
-        return { error: "Seller profile already exists" };
-      }
-  
-      // Create new seller profile
-      const newSeller = new sellerModel({ userId });
-      const savedSeller = await newSeller.save();
-  
-      return savedSeller;
-    } catch (error) {
-      return { error: error.message };
+export const createSellerProfile = async (userId) => {
+  try {
+    // Check if the user already has a seller profile
+    const existingSeller = await sellerModel.findOne({ userId });
+    if (existingSeller) {
+      return { error: "Seller profile already exists" };
     }
-  };
-  
+
+    // Create new seller profile
+    const newSeller = new sellerModel({ userId });
+    const savedSeller = await newSeller.save();
+
+    return savedSeller;
+  } catch (error) {
+    return { error: error.message };
+  }
+};
+
 // }
 
 /**
@@ -31,7 +31,7 @@ export const updateSeller = async (req, res) => {
   try {
     const { sellerId } = req.params;
     const { updateData } = req.body;
-    const currentUser = req.user; 
+    const currentUser = req.user;
 
     // Check if the user is an admin or updating their own profile
     if (!currentUser.isAdmin && currentUser.id !== sellerId) {
@@ -56,9 +56,6 @@ export const updateSeller = async (req, res) => {
   }
 };
 
-
-
-
 /**
  * @description function to get seller profile
  * @route
@@ -68,15 +65,18 @@ export const updateSeller = async (req, res) => {
  */
 
 export const getSeller = async (req, res) => {
-
-
-  console.log("hello in getting the seller by id function")
+  console.log("hello in getting the seller by id function");
 
   try {
     const { sellerId } = req.params;
 
-    const seller = await sellerModel.findById(sellerId);
-    if (!seller) return res.status(404).json({ message: "Seller not found" });
+    let seller = await sellerModel.findById(sellerId).populate("userId");
+    if (!seller) {
+      seller = await sellerModel
+        .findOne({ userId: sellerId })
+        .populate("userId");
+      if (!seller) return res.status(404).json({ message: "Seller not found" });
+    }
 
     res.status(200).json(seller);
   } catch (error) {
@@ -111,14 +111,15 @@ export const softDeleteSeller = async (req, res) => {
 };
 /**
  * @author Ahmed M.Salah
- * @param {*} req 
+ * @param {*} req
  * @param {*} res
  * @returns make seller draw from his mony
  */
-export async function draw ( req, res ) {
-  if (req.user.role!=="seller")res.status(400).send({message:"you are not allowed to visit this page"})
+export async function draw(req, res) {
+  if (req.user.role !== "seller")
+    res.status(400).send({ message: "you are not allowed to visit this page" });
   const sellerId = req.user._id;
-  const seller = await sellerModel.findOne( { userId: sellerId } );
+  const seller = await sellerModel.findOne({ userId: sellerId });
   // console.log(seller)
   const { amount } = req.body;
   if (amount > seller.balance) {
@@ -130,25 +131,26 @@ export async function draw ( req, res ) {
 
   seller.balance -= amount;
   seller.draws.push({
-    money:amount
+    money: amount,
   });
-    await seller.save();
-    res.status(200).send({
-      message: "you have drawed your money",
-      amount,
-      rest_balance: seller.balance,
-      lastDraw: seller.draws[seller.draws.length-1]
-    });
-  }
-export async function getMyDraws ( req, res ) {
-   if (req.user.role !== "seller"){
+  await seller.save();
+  res.status(200).send({
+    message: "you have drawed your money",
+    amount,
+    rest_balance: seller.balance,
+    lastDraw: seller.draws[seller.draws.length - 1],
+  });
+}
+export async function getMyDraws(req, res) {
+  if (req.user.role !== "seller") {
     return res
-       .status(400)
-       .send({ message: "you are not allowed to visit this page" });}
-   const sellerId = req.user._id;
-  const seller = await sellerModel.findOne( { userId: sellerId } );
+      .status(400)
+      .send({ message: "you are not allowed to visit this page" });
+  }
+  const sellerId = req.user._id;
+  const seller = await sellerModel.findOne({ userId: sellerId });
   res.status(200).send({
     message: "success fetched your draws ",
-    draws: seller.draws
+    draws: seller.draws,
   });
-  }
+}

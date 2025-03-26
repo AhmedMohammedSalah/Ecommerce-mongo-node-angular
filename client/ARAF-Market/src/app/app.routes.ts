@@ -9,29 +9,30 @@ import { UnauthorizedComponent } from './components/others/unauthorized/unauthor
 import { SellerProfileComponent } from './components/seller/seller-profile/seller-profile.component';
 import { ProductDetailsComponent } from './components/Home/products-manager/products/product-details/product-details.component';
 import { WhichlistComponent } from './components/Home/whichlist/whichlist.component';
+import { CartComponent } from './components/Home/cart/cart.component';
 
 export const routes: Routes = [
   {
     path: '',
     component: HomeComponent,
-    title:"ARAF-Market"
+    title: 'ARAF-Market',
   },
   {
     path: 'register',
     component: RegisterComponent,
-    title:"Register"
+    title: 'Register',
   },
 
   {
     path: 'login',
     component: LoginComponent,
-    title:"Login"
+    title: 'Login',
   },
   {
     path: 'profile',
     component: ProfileComponent,
-    title: "profile",
-    canActivate:[loginedGuard]
+    title: 'profile',
+    canActivate: [loginedGuard],
   },
 
   {
@@ -40,24 +41,28 @@ export const routes: Routes = [
   },
   // [SENU] seller routes adding
   {
-    path: "seller-dashboard",
+    path: 'seller-dashboard',
     component: SellerProfileComponent,
-    title: "Seller Dashboard"
-
-  },
-    {
-    path: 'product-details/:id',
-    component: ProductDetailsComponent,
-    title: "product-details",
-  },
-    {
-    path: 'whichlist',
-    component: WhichlistComponent,
-    title: "whichlist",
+    title: 'Seller Dashboard',
   },
   {
-			path:'**' ,
+    path: 'product-details/:id',
+    component: ProductDetailsComponent,
+    title: 'product-details',
+  },
+  {
+    path: 'whichlist',
+    component: WhichlistComponent,
+    title: 'whichlist',
+  },
+  {
+    path: 'cart',
+    component: CartComponent,
+    title: 'cart',
+  },
+  {
+    path: '**',
     component: NotFoundComponent,
-      title:"Not Found"
-  }
+    title: 'Not Found',
+  },
 ];

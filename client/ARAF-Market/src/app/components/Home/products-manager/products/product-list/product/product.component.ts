@@ -32,14 +32,9 @@ export class ProductComponent {
   }
   // Method to add product to cart
   addToCart(product: any) {
-    // Prepare the payload
-    const payload = {
-      sessionId: this.authService.isLoggedIn$ ? null : this.cartService.generateSessionId(),
-      productId: product._id
-    };
 
     // Call the cart service to add the product
-    this.cartService.addToCart(JSON.stringify(payload)).subscribe({
+    this.cartService.addToCart((product._id)).subscribe({
       next: (response) => {
         console.log('Product added to cart:', response);
         // Optionally, update the UI or show a success message

@@ -92,6 +92,10 @@ export class ProductService {
     return this.http.get<any>(url);
   }
 
+  getSeller(id: string): Observable<any> {
+    const url = `http://127.0.0.1:3000/user/seller/${id}`;
+    return this.http.get<any>(url);
+  }
   // 6) (Optional) getCategories
   getCategories(): Observable<any> {
     // If you have an endpoint for categories, call it
@@ -106,6 +110,8 @@ export class ProductService {
     // ]).asObservable();
   }
   getProductsByIds(productIds: string[]): Observable<any[]> {
-    return this.http.post<any[]>('http://127.0.0.1:3000/products/by-ids', { ids: productIds });
+    return this.http.post<any[]>('http://127.0.0.1:3000/products/by-ids', {
+      ids: productIds,
+    });
   }
 }

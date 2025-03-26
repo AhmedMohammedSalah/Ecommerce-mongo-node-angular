@@ -12,7 +12,7 @@ export class AuthServiceService {
   constructor() {
     this.checkLoginStatus();
   }
-
+  
   // Check localStorage for login status
   private checkLoginStatus() {
     const user = localStorage.getItem('user');
