@@ -1,0 +1,30 @@
+.container {
+  width: 80%;
+  margin: auto;
+  text-align: center;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background: #333;
+  color: white;
+}
+
+button {
+  padding: 5px 10px;
+  background: rgb(24, 125, 78);
+  color: white;
+  border: none;
+  cursor: pointer;
+}

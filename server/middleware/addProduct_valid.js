@@ -92,6 +92,9 @@ export const verifyUser = async (req, res, next) => {
   } else {
     return res.json({ msg: "verifyUser: INVALID TOKEN" });
   }
+
+  console.log(" add product : verifyUser: DONE"); //DEBUG
+
 };
 
 /** function store the image in `uploads/sellerId/`
@@ -157,6 +160,10 @@ export const validateImg = (req, res) => {
  * - validate on the image using function
  */
 export const validateProduct = (req, res, next) => {
+
+
+  console.log("add product: validateProduct : entered"); //DEBUG
+
   // VALIDATE DATA
   //--------------
 
@@ -174,10 +181,17 @@ export const validateProduct = (req, res, next) => {
 
   // wrong constraint found
   if (validation.error) {
-    return res.status(400).json({
+
+    console.log(validation.error); //DEBUG [IMPORTANT]
+
+    res.status(400).json({
       errors: validation.error.details.map((err) => err.message),
     });
+
+    return
   }
+
+  console.log("add product: validateProduct: validate text data DONE"); //DEBUG
 
   // VALIDATE IMAGE + STORE
   //------------------------
@@ -192,4 +206,7 @@ export const validateProduct = (req, res, next) => {
 
   // everything ok
   next();
+
+
+  console.log("add product: validateProduct : DONE"); //DEBUG
 };

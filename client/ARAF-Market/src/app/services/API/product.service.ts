@@ -114,4 +114,19 @@ export class ProductService {
       ids: productIds,
     });
   }
+
+
+  // [SENU]: get product of the seller
+  // any: should change to interface of the product
+  getSellerProducts(sellerId: string): Observable<any>{
+    return this.http.get(`http://127.0.0.1:3000/products/seller/${sellerId}`);
+  }
+
+
+  // [SENU]: remove product
+  removeProduct(PID : string){
+    return this.http.delete(`http://127.0.0.1:3000/products/hardDel/${PID}`);
+  }
+
+
 }

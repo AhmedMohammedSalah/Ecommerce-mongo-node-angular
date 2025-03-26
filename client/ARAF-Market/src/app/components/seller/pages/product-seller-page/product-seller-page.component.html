@@ -1,0 +1,81 @@
+<a routerLink='/seller-dashboard' class="fixed-anchor">
+    <i class="fa-solid fa-arrow-left fa-lg"></i>  
+  </a>
+
+<div class="container">
+
+    <h1 class="p-3"> <i class="fa-solid fa-store"></i> Stored Products</h1> 
+
+    <div class="row g-3 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
+    
+        <!-- Add Product Button -->
+        <div class="col">
+            <div class="bg-warning rounded-2 d-flex justify-content-center align-items-center h-100 addProductBtn">
+                <button 
+                    class="w-100 h-100 bg-warning border-0"
+                    data-bs-toggle="modal"
+                    data-bs-target="#addProductModal">
+                    <h1><i class="fa-solid fa-plus"></i></h1> 
+                </button>
+            </div>
+        </div>
+    
+        <!-- Product Cards -->
+        @for (p of sellerProducts; track $index) {
+            <div class="col d-flex">
+                <div class="card w-100 d-flex flex-column productCard">
+                    <app-product-card 
+                        class="flex-grow-1"
+                        [productData]="p"
+                        (sentProduct)="rmProductFromSellerProduct($event)">
+                    </app-product-card>
+                </div>
+            </div>
+        }
+    
+    </div>
+    
+    
+    
+
+</div>
+
+
+
+
+<!----------------------MODALS------------------------->
+
+
+<div class="modal modal-lg fade"  
+    id="addProductModal" 
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false">
+
+    <!-- DIALOG -->
+    <div class="modal-dialog">
+        
+        <!-- CONTENT -->
+        <div class="modal-content">
+            
+            <!-- HEADER -->
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="addProductModalLabel">ADD PRODUCT</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- BODY -->
+            <div class="modal-body">
+                <app-add-product-form></app-add-product-form>
+            </div>
+
+        </div>
+
+    </div>
+
+  </div>
+
+
+<!-----------------Modal--confirm-remove------------------>
+

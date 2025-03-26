@@ -1,0 +1,53 @@
+
+
+
+/* this for productCard hove */
+.productCard:hover{
+    box-shadow: 0 0 30px #6c6c6b !important;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.productCard:not(:hover) {
+    transition: box-shadow 0.5s ease-out;
+}
+
+
+
+.product-img-container {
+    height: 300px; /* Set a fixed height for all images */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.product-img-container img {
+    max-height: 100%; /* Ensures the image fits inside */
+    width: auto; /* Keeps the aspect ratio */
+}
+
+
+
+
+/* this for truncated 2 lines description */
+.card-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limit text to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 2.8em; /* Ensures space for 2 lines */
+}
+
+
+
+/* this for truncated 2 lines title */
+.card-title {
+    white-space: nowrap;       /* Prevents text from wrapping */
+    overflow: hidden;          /* Hides overflow */
+    text-overflow: ellipsis;   /* Adds "..." for long titles */
+    font-size: 1.1rem;         /* Adjust as needed */
+    font-weight: bold;         /* Keeps it strong */
+}
+
+
