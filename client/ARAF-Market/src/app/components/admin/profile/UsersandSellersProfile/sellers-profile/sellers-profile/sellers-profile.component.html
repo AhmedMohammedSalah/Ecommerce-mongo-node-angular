@@ -1,31 +1,34 @@
 <div class="container mt-4">
-    <h2>All Sellers</h2>
-  
-    <div *ngIf="errorMessage" class="alert alert-danger">
-      {{ errorMessage }}
-    </div>
-  
-    <table class="table table-striped mt-3" *ngIf="sellers.length > 0">
-      <thead class="table-dark">
-        <tr>
-          <th>#</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Role</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let seller of sellers; let i = index">
-          <td>{{ i + 1 }}</td>
-          <td>{{ seller.name }}</td>
-          <td>{{ seller.email }}</td>
-          <td>{{ seller.role }}</td>
-        </tr>
-      </tbody>
-    </table>
-  
-    <p *ngIf="sellers.length === 0 && !errorMessage" class="text-muted">
-      No sellers found.
-    </p>
+  <h2>All Sellers</h2>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
   </div>
-  
+
+  <table class="table table-striped mt-3">
+    <thead class="table-dark">
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let seller of sellers; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ seller.userId.name }}</td>
+        <td>{{ seller.userId.email }}</td>
+        <td>
+          <button 
+            class="btn"
+            [ngClass]="seller.isBlocked ? 'btn-success' : 'btn-danger'" 
+            (click)="toggleBlock(seller)"
+          >
+            {{ seller.isBlocked ? 'Unblock' : 'Block' }}
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

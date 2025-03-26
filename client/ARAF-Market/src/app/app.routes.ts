@@ -89,6 +89,9 @@ export const routes: Routes = [
     children: [
       { path: 'products', component: ProductsComponent, title: "Manage Products" },
       { path: 'users', component:AdminProfileComponent, title: "Manage Users" },
+      { path: 'allusers', component:UsersProfileComponent },
+      { path: 'allsellers', component:SellersProfileComponent },
+
     ]
   },
 

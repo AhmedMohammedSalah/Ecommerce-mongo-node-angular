@@ -10,10 +10,10 @@ export class AdminProfileComponent {
   constructor(private router: Router) {}
 
   navigateToUsers() {
-    this.router.navigate(['/users']);  
+    this.router.navigate(['/admin/allusers']);  
   }
 
   navigateToCustomers() {
-    this.router.navigate(['/sellers']);  
+    this.router.navigate(['/admin/allsellers']);  
   }
 }
