@@ -1,0 +1,114 @@
+
+
+<div class="col d-flex">
+<div class="card product-card w-100 h-100 d-flex flex-column shadow-sm">
+
+  <!-- Remove Button -->
+  <button class="btn btn-danger rounded-circle border-0 m-2 position-absolute top-0 end-0"
+          data-bs-toggle="modal"
+          data-bs-target="#rmProductModal"
+          (click)="setSelectedProduct(productData)">
+      <i class="fa-solid fa-xmark"></i>
+  </button>
+
+
+  <!-- fixed stock availability badge -->
+  <span class="badge position-absolute top-0 start-0 m-2 px-3 py-2 rounded-pill border border-3 text-white"
+      [ngClass]="productData?.stockQuantity > 0 ? 'bg-success border-white' : 'bg-danger border-white'">
+      {{ productData?.stockQuantity > 0 ? productData?.stockQuantity + ' stock' : 'Out of Stock' }}
+  </span>
+
+
+  <!-- Image Container -->
+  <div class="product-img-container p-3">
+      <img [src]="'http://localhost:3000/' + productData?.imagePath"
+           class="card-img-top"
+           alt="Product Image">
+  </div>
+
+  <!-- Card Body -->
+  <div class="card-body flex-grow-1 d-flex flex-column text-center">
+      <h5 class="card-title fw-bold">{{ productData?.productName }}</h5>
+      <p class="card-text text-muted small">{{ productData?.description }}</p>
+
+      <div class="mt-auto">
+          <div class="price-container d-flex justify-content-center gap-2 align-items-center">
+              <span class="price fw-bold text-success">${{ productData?.price }}</span>
+              <span class="discount badge bg-danger">-{{ productData?.discount }}%</span>
+          </div>
+          <button 
+          class="btn btn-primary w-100 mt-2"
+          data-bs-toggle="modal"
+          data-bs-target="#viewUpdateModal">View Product</button>
+      </div>
+  </div>
+
+</div>
+</div>
+
+
+
+
+<!-------------------------------MODAL----------------------------->
+
+
+
+  <div class="modal fade" tabindex="-1" id="rmProductModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Modal title</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to remove this product?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button 
+            type="button"
+            class="btn btn-danger"
+            data-bs-dismiss="modal"
+            (click)="rmProduct()"
+            >REMOVE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!------View update Modal------>
+
+  <div class="modal modal-lg fade"  
+    id="viewUpdateModal" 
+    aria-labelledby="viewUpdateModalLabel"
+    aria-hidden="true"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false">
+
+    <!-- DIALOG -->
+    <div class="modal-dialog">
+        
+        <!-- CONTENT -->
+        <div class="modal-content">
+            
+            <!-- HEADER -->
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="addProductModalLabel">View/Updare PRODUCT</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- BODY -->
+            <div class="modal-body">
+
+              <!-- the component should be here -->
+              
+                
+            </div>
+
+        </div>
+
+    </div>
+
+  </div>
+

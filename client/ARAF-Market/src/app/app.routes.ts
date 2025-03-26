@@ -16,6 +16,8 @@ import { CartComponent } from './components/Home/cart/cart.component';
 import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
 import { ProductsComponent } from './components/admin/products/products.component';
 import { AdminOrdersComponent } from './components/admin/orders/admin-orders/admin-orders.component'; // [FM] Edit
+import { ProductSellerPageComponent } from './components/seller/pages/product-seller-page/product-seller-page.component';
+
 export const routes: Routes = [
   {
     path: '',
@@ -26,6 +28,11 @@ export const routes: Routes = [
     path: 'register',
     component: RegisterComponent,
     title: 'Register',
+  },
+  {
+    path: 'seller-dashboard/products',
+    component: ProductSellerPageComponent,
+    title: "seller products page"
   },
 
   {
