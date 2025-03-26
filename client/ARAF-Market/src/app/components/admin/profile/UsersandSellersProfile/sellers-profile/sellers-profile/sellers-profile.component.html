@@ -1,30 +1,77 @@
+<!-- 
+
+
+
 <div class="container mt-4">
   <h2>All Sellers</h2>
+  
+  <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+  </div>
+  <div *ngIf="successMessage" class="alert alert-success">
+      {{ successMessage }}
+  </div>
+  
+  <table class="table table-striped mt-3">
+      <thead class="table-dark">
+          <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Actions</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let seller of sellers; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ seller.userId.name }}</td>
+              <td>{{ seller.userId.email }}</td>
+              <td>{{ seller.userId.role }}</td>
+              <td>
+                  <button class="btn"
+                    [ngClass]="seller.isBlocked ? 'btn-success' : 'btn-danger'"
+                    (click)="toggleBlock(seller)">
+                    {{ seller.isBlocked ? 'Unblock' : 'Block' }}
+                  </button>
+              </td>
+          </tr>
+      </tbody>
+  </table>
+</div> -->
 
+
+
+<div class="container mt-4">
+  <h2>All Sellers</h2>
+  
   <div *ngIf="errorMessage" class="alert alert-danger">
     {{ errorMessage }}
   </div>
-
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{ successMessage }}
+  </div>
+  
   <table class="table table-striped mt-3">
     <thead class="table-dark">
       <tr>
         <th>#</th>
         <th>Name</th>
         <th>Email</th>
-        <th>Action</th>
+        <th>Role</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let seller of sellers; let i = index">
         <td>{{ i + 1 }}</td>
-        <td>{{ seller.userId.name }}</td>
-        <td>{{ seller.userId.email }}</td>
+        <td>{{ seller.name }}</td>
+        <td>{{ seller.email }}</td>
+        <td>{{ seller.role }}</td>
         <td>
-          <button 
-            class="btn"
-            [ngClass]="seller.isBlocked ? 'btn-success' : 'btn-danger'" 
-            (click)="toggleBlock(seller)"
-          >
+          <button class="btn"
+            [ngClass]="seller.isBlocked ? 'btn-success' : 'btn-danger'"
+            (click)="toggleBlock(seller)">
             {{ seller.isBlocked ? 'Unblock' : 'Block' }}
           </button>
         </td>

@@ -84,3 +84,26 @@ export async function getAllSellers(req, res) {
   const sellers = await sellerModel.find().populate("userId");
   res.json(sellers);
 }
+
+
+
+
+
+
+
+
+
+export async function restoreUser(req, res) {
+  try {
+    const { id } = req.params; // نستخدم الـ id المار كـ parameter
+    const user = await User.findByIdAndUpdate(
+      id,
+      { isDeleted: false },
+      { new: true }
+    );
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.status(200).json({ message: "User restored successfully", user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}

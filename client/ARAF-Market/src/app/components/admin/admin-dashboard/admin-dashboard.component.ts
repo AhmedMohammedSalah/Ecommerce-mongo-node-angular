@@ -5,6 +5,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar'
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-admin-dashboard',
   imports: [
@@ -19,5 +20,12 @@ import { MatToolbarModule } from '@angular/material/toolbar'
   styleUrl: './admin-dashboard.component.css'
 })
 export class AdminDashboardComponent {
+  constructor(private router: Router) {}
+
+  logout() {
+    localStorage.removeItem('token');
+    
+    this.router.navigate(['/login']);
+  }
 
 }

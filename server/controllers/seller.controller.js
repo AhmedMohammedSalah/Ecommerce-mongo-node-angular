@@ -98,7 +98,7 @@ export const softDeleteSeller = async (req, res) => {
 
     const seller = await sellerModel.findByIdAndUpdate(
       sellerId,
-      { softDelete: true },
+      { isDeleted: true },
       { new: true }
     );
 
@@ -154,3 +154,30 @@ export async function getMyDraws(req, res) {
     draws: seller.draws,
   });
 }
+
+
+
+
+
+
+
+
+
+
+export const restoreSeller = async (req, res) => {
+  try {
+    const { sellerId } = req.params;
+
+    const seller = await sellerModel.findByIdAndUpdate(
+      sellerId,
+      { isDeleted: false}, 
+      { new: true }
+    );
+
+    if (!seller) return res.status(404).json({ message: "Seller not found" });
+
+    res.status(200).json({ message: "Seller has been restored", seller });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};

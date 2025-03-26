@@ -1,107 +1,10 @@
-/* 
-.dashboard-container {
-    height: 100vh;
-    display: flex;
-    overflow: hidden;
-  }
-  
-  .sidenav-container {
-    height: 100%;
-    width: 100%;
-  }
-  
-  .sidenav {
-    width: 250px;
-    background-color: #2369ae;
-    color: white;
-    padding: 15px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .sidebar-title {
-    text-align: center;
-    font-size: 1.25rem;
-    font-weight: 500;
-    margin: 0 0 1.25rem 0;
-    padding-bottom: 0.75rem;
-    color: #ecf0f1;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  mat-nav-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 0;
-  }
-  
-  mat-list-item {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    color: white;
-    font-size: 0.9375rem;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    margin-bottom: 0.25rem;
-  }
-  
-  mat-list-item mat-icon {
-    margin-right: 0.75rem;
-    font-size: 1.25rem;
-    width: 1.25rem;
-    height: 1.25rem;
-  }
-  
-  mat-list-item:hover {
-    background-color: #34495e;
-    transform: translateX(2px);
-  }
-  
-  .active {
-    background-color: #1abc9c !important;
-    color: white !important;
-    font-weight: 500;
-  }
-  
-  .active mat-icon {
-    color: white;
-  }
-  
-  .content {
-    padding: 1.5rem;
-    flex: 1;
-    background: #f5f5f5;
-    overflow-y: auto;
-    height: 100vh;
-  }
-  
-  @media (max-width: 768px) {
-    .sidenav {
-      width: 200px;
-    }
-    
-    .content {
-      padding: 1rem;
-    }
-  }
-
-
-
-
-
-
-
-   */
-
-
 
 
 
    .dashboard-container {
     height: 100vh;
     display: flex;
+    background-color: #f5f7fa;
   }
   
   .sidenav-container {
@@ -111,79 +14,95 @@
   }
   
   .sidenav {
-    width: 250px;
-    background-color: #2369ae;
-    color: white;
-    padding: 15px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    width: 260px;
+    background-color: #ab3e8a; /* خلفية بيضاء */
+    color: #ebe4e4; /* نص داكن */
+    padding: 20px 15px;
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.08);
+    border-right: 1px solid #e0e0e0;
   }
   
   .sidebar-title {
     text-align: center;
-    font-size: 1.25rem;
-    font-weight: 500;
-    margin: 0 0 1.25rem 0;
-    padding-bottom: 0.75rem;
-    color: #ecf0f1;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0 0 2rem 0;
+    padding-bottom: 1rem;
+    color: #e6ebef; /* لون داكن أنيق */
+    border-bottom: 1px solid #eeeeee;
   }
   
   mat-nav-list {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.6rem;
     padding: 0;
   }
   
   mat-list-item {
     display: flex;
     align-items: center;
-    padding: 0.75rem 1rem;
-    color: white;
-    font-size: 0.9375rem;
-    border-radius: 4px;
+    padding: 0.9rem 1.2rem;
+    color: #d9e0e7 !important; /* لون نص داكن */
+    font-size: 1rem;
+    border-radius: 8px;
     transition: all 0.3s ease;
     cursor: pointer;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.3rem;
   }
   
   mat-list-item mat-icon {
-    margin-right: 0.75rem;
-    font-size: 1.25rem;
-    width: 1.25rem;
-    height: 1.25rem;
+    margin-right: 1rem;
+    font-size: 1.4rem;
+    width: 1.4rem;
+    height: 1.4rem;
+    color: #7f8c8d !important; /* لون أيقونات رمادي */
   }
   
   mat-list-item:hover {
-    background-color: #34495e;
-    transform: translateX(2px);
+    background-color: #f8f9fa;
+    transform: translateX(3px);
+    color: #2c3e50 !important;
+  }
+  
+  mat-list-item:hover mat-icon {
+    color: #3498db !important; /* لون أزرق عند hover */
   }
   
   .active {
-    background-color: #1abc9c !important;
-    color: white !important;
-    font-weight: 500;
+    background-color: #e3f2fd !important; /* خلفية أزرق فاتح */
+    color: #1976d2 !important; /* لون أزرق داكن للنص */
+    font-weight: 600;
   }
   
   .active mat-icon {
-    color: white;
+    color: #1976d2 !important; /* لون أزرق داكن للأيقونات */
   }
   
   .content {
     flex: 1;
-    padding: 1.5rem;
-    background: #f5f5f5;
+    padding: 2rem;
+    background: #ffffff;
     overflow-y: auto;
     height: 100vh;
   }
   
-  @media (max-width: 768px) {
-    .sidenav {
-      width: 200px;
-    }
-  
-    .content {
-      padding: 1rem;
-    }
+  /* تحسينات إضافية */
+  mat-list-item {
+    background-color: rgba(0, 0, 0, 0.02);
   }
   
+  @media (max-width: 768px) {
+    .sidenav {
+      width: 240px;
+      padding: 15px 10px;
+    }
+    
+    .content {
+      padding: 1.5rem;
+    }
+    
+    mat-list-item {
+      padding: 0.8rem 1rem;
+    }
+  }
