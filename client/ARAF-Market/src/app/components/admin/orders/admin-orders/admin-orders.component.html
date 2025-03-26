@@ -1,0 +1,33 @@
+<app-admin-orders></app-admin-orders>
+<div class="container">
+  <h2>Admin Orders</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Status</th>
+        <th>Update Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (order of orders; track order._id) {
+      <tr>
+        <td>{{ order._id }}</td>
+        <td>{{ order.status }}</td>
+        <td>
+          <select #newStatus title="Update order status">
+            <option>Pending</option>
+            <option>Processing</option>
+            <option>Shipped</option>
+            <option>Delivered</option>
+            <option>Cancelled</option>
+          </select>
+          <button (click)="updateStatus(order._id, newStatus.value)">
+            Update
+          </button>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>

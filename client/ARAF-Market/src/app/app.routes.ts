@@ -15,6 +15,7 @@ import { WhichlistComponent } from './components/Home/whichlist/whichlist.compon
 import { CartComponent } from './components/Home/cart/cart.component';
 import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
 import { ProductsComponent } from './components/admin/products/products.component';
+import { AdminOrdersComponent } from './components/admin/orders/admin-orders/admin-orders.component'; // [FM] Edit
 export const routes: Routes = [
   {
     path: '',
@@ -49,22 +50,22 @@ export const routes: Routes = [
     component: SellerProfileComponent,
     title: 'Seller Dashboard',
   },
-  
+
   {
     path: 'admin-dashboard',
     component: AdminProfileComponent,
-    title:"profile"
+    title: 'profile',
   },
   {
     path: 'users',
     component: UsersProfileComponent,
-    title:"profile"
+    title: 'profile',
   },
-  
+
   {
     path: 'sellers',
     component: SellersProfileComponent,
-    title:"profile"
+    title: 'profile',
   },
 
   {
@@ -85,14 +86,26 @@ export const routes: Routes = [
 
   {
     path: 'admin',
-    component: AdminDashboardComponent, 
+    component: AdminDashboardComponent,
     children: [
-      { path: 'products', component: ProductsComponent, title: "Manage Products" },
-      { path: 'users', component:AdminProfileComponent, title: "Manage Users" },
-      { path: 'allusers', component:UsersProfileComponent },
-      { path: 'allsellers', component:SellersProfileComponent },
-
-    ]
+      {
+        path: 'products',
+        component: ProductsComponent,
+        title: 'Manage Products',
+      },
+      {
+        path: 'users',
+        component: AdminProfileComponent,
+        title: 'Manage Users',
+      },
+      { path: 'allusers', component: UsersProfileComponent },
+      { path: 'allsellers', component: SellersProfileComponent },
+      {
+        path: 'orders',
+        component: AdminOrdersComponent,
+        title: 'Manage Orders',
+      }, // [FM] Edit
+    ],
   },
 
   {
