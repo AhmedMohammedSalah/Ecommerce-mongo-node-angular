@@ -13,7 +13,8 @@ import { SellerProfileComponent } from './components/seller/seller-profile/selle
 import { ProductDetailsComponent } from './components/Home/products-manager/products/product-details/product-details.component';
 import { WhichlistComponent } from './components/Home/whichlist/whichlist.component';
 import { CartComponent } from './components/Home/cart/cart.component';
-
+import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
+import { ProductsComponent } from './components/admin/products/products.component';
 export const routes: Routes = [
   {
     path: '',
@@ -81,6 +82,16 @@ export const routes: Routes = [
     component: CartComponent,
     title: 'cart',
   },
+
+  {
+    path: 'admin',
+    component: AdminDashboardComponent, 
+    children: [
+      { path: 'products', component: ProductsComponent, title: "Manage Products" },
+      { path: 'users', component:AdminProfileComponent, title: "Manage Users" },
+    ]
+  },
+
   {
     path: '**',
     component: NotFoundComponent,

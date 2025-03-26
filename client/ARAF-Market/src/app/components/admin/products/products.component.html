@@ -1,0 +1,95 @@
+<div class="products-page">
+    <div class="header">
+      <h2>Products Management</h2>
+      <button mat-raised-button color="primary" routerLink="/admin/products/add">
+        <mat-icon>add</mat-icon> Add New Product
+      </button>
+    </div>
+  
+   
+    <div class="filters-section">
+      <mat-form-field appearance="outline">
+        <mat-label>Search Products</mat-label>
+        <input matInput [(ngModel)]="searchTerm" (keyup.enter)="applyFilters()">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+  
+      <mat-form-field appearance="outline">
+        <mat-label>Category</mat-label>
+        <mat-select [(value)]="selectedCategory" (selectionChange)="applyFilters()">
+          <mat-option [value]="null">All Categories</mat-option>
+          <mat-option *ngFor="let category of categories$ | async" [value]="category.id">
+            {{category.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <div class="price-filters">
+        <mat-form-field appearance="outline">
+          <mat-label>Min Price</mat-label>
+          <input matInput type="number" [(ngModel)]="minPrice" (keyup.enter)="applyFilters()">
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>Max Price</mat-label>
+          <input matInput type="number" [(ngModel)]="maxPrice" (keyup.enter)="applyFilters()">
+        </mat-form-field>
+      </div>
+  
+      <button mat-button (click)="resetFilters()">
+        <mat-icon>clear</mat-icon> Reset Filters
+      </button>
+    </div>
+  
+  
+    <div *ngIf="isLoading" class="loading-spinner">
+      <mat-spinner diameter="50"></mat-spinner>
+    </div>
+  
+    
+    <div *ngIf="!(isLoading)" class="products-grid">
+      <mat-card *ngFor="let product of products$ | async" class="product-card">
+        <img mat-card-image [src]="product.image || 'assets/images/default-product.png'" alt="{{product.name}}">
+        
+        <mat-card-content>
+          <h3>{{product.name}}</h3>
+          <p class="description">{{product.description | slice:0:100}}...</p>
+          
+          <div class="details">
+            <span class="price">{{product.price | currency:'USD':'symbol':'1.2-2'}}</span>
+            <span class="stock" [class.in-stock]="product.stock > 0">
+              {{product.stock > 0 ? 'In Stock (' + product.stock + ')' : 'Out of Stock'}}
+            </span>
+          </div>
+        </mat-card-content>
+  
+        <mat-card-actions>
+          <button mat-icon-button color="primary" [routerLink]="['/admin/products/edit', product.id]">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteProduct(product.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  
+    <div *ngIf="(products$ | async)?.length === 0 && !isLoading" class="no-products">
+      <mat-icon>inventory_2</mat-icon>
+      <p>No products available</p>
+    </div>
+  </div>
+
+
+  <!-- // products.component.html
+/*
+<div class="products-container">
+  <h2>Products List</h2>
+  <ul>
+    <li *ngFor="let product of products">
+      {{ product.name }} - {{ product.price }}$
+      <button (click)="deleteProduct(product.id)">Delete</button>
+    </li>
+  </ul>
+</div>
+*/ -->
