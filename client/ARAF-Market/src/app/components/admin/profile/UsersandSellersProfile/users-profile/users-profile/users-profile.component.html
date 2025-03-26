@@ -1,5 +1,5 @@
 <div class="container mt-4">
-  <h2>All Customers</h2>
+  <h2>All Users</h2>
 
   <div *ngIf="errorMessage" class="alert alert-danger">
       {{ errorMessage }}
@@ -11,19 +11,21 @@
               <th>#</th>
               <th>Name</th>
               <th>Email</th>
+              <th>Role</th>
               <th>Actions</th>
           </tr>
       </thead>
       <tbody>
-          <tr *ngFor="let customer of customers; let i = index">
+          <tr *ngFor="let user of users; let i = index">
               <td>{{ i + 1 }}</td>
-              <td>{{ customer.name }}</td>
-              <td>{{ customer.email }}</td>
+              <td>{{ user.name }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.role }}</td>
               <td>
-                  <button class="btn" 
-                      [ngClass]="customer.isBlocked ? 'btn-success' : 'btn-danger'"
-                      (click)="toggleBlock(customer)">
-                      {{ customer.isBlocked ? 'Unblock' : 'Block' }}
+                  <button class="btn"
+                      [ngClass]="user.isBlocked ? 'btn-success' : 'btn-danger'"
+                      (click)="toggleBlock(user)">
+                      {{ user.isBlocked ? 'Unblock' : 'Block' }}
                   </button>
               </td>
           </tr>

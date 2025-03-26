@@ -11,37 +11,37 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './users-profile.component.css'
 })
 export class UsersProfileComponent implements OnInit  {
-  customers: any[] = [];
+  users: any[] = [];
   errorMessage: string = '';
 
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    this.getAllCustomers();
+    this.getAllUsers();
   }
 
-  getAllCustomers() {
-    this.http.get<any[]>('http://127.0.0.1:3000/all-customers')
+  getAllUsers() {
+    this.http.get<any[]>('http://127.0.0.1:3000/all-users')
       .subscribe(
         (response) => {
-          this.customers = response.filter(user => user.role === 'customer');
+          this.users = response; 
         },
         (error) => {
-          this.errorMessage = 'Error fetching customers!';
+          this.errorMessage = 'Error fetching users!';
         }
       );
   }
 
-  toggleBlock(customer: any) {
-    const newStatus = !customer.isBlocked;
+  toggleBlock(user: any) {
+    const newStatus = !user.isBlocked;
     
-    this.http.put(`http://127.0.0.1:3000/block-customer/${customer._id}`, { isBlocked: newStatus })
+    this.http.put(`http://127.0.0.1:3000/block-user/${user._id}`, { isBlocked: newStatus })
       .subscribe(
         () => {
-          customer.isBlocked = newStatus;
+          user.isBlocked = newStatus;
         },
         (error) => {
-          console.error('Error updating customer status');
+          console.error('Error updating user status');
         }
       );
   }
