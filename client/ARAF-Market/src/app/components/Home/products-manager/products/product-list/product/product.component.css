@@ -1,0 +1,128 @@
+/* Custom CSS for the product card */
+.product-card {
+  border: 1px solid #e9ecef;
+  /* Light border for the card */
+  border-radius: 8px;
+  /* Slightly rounded corners */
+  overflow: hidden;
+  /* Ensures the border-radius is applied */
+  transition: box-shadow 0.3s ease;
+  position: relative;
+  /* For positioning the discount badge */
+}
+
+.product-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  /* Subtle shadow on hover */
+}
+
+/* Discount Badge */
+.discount-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #ff3a44;
+  /* Primary color for the badge */
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Product Image */
+.card-img-top {
+  border-radius: 8px 8px 0 0;
+  /* Rounded corners for the top of the image */
+  height: 180px;
+  /* Fixed height for consistency */
+  object-fit: cover;
+  /* Ensures the image covers the area */
+}
+
+/* Card Body */
+.card-body {
+  padding: 16px;
+}
+
+/* Product Title */
+.card-title {
+  font-size: 1rem;
+  /* Controlled font size */
+  font-weight: 600;
+  /* Semi-bold for emphasis */
+  margin-bottom: 8px;
+  color: #333;
+  /* Dark text for readability */
+}
+
+/* Price Section */
+.price-section {
+  margin-bottom: 12px;
+}
+
+.new-price {
+  color: #ff3a44;
+  /* Primary color for the new price */
+  font-size: 1.1rem;
+  /* Slightly larger for emphasis */
+}
+
+.old-price {
+  font-size: 0.875rem;
+  /* Smaller text for the old price */
+}
+
+/* Product Description */
+.card-text.small {
+  font-size: 0.875rem;
+  /* Smaller text for description */
+  color: #666;
+  /* Muted color for secondary text */
+  margin-bottom: 12px;
+}
+
+/* Action Buttons */
+.action-buttons .btn {
+  border-radius: 4px;
+  /* Slightly rounded corners */
+  font-size: 0.875rem;
+  /* Controlled font size */
+  padding: 8px 12px;
+  /* Controlled padding */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.action-buttons .btn-primary {
+  background-color: #ff3a44;
+  /* Primary color for the button */
+  border: none;
+}
+
+.action-buttons .btn-primary:hover {
+  background-color: #e6333d;
+  /* Darker shade on hover */
+}
+
+.action-buttons .btn-outline-secondary {
+  border: 1px solid #ddd;
+  /* Light border for the button */
+}
+
+.action-buttons .btn-outline-secondary:hover {
+  background-color: #ff3a44;
+  /* Light background on hover */
+}
+/* Add this to your component's CSS file */
+i {
+  font-size: 1.2rem; /* Adjust size as needed */
+  transition: color 0.3s ease; /* Smooth color transition */
+}
+
+.far.fa-heart {
+  color: #6c757d; /* Default color for outline heart */
+}
+
+.fas.fa-heart {
+  color: #dc3545; /* Red color for filled heart */
+}

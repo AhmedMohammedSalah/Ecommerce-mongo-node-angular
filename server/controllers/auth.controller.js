@@ -72,7 +72,10 @@ export async function signin(req, res) {
     if (!user.isVerified) {
       return res
         .status(401)
-        .json({ message: "User is not verified , please confirm your mail " });
+        .json({
+          message: "User is not verified , please confirm your mail ",
+          status: 401,
+        });
     }
     const token = jwt.sign({ user }, "ARAF");
     res.status(200).json({ user, token });

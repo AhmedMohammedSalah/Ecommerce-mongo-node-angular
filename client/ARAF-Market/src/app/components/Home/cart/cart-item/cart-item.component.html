@@ -1,0 +1,82 @@
+<div class="p-3">
+  <div class="row g-3 align-items-center">
+    <!-- Product Image -->
+    <div class="col-4 col-md-3">
+      <div class="ratio ratio-1x1 bg-light rounded position-relative">
+        <img
+          [src]="'http://127.0.0.1:3000/' + product?.imagePath"
+          class="img-fluid rounded object-fit-cover"
+          alt="{{ product?.productName }}"
+          onerror="this.src='assets/images/placeholder-product.png'"
+        />
+        <!-- Discount Badge -->
+        <span *ngIf="product?.originalPrice > product?.price" 
+              class="position-absolute top-0 start-0 badge bg-danger">
+          {{ calculateDiscountPercentage() }}% OFF
+        </span>
+      </div>
+    </div>
+
+    <!-- Product Details -->
+    <div class="col-8 col-md-9">
+      <div class="d-flex flex-column h-100">
+        <!-- Product Name & Remove -->
+        <div class="d-flex justify-content-between">
+          <div>
+            <h5 class="mb-1">{{ product?.productName }}</h5>
+            <p class="text-muted small mb-2 line-clamp-2">
+              {{ product?.description || 'No description available' }}
+            </p>
+          </div>
+          <button class="btn btn-sm btn-outline-danger" (click)="removeItem()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <!-- Pricing -->
+        <div class="mt-auto">
+          <div class="d-flex align-items-center mb-2">
+            <h4 class="text-danger mb-0">{{ item.price * item.quantity | currency }}</h4>
+            <span *ngIf="product?.originalPrice > product?.price" 
+                  class="text-decoration-line-through text-muted ms-2">
+              {{ product?.originalPrice * item.quantity | currency }}
+            </span>
+            <span  
+                  class="badge bg-success text-light ms-2">
+              product  price  {{ product.price | currency }}
+            </span>
+          </div>
+          
+          <!-- Quantity Controls -->
+          <div class="d-flex align-items-center">
+            <div class="input-group quantity-selector" style="width: 120px;">
+              <button 
+                class="btn btn-outline-danger" 
+                (click)="updateQuantity(item.quantity - 1)"
+                [disabled]="item.quantity <= 1">
+                <i class="fas fa-minus"></i>
+              </button>
+              <input 
+                type="text" 
+                class="form-control text-center" 
+                [value]="item.quantity"
+                readonly>
+              <button 
+                class="btn btn-outline-danger" 
+                (click)="updateQuantity(item.quantity + 1)"
+                [disabled]="item.quantity >= item.stockQuantity">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+            
+            <!-- Stock Info -->
+            <small class="ms-3 text-muted">
+              <i class="fas fa-box-open me-1"></i>
+              {{ product?.stockQuantity || "N/A" }} available
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

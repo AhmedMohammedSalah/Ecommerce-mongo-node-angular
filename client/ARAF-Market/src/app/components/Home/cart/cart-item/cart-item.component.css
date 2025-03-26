@@ -1,0 +1,33 @@
+/* Cart Item Styles */
+.cart-item {
+  transition: all 0.3s ease;
+}
+
+.cart-item:hover {
+  background-color: rgba(220, 53, 69, 0.05);
+}
+
+.quantity-selector .btn {
+  width: 38px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .cart-item {
+    padding: 1rem;
+  }
+  
+  .quantity-selector {
+    width: 100% !important;
+    margin-top: 0.5rem;
+  }
+}
+
+/* Custom primary color variations */
+.bg-danger-light {
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
+.text-danger-light {
+  color: rgba(220, 53, 69, 0.7);
+}

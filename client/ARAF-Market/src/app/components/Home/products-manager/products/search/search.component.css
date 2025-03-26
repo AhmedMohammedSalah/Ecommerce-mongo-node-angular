@@ -1,0 +1,96 @@
+/* Custom CSS for the search filter */
+.search-filter {
+max-width: 60%;
+  /* Adjust the width as needed */
+  margin: 0 auto;
+  background-color: #fff;
+  /* White background */
+  border-radius: 10px;
+  /* Rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /* Subtle shadow */
+  overflow: hidden;
+  /* Ensures the border-radius is applied */
+}
+
+/* Search Filter Header */
+.search-filter-header {
+  padding: 15px 20px;
+  background-color: #ff3a44;
+  /* Primary color */
+  color: #fff;
+  /* White text */
+  border-radius: 10px 10px 0 0;
+  /* Rounded corners at the top */
+}
+
+.search-filter-header h4 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.search-filter-header i {
+  margin-right: 8px;
+  /* Space between icon and text */
+}
+
+/* Search Input */
+.input-group {
+  border-radius: 0 0 10px 10px;
+  /* Rounded corners at the bottom */
+  overflow: hidden;
+  /* Ensures the border-radius is applied */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /* Subtle shadow */
+  transition: box-shadow 0.3s ease;
+}
+
+.input-group:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  /* Enhanced shadow on hover */
+}
+
+.input-group-text {
+  border: none;
+  background-color: transparent;
+  padding: 10px 15px;
+}
+
+.form-control {
+  border: none;
+  padding: 10px 15px;
+  background-color: transparent;
+  box-shadow: none;
+  transition: background-color 0.3s ease;
+}
+
+.form-control:focus {
+  background-color: #f8f9fa;
+  /* Light background on focus */
+  outline: none;
+}
+
+.btn {
+  border-radius: 0 25px 25px 0;
+  /* Rounded corners on the right side */
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #ff3a44, #ff565e);
+  /* Gradient background */
+  border: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  /* Slight lift on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* Shadow on hover */
+}
+
+.btn i {
+  color: white;
+  /* Icon color */
+}

@@ -1,0 +1,85 @@
+/* Custom CSS for the category filter */
+.category-filter {
+  max-width: 300px;
+  /* Adjust the width as needed */
+  margin: 0 auto;
+  background-color: #fff;
+  /* White background */
+  border-radius: 10px;
+  /* Rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /* Subtle shadow */
+  overflow: hidden;
+  /* Ensures the border-radius is applied */
+}
+
+/* Category Filter Header */
+.category-filter-header {
+  padding: 15px 20px;
+  background-color: #ff3a44;
+  /* Primary color */
+  color: #fff;
+  /* White text */
+  border-radius: 10px 10px 0 0;
+  /* Rounded corners at the top */
+}
+
+.category-filter-header h4 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.category-filter-header i {
+  margin-right: 8px;
+  /* Space between icon and text */
+}
+
+/* Category List */
+.list-group {
+  border-radius: 0 0 10px 10px;
+  /* Rounded corners at the bottom */
+  overflow: hidden;
+  /* Ensures the border-radius is applied */
+}
+
+.list-group-item {
+  border: none;
+  /* Remove default borders */
+  padding: 15px 20px;
+  /* Add padding for better spacing */
+  background-color: #f8f9fa;
+  /* Light background color */
+  color: #333;
+  /* Dark text color */
+  transition: all 0.3s ease;
+  /* Smooth transition for hover effects */
+  display: flex;
+  align-items: center;
+}
+
+.list-group-item:hover {
+  background-color: #e9ecef;
+  /* Slightly darker background on hover */
+  transform: translateX(5px);
+  /* Slight move to the right on hover */
+}
+
+.list-group-item i {
+  color: #6c757d;
+  /* Icon color */
+  transition: color 0.3s ease;
+  /* Smooth transition for icon color */
+}
+
+.list-group-item:hover i {
+  color: #ff3a44;
+  /* Change icon color on hover */
+}
+
+.list-group-item .fa-chevron-right {
+  margin-left: auto;
+  /* Push the chevron icon to the right */
+}

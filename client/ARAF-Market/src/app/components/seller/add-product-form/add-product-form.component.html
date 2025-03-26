@@ -1,0 +1,187 @@
+<form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="container p-0 ">
+
+    <!-- clickable Card as File Input -->
+    <div class="card w-100 p-0" style="cursor: pointer;" (click)="fileInput.click()">
+        <div class="card-img-top d-flex justify-content-center align-items-center overflow-hidden"
+            [ngStyle]="{'background': imagePreview ? '#D9D9D9' : `url(https://cdn.vectorstock.com/i/500p/44/24/dotted-line-geometric-seamless-pattern-vector-7274424.jpg)`, 'height': '250px'}">
+
+            
+            @if (imagePreview) {
+                <img [src]="imagePreview" class="img-fluid"
+                    style="max-width: 100%; max-height: 100%; object-fit: contain;" />
+            } @else {
+                <i class="fa-solid fa-upload text-white fa-4x"></i>
+            }
+        </div>
+    </div>
+
+    <div class="container p-3">
+    <!-- Hidden File Input : the only way to make div as input type file -->
+    <input type="file" #fileInput [hidden]="true" (change)="onFileSelected($event)" />
+        
+
+    <!-- category -->
+    <div class="mt-3 ">
+        <label for="categorySelect" class="form-label fw-bold">Category</label>
+        <select class="form-select" formControlName="category" id="categorySelect">
+            <option value="" disabled selected>Select a category</option>
+            @for (c of catNames; track $index) { <option>{{c}}</option> }
+        </select>
+    </div>
+  
+      
+
+    <!-- Product name -->
+    <div class="mt-3">
+        <label class="form-label fw-bold" for="productName">Product Name:</label>
+        <input type="text" formControlName="productName" class="form-control" placeholder="type here...">
+
+        <div class="text-danger">
+            <!-- errors -->
+            @if(formControls['productName'].invalid && formControls['productName'].touched ){
+
+                <!-- required -->
+                @if(formControls['productName'].hasError('required')){
+
+                    <span>Required</span>
+
+                }
+
+                <!-- minimum -->
+                @else if(formControls['productName'].hasError('minlength')){
+
+                    <span>The name must be at least 3 characters long</span>
+                }
+
+                <!-- maximum -->
+                @else if(formControls['productName'].hasError('maxlength')){
+
+                    <span>the name exceed the expected, more than 40 letters!</span>
+                }
+            }
+
+        </div>
+
+
+    </div>
+  
+    <!-- product description -->
+    <div class="mt-3">
+        <label class="form-label fw-bold" for="productDesc">Product Description:</label>
+        <textarea id="productDesc" formControlName="productDesc" class="form-control" placeholder="write desciption for the product..."></textarea>
+
+        <div class="text-danger">
+
+            <!-- errors -->
+            @if(formControls['productDesc'].invalid && formControls['productDesc'].touched ){
+
+                <!-- required -->
+                @if(formControls['productDesc'].hasError('required')){
+
+                    <span>Required</span>
+                }
+
+
+                <!-- minimum -->
+                @else if(formControls['productDesc'].hasError('minlength')){
+
+                    <span>The description must be at least 20 characters long</span>
+
+                }
+
+                <!-- maximum -->
+                @else if(formControls['productDesc'].hasError('maxlength')){
+
+                    <span>the description exceed the expected, more than 100 letters!</span>
+                }
+            }
+
+
+        </div>
+
+    </div>
+
+
+
+    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-3">
+
+        <!-- num of stocks -->
+        <div class="col mt-3 mb-3 col-md-12">
+
+            <label class="form-label fw-bold" for="prodcutStock">stocks quantity:</label>
+            <input type="number" formControlName="stocks" class="form-control">
+
+            <!-- errors -->
+            <div class="text-danger">
+
+                <!-- minimum -->
+                @if(formControls['stocks'].hasError('min')){
+                    <span>stock can not be negative</span>
+                }
+                
+            </div>
+
+        </div>
+    
+        <!-- price -->
+        <div class="col mt-3 mb-3 col-md-6">
+            <label class="form-label fw-bold" for="productPrice">Price:</label>
+            <input type="number" formControlName="productPrice" class="form-control">
+
+            <!-- errors -->
+            <div class="text-danger">
+
+                <!-- minimum -->
+                @if(formControls['productPrice'].hasError('min')){
+                    <span>price can not be negative</span>
+                }
+            
+            </div>
+
+        </div>
+    
+        <!-- discount -->
+        <div class="col mt-3 mb-3 col-md-6">
+            <label class="form-label fw-bold" for="prodcutDiscount">Discount:</label>
+            <input type="number" formControlName="productDiscount" class="form-control">
+
+            <!-- errors -->
+            <div class="text-danger">
+
+                <!-- minimum -->
+                @if(formControls['productDiscount'].hasError('min')){
+                    <span>discount can not be negative</span>
+                }
+
+                <!-- minimum -->
+                @if(formControls['productDiscount'].hasError('max')){
+                    <span>discount can not exceed 100</span>
+                    }
+
+                
+            </div>
+
+        </div>
+    </div>
+    
+
+
+    <div class="container">
+        <div class="row">
+   
+            <!-- Submit Button -->
+            <div class="col-12 col-lg-4">
+                <button type="submit" class="btn btn-primary w-100" [disabled]="productForm.invalid"> Add </button>
+            </div>
+
+            <!-- Message -->
+            <div class="col-12  col-lg-8 p-2 text-center">
+                <span class="text-success fw-bold">{{response.msg}}</span>
+                <span class="text-danger fw-bold">{{response.err}}</span>
+            </div>
+
+        </div>
+    </div>
+    </div>
+</form>
+

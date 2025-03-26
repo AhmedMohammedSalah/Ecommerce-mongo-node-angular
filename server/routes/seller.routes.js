@@ -10,9 +10,9 @@ import { tokenVerify } from "../middleware/tokenVerify.js";
 
 const sellerRoutes = express.Router();
 
+// sellerRoutes.get("/seller/:sellerId", getSeller);
 // [AMS] 🪪 using of verify token on all routes
 sellerRoutes.use(tokenVerify);
-sellerRoutes.get("/seller", getSeller);
 sellerRoutes.get("/seller/mydraws", getMyDraws);
 sellerRoutes.put("/seller", updateSeller);
 sellerRoutes.delete("/seller", softDeleteSeller);

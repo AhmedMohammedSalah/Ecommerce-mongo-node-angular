@@ -1,0 +1,18 @@
+<div class="search-filter">
+  <!-- Title
+  <div class="search-filter-header">
+    <h4><i class="fas fa-search me-2"></i> Search Products</h4>
+  </div> -->
+
+  <!-- Search Input -->
+  <div class="input-group">
+    <span class="input-group-text bg-white border-end-0">
+      <i class="fas fa-search text-muted"></i> <!-- FontAwesome search icon -->
+    </span>
+    <input type="text" class="form-control border-start-0" placeholder="Search products..." [(ngModel)]="searchTerm"
+      (input)="onSearch()" />
+    <button class="btn btn-primary" (click)="onSearch()">
+      <i class="fas fa-arrow-right"></i> <!-- FontAwesome arrow icon -->
+    </button>
+  </div>
+</div>

@@ -1,0 +1,55 @@
+.card {
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 2rem;
+  border-radius: 1rem 1rem 0 0 !important;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #2d3748;
+}
+
+.form-control,
+.form-select {
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e2e8f0;
+  transition: border-color 0.2s;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #dc3545;
+  box-shadow: none;
+}
+
+.btn-primary {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+.spinner-border {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.color1 {
+  background-color: #ff6473;
+  border-color: #dc3545;
+}
+
+.alert {
+  border-radius: 0.5rem;
+}

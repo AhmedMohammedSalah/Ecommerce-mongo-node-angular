@@ -28,7 +28,13 @@ const productValidSchema = Joi.object({
     //
     stockQuantity: Joi.number().min(0).required().messages({
         "number.min": "PRICE CANNOT BE NEGATIVE",
-    })
+    }),
+
+
+    discount: Joi.number().min(0).max(100).messages({
+        "number.min": "DISCOUNT CANNOT BE NEGATIVE",
+        "numer.max" : "DISCOUNT  CANNOT BE EXCEED 100"
+    }),
     
 })
 

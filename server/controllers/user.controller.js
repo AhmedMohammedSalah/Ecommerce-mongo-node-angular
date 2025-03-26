@@ -1,4 +1,7 @@
+import customerModel from "../database/models/customer.model.js";
+import sellerModel from "../database/models/seller.model.js";
 import User from "../database/models/user.model.js";
+import bcrypt from "bcrypt";
 
 export async function getUser(req, res) {
   try {
@@ -11,8 +14,11 @@ export async function getUser(req, res) {
 }
 
 export async function updateUser(req, res) {
+  console.log("Enter Update user");
+
   try {
     const { id } = req.params;
+
     const updates = req.body;
     const user = await User.findById(id); //.active();
     if (!user) return res.status(404).json({ message: "User not found" });
@@ -28,11 +34,13 @@ export async function updateUser(req, res) {
     }
     // Update allowed fields
     const allowedUpdates = ["name", "email", "password"];
+    req.body.password = await bcrypt.hash(req.body.password, 10);
     allowedUpdates.forEach((field) => {
       if (updates[field] !== undefined) {
         user[field] = updates[field];
       }
     });
+
     await user.save();
     res.status(200).json(user);
   } catch (err) {
@@ -52,4 +60,27 @@ export async function deleteUser(req, res) {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+}
+export async function getAllCustomers(req, res) {
+  const userData = req.user;
+  if (userData.role != "admin") {
+    return res.json({
+      msg: " UNAUTHUserORIZED ACCESS",
+    });
+  }
+  //fetch it's customer profile else
+  const customers = await customerModel.find().populate("_id");
+  res.json(customers);
+}
+
+export async function getAllSellers(req, res) {
+  const userData = req.user;
+  if (userData.role != "admin") {
+    return res.json({
+      msg: " UNAUTHUserORIZED ACCESS",
+    });
+  }
+  //fetch it's customer profile else
+  const sellers = await sellerModel.find().populate("userId");
+  res.json(sellers);
 }

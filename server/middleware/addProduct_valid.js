@@ -179,8 +179,6 @@ export const validateProduct = (req, res, next) => {
     });
   }
 
-  console.log("\ndata validated\n"); //DEBUG
-
   // VALIDATE IMAGE + STORE
   //------------------------
 
@@ -191,8 +189,6 @@ export const validateProduct = (req, res, next) => {
     return err;
   } // to return the error
   //----------------------
-
-  console.log("\nimage stored and validated\n"); //DEBUG
 
   // everything ok
   next();

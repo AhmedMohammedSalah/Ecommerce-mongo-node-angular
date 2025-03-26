@@ -105,6 +105,7 @@ export async function createPayment(req, res) {
 
         // Deduct 10% as platform fee and update seller's balance
         seller.balance += totalMoney - totalMoney / 10;
+        
         await seller.save();
       }
     }

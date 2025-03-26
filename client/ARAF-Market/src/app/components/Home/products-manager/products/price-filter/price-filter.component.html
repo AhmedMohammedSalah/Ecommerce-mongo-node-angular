@@ -1,0 +1,20 @@
+<div class="my-3 price-filter">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <i class="fas fa-dollar-sign me-2"></i> Price Filter <!-- FontAwesome dollar icon -->
+    </div>
+    <div class="card-body">
+      <div class="mb-3">
+        <label class="form-label"><i class="fas fa-tag me-2"></i> Min Price</label> <!-- FontAwesome tag icon -->
+        <input type="number" class="form-control" [(ngModel)]="minPrice" (change)="onPriceFilter()" placeholder="Min" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label"><i class="fas fa-tag me-2"></i> Max Price</label> <!-- FontAwesome tag icon -->
+        <input type="number" class="form-control" [(ngModel)]="maxPrice" (change)="onPriceFilter()" placeholder="Max" />
+      </div>
+      <button class="btn btn-primary w-100" (click)="onPriceFilter()">
+        <i class="fas fa-filter me-2"></i> Apply Filter <!-- FontAwesome filter icon -->
+      </button>
+    </div>
+  </div>
+</div>

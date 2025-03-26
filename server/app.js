@@ -12,6 +12,12 @@ import swaggerUi from "swagger-ui-express";
 import orderRoutes from "./routes/order.routes.js";
 import customerRouter from "./routes/customer.routes.js";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Get the directory name using import.meta.url
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 // [AMS] 😒 naming ports
@@ -21,41 +27,43 @@ const defaultPort = 3000;
 dbConnection();
 app.use(express.json());
 // enable cors
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 app.use(
   cors({
-    origin: "*", // Allow all origins (not recommended for production)
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allowed HTTP methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
+    origin: "http://localhost:4200", // Allow requests from this origin
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // Allowed HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization", "token", "enctype"], // Allow the 'token' header
   })
 );
+app.options("*", cors()); // Handle preflight requests for all routes
 
 // [AMS] 🚀 using swagger for documentation api
 import fs from "fs";
-import path from "path";
 import { paymentRouter } from "./routes/payment.routes.js";
+import { getSeller } from "./controllers/seller.controller.js";
 const swaggerFilePath = path.resolve("./utils/swagger-output.json");
 const swaggerDocument = JSON.parse(fs.readFileSync(swaggerFilePath, "utf-8"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
 // [AMS] 🚀 using of all routers
+app.get("/user/seller/:sellerId", getSeller);
 // ---------without token verify
+app.get("", (req, res) => res.send("Hello"));
 app.use(authRouter);
-app.use(cartRoutes);
-app.use(orderRoutes);
-app.use(productRoutes);
-//------------------------------
 app.use(categoryRouter);
+app.use(productRoutes);
+app.use(cartRoutes);
+//------------------------------
+app.use(sellerRoutes);
+app.use(orderRoutes);
 app.use(promoRouter);
 app.use(reviewRouter);
 app.use(userRouter);
-app.use(sellerRoutes);
 app.use(customerRouter);
 
 app.use(paymentRouter);
 
-// app.listen(defaultPort, () => {
-//   console.log(`Server is running on port`);
-// });
+
 
 app.listen(defaultPort, () => {
   console.log(`Server is running on port`);

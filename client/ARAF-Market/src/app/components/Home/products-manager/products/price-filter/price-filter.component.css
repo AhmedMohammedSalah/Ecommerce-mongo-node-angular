@@ -1,0 +1,78 @@
+/* Custom CSS for the price filter */
+.price-filter {
+  max-width: 300px;
+  /* Adjust the width as needed */
+  margin: 0 auto;
+}
+
+.card {
+  border: none;
+  border-radius: 10px;
+  /* Rounded corners for the card */
+  overflow: hidden;
+  /* Ensures the border-radius is applied */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  /* Slight lift on hover */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  /* Enhanced shadow on hover */
+}
+
+.card-header {
+  font-size: 1.25rem;
+  font-weight: bold;
+  padding: 15px;
+  background: linear-gradient(135deg, #ff3a44,
+    #ff565e);
+  /* Gradient background */
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #333;
+}
+
+.form-control {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  /* Rounded corners for input fields */
+  padding: 10px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #ff3a44;
+  box-shadow: 0 0 0 3px #ff3a4440;
+  /* Focus effect */
+  outline: none;
+}
+
+.btn {
+  border: none;
+  border-radius: 5px;
+  /* Rounded corners for the button */
+  padding: 10px;
+  background: linear-gradient(135deg,#ff3a44,
+    #ff565e);
+  /* Gradient background */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  /* Slight lift on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* Shadow on hover */
+}
+
+.btn i {
+  color: white;
+  /* Icon color */
+}

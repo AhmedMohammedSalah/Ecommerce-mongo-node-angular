@@ -10,12 +10,19 @@ import { LoginService } from '../../../services/API/login/login.service';
 import { CommonModule } from '@angular/common';
 import { LoginUser } from '../../../types/login.interface';
 import { AuthServiceService } from '../../../services/DATA/auth-service.service';
-
+import { HeaderComponent } from '../../Home/header/header.component';
+import { FooterComponent } from '../../Home/footer/footer.component';
+import { CartService } from '../../../services/API/cart.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    HeaderComponent,
+    FooterComponent,
+  ],
 })
 export class LoginComponent {
   loginForm: FormGroup;
@@ -26,11 +33,13 @@ export class LoginComponent {
   showAlert = false;
   alertMessage = '';
   alertType = 'success';
-
+  isLoggedIn: boolean = false;
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private loginService: LoginService
+    private authService: AuthServiceService,
+    private loginService: LoginService,
+    private cartService: CartService
   ) {
     this.loginForm = this.fb.group({
       email: [
@@ -53,7 +62,21 @@ export class LoginComponent {
       ],
     });
   }
+  ngOnInit() {
+    this.authService.isLoggedIn$.subscribe((loggedIn) => {
+      this.isLoggedIn = loggedIn;
+    });
+    if (this.isLoggedIn) {
+      this.router.navigate(['/']);
 
+      const userData = localStorage.getItem('user');
+      const userRole = userData ? JSON.parse(userData).role : null;
+      if (userRole == 'user') this.router.navigate(['/']);
+      else if (userRole == 'seller')
+        this.router.navigate(['/seller-dashboard']);
+      else if (userRole == 'admin') this.router.navigate(['/seller-dashboard']);
+    }
+  }
   onSubmit(): void {
     this.submitted = true;
 
@@ -71,15 +94,16 @@ export class LoginComponent {
       next: (response) => {
         if (response.token && response.user) {
           console.log(response);
-          localStorage.setItem('token', response.token);
+          localStorage.setItem('token', response.token); // [SENU]: 🙂 SHOULD BE PUT IN HEADER!!!!!!![your fault took me 2 hours to catch]
           this.authServiceService.login(response.user);
 
           this.showAlert = true;
           this.alertMessage = 'Login successful! Redirecting to dashboard...';
           this.alertType = 'success';
 
-          if (response.user.role == 'user') this.router.navigate(['/']);
-          else if (response.user.role == 'seller')
+          if (response.user.role == 'user') {
+            setTimeout(() => this.router.navigate(['/']), 1000);
+          } else if (response.user.role == 'seller')
             this.router.navigate(['/seller-dashboard']);
           else if (response.user.role == 'admin')
             this.router.navigate(['/admin-dashboard']);
@@ -89,12 +113,26 @@ export class LoginComponent {
         this.isSubmitting = false;
 
         this.showAlert = true;
-        this.alertMessage =
-          error.error?.errors?.join('\n') || 'Login failed. Please try again.';
-        this.alertType = 'danger';
+        if ((error.status = 401)) {
+          this.alertMessage =
+            'User is not verified , please confirm your mail ';
+          this.alertType = 'danger';
+        } else {
+          this.alertMessage =
+            error.error?.errors?.join('\n') ||
+            'Login failed. Please try again.';
+          this.alertType = 'danger';
 
-        console.log(error);
+          console.log(error);
+        }
       },
     });
+  }
+  ngOnDestroy() {
+                this.refreshCart();
+
+  }
+  refreshCart() {
+    this.cartService.syncGuestCart();
   }
 }

@@ -68,8 +68,10 @@ export const getCartByUserId = async (req, res) => {
 //-------------------------------------------------------------------------------------
 export const updateCart = async (req, res) => {
   try {
-    const userId = req.user._id;
-    const { productId, quantity } = req.body;
+    let userId;
+    if (req.user) userId = req.user._id;
+
+    const { productId, quantity, sessionId } = req.body;
 
     // Find the product to check available stock
     const product = await productModel.findById(productId);
@@ -77,13 +79,19 @@ export const updateCart = async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
 
+    // Check stock availability
     if (quantity > product.availableStock) {
       return res.status(400).json({ message: "Insufficient stock available" });
     }
 
+    // Determine query based on user type
+    const query = userId
+      ? { userId, "items.productId": productId }
+      : { sessionId, "items.productId": productId };
+
     // Update cart with the new quantity
     const updatedCart = await cartModel.findOneAndUpdate(
-      { userId, "items.productId": productId },
+      query,
       { $set: { "items.$.quantity": quantity } },
       { new: true }
     );
@@ -92,10 +100,12 @@ export const updateCart = async (req, res) => {
       return res.status(404).json({ message: "Cart not found" });
     }
 
-    res
-      .status(200)
-      .json({ message: "Cart updated successfully", cart: updatedCart });
+    res.status(200).json({
+      message: "Cart updated successfully",
+      cart: updatedCart,
+    });
   } catch (error) {
+    console.error("Error updating cart:", error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -147,8 +157,23 @@ at this case you have all product data becauses you fetch it to view the product
 //-----------------------------------------------------------------------------------------
 // {productId: 'fsdfsdf', price: 1000,discount:: 12,quantity: default(1)}
 //-----------------------------------------------------------------------------------------
+export async function getCartBySession(req, res) {
+  const { sessionId } = req.params;
+  console.log(req.params);
 
-export async function addItemToCart (req, res) {
+  if (!sessionId) {
+    return res.status(400).json({ message: "Session Id is required" });
+  }
+  const cart = await cartModel.findOne({ sessionId });
+  if (!cart) {
+    return res.status(400).json({ message: "Cart not found" });
+  }
+  console.log(cart);
+
+  res.status(200).json(cart);
+}
+export async function addItemToCart(req, res) {
+  console.log(req.body);
   // GET [PRODUCT-ID FROM REQUEST BODY [PID]
   // CHECK STOCKQUANTITY (NOT EQUAL ZERO)
   // DECRYPT TOKEN
@@ -233,7 +258,6 @@ export async function addItemToCart (req, res) {
     if (existingCartItem) {
       existingCartItem.quantity++;
       await cart.save();
-
     } else {
       cart.items.push({
         productId: productId,
@@ -243,7 +267,7 @@ export async function addItemToCart (req, res) {
       });
     }
 
-    cart.markModified("items"); 
+    cart.markModified("items");
     await cart.save();
 
     return res
@@ -254,7 +278,7 @@ export async function addItemToCart (req, res) {
       .status(500)
       .json({ message: "Error adding product to cart", error: error.message });
   }
-};
+}
 
 // NOTE: WHEN ORDER MADE THE STOCK WILL BE REDUCES BASED ON THE AMOUNT IN THE ORDRER
 // SO IF HE TRYING TO GET EVEN ONE AND THE STOCK IS EMPTY = 0 TELL THEM  "OUT-OF-STOCK"
@@ -331,11 +355,75 @@ export async function removeItemFromCart(req, res) {
       .status(200)
       .json({ message: "Product removed from cart successfully", cart });
   } catch (error) {
+    return res.status(500).json({
+      message: "Error removing product from cart",
+      error: error.message,
+    });
+  }
+}
+export async function syncCart(req, res) {
+  const { sessionId } = req.body;
+  const user = req.user;
+
+  if (!sessionId) {
+    return res.status(400).json({ message: "Session ID is required" });
+  }
+
+  try {
+    let cart = await cartModel.findOne({ userId: user._id });
+
+      console.log("userId");
+      console.log(cart);
+    if (!cart) {
+      // Check if a cart exists with sessionId
+      cart = await cartModel.findOne( { sessionId } );
+      
+      console.log(cart);
+      if (!cart) {
+        return res.status(404).json({ message: "Cart not found" });
+      }
+      // Assign the user ID and save
+      console.log(cart);
+      cart.userId = user._id;
+      cart.sessionId = sessionId;
+      await cart.save();
+      return res
+        .status(200)
+        .json({ message: "Cart synced successfully", cart });
+    } else {
+      // User already has a cart, check if there's a session cart
+      const sessionCart = await cartModel.findOne({ sessionId });
+
+      if (sessionCart) {
+        // Merge sessionCart items into user's cart
+        sessionCart.items.forEach((sessionItem) => {
+          const existingItemIndex = cart.items.findIndex(
+            (item) =>
+              item.productId.toString() === sessionItem.productId.toString()
+          );
+
+          if (existingItemIndex !== -1) {
+            // If the item already exists, update the quantity
+            cart.items[existingItemIndex].quantity += sessionItem.quantity;
+          } else {
+            // Otherwise, add the item
+            cart.items.push(sessionItem);
+          }
+        });
+
+        await cart.save();
+        await cartModel.findByIdAndRemove(sessionCart._id); // Remove session cart
+
+        return res
+          .status(200)
+          .json({ message: "Cart synced successfully", cart });
+      }
+    }
+
+    return res.status(200).json({ message: "No session cart found", cart });
+  } catch (error) {
     return res
       .status(500)
-      .json({
-        message: "Error removing product from cart",
-        error: error.message,
-      });
+      .json({ message: "Error syncing cart", error: error.message });
   }
 }

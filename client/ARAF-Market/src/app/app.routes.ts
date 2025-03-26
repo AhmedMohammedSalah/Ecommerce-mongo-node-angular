@@ -7,27 +7,46 @@ import { ProfileComponent } from './components/customer/profile/profile.componen
 import { UsersProfileComponent } from './components/admin/profile/UsersandSellersProfile/users-profile/users-profile/users-profile.component';
 import { AdminProfileComponent } from './components/admin/profile/admin-profile/admin-profile.component';
 import { SellersProfileComponent } from './components/admin/profile/UsersandSellersProfile/sellers-profile/sellers-profile/sellers-profile.component';
+import { loginedGuard } from './guards/logined.guard';
+import { UnauthorizedComponent } from './components/others/unauthorized/unauthorized.component';
+import { SellerProfileComponent } from './components/seller/seller-profile/seller-profile.component';
+import { ProductDetailsComponent } from './components/Home/products-manager/products/product-details/product-details.component';
+import { WhichlistComponent } from './components/Home/whichlist/whichlist.component';
+import { CartComponent } from './components/Home/cart/cart.component';
+
 export const routes: Routes = [
   {
     path: '',
     component: HomeComponent,
-    title:"ARAF-Market"
+    title: 'ARAF-Market',
   },
   {
     path: 'register',
     component: RegisterComponent,
-    title:"Register"
+    title: 'Register',
   },
 
   {
     path: 'login',
     component: LoginComponent,
-    title:"Login"
+    title: 'Login',
   },
   {
     path: 'profile',
     component: ProfileComponent,
-    title:"profile"
+    title: 'profile',
+    canActivate: [loginedGuard],
+  },
+
+  {
+    path: 'unauthorized',
+    component: UnauthorizedComponent,
+  },
+  // [SENU] seller routes adding
+  {
+    path: 'seller-dashboard',
+    component: SellerProfileComponent,
+    title: 'Seller Dashboard',
   },
   
   {
@@ -48,8 +67,23 @@ export const routes: Routes = [
   },
 
   {
-			path:'**' ,
+    path: 'product-details/:id',
+    component: ProductDetailsComponent,
+    title: 'product-details',
+  },
+  {
+    path: 'whichlist',
+    component: WhichlistComponent,
+    title: 'whichlist',
+  },
+  {
+    path: 'cart',
+    component: CartComponent,
+    title: 'cart',
+  },
+  {
+    path: '**',
     component: NotFoundComponent,
-      title:"Not Found"
-  }
+    title: 'Not Found',
+  },
 ];
