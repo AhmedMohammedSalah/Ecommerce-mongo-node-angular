@@ -1,10 +1,11 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { ProductService } from '../../../services/API/product.service';
 import { CommonModule } from '@angular/common';
+import { ViewUpdateProductFormComponent } from '../view-update-product-form/view-update-product-form.component';
 
 @Component({
   selector: 'app-product-card',
-  imports: [CommonModule],
+  imports: [CommonModule, ViewUpdateProductFormComponent],
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.css'
 })
