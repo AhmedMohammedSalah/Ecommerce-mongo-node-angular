@@ -15,12 +15,11 @@ export class ViewUpdateProductFormComponent {
 
   //====ATTRIBUTES====
   productForm: FormGroup;
-  catNames: string[] = [];                   // category names  
-  categories: Category[] | null = null;      // category objects
-  imagePreview: string | null = null;        // image
-  response: any = [];                        // response
-
-  @Input() selectedProduct: any = '';        // [NEW] : for object
+  catNames: string[] = [];                  // category names  
+  categories: Category[] | null = null;     // category objects
+  imagePreview: string | null = null;       // image
+  response: any = [];                       // response
+  selectedProduct: any = '';                // [NEW] : for object
 
   
   //====SERVICES====
@@ -31,38 +30,24 @@ export class ViewUpdateProductFormComponent {
   //====ONINIT====
   ngOnInit() {
     this.getCategories();
-    this.loadSelectedProduct();
-  }
-
-  // it is just a monitor
-  ngOnChanges() {
-    console.log("Selected product updated:", this.selectedProduct);
+    console.log("hello from on init...")
   }
 
 
   //====METHODS====
 
   // [NEW] [METHOD] : get data for selected product
-  loadSelectedProduct() {
-    const storedProduct = localStorage.getItem("selectedProduct");
-    this.selectedProduct = storedProduct ? JSON.parse(storedProduct) : null;
-    console.log("Loaded selected product:", this.selectedProduct);
 
-    if (this.selectedProduct) {
-      this.productForm.patchValue({
-        productName: this.selectedProduct.productName || '',
-        productDesc: this.selectedProduct.description || '',
-        stocks: this.selectedProduct.stockQuantity || 0,
-        productPrice: this.selectedProduct.price || 0,
-        productDiscount: this.selectedProduct.discount || 0,
-        category: this.selectedProduct.category || ''
-      });
-    }
-  }
 
 
   //====CONSTRUCTOR====
   constructor(fb: FormBuilder) {
+
+
+    console.log("constructor is alive hello....");
+
+
+    
     const req = Validators.required;
     const min = Validators.minLength;
     const max = Validators.maxLength;

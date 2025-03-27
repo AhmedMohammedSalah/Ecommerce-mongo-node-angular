@@ -7,10 +7,12 @@ import { AdminService } from '../admin-orders.service';
   styleUrls: ['./admin-orders.component.css'],
 })
 export class AdminOrdersComponent implements OnInit {
+
   orders: any[] = [];
 
   constructor(private adminService: AdminService) {}
 
+  
   ngOnInit() {
     this.fetchOrders();
   }

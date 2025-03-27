@@ -5,7 +5,8 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class AdminService {
-  private apiUrl = 'http://your-backend-url/api'; // Change to your backend URL
+
+  private apiUrl = 'http://127.0.0.1:3000'; // Change to your backend URL
 
   constructor(private http: HttpClient) {}
 

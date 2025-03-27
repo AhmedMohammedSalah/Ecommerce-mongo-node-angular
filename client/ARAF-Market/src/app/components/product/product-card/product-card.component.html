@@ -81,7 +81,6 @@
   <!------View update Modal------>
 
   <div class="modal modal-lg fade" 
-    *ngIf="isModalOpen"
     id="viewUpdateModal" 
     aria-labelledby="viewUpdateModalLabel"
     aria-hidden="true"
@@ -97,14 +96,14 @@
             <!-- HEADER -->
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="addProductModalLabel">View/Update Product</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="closeModal()" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <!-- BODY -->
             <div class="modal-body">
 
               <!-- the component should be here -->
-              <app-view-update-product-form [selectedProduct]="productData"></app-view-update-product-form>
+              <app-view-update-product-form></app-view-update-product-form>
               
             </div>
 
