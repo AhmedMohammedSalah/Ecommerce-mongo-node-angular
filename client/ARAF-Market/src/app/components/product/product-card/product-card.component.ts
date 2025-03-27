@@ -12,6 +12,7 @@ import { ViewUpdateProductFormComponent } from '../view-update-product-form/view
 export class ProductCardComponent {
 
   //=Attributes============
+  isModalOpen = false;        //[NEW]
   @Input() productData : any;
   @Output() sentProduct = new EventEmitter<any>();
   selectedProduct : any = null; //store selected product
@@ -25,6 +26,9 @@ export class ProductCardComponent {
   --------------------------------------*/
   setSelectedProduct(product: any) {
     localStorage.setItem('selectedProduct', JSON.stringify(product)); //😭😭😭😭😭
+    console.log("product added in the local storage =", product);
+
+    this.openModal(); // [NEW]
   }
 
   /*[METOHD]: remove the product using the service
@@ -43,6 +47,18 @@ export class ProductCardComponent {
     // send to parent to remove from productSeller
     this.sentProduct.emit(selectedProduct);
   }
+
+
+
+  openModal() {
+    this.isModalOpen = true;
+  }
+
+  closeModal() {
+    this.isModalOpen = false;
+  }
+
+  
 
 
 }

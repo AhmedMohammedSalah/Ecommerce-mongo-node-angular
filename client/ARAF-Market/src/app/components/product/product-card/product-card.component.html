@@ -39,6 +39,7 @@
           <button 
           class="btn btn-primary w-100 mt-2"
           data-bs-toggle="modal"
+          (click)="setSelectedProduct(productData)"
           data-bs-target="#viewUpdateModal">View Product</button>
       </div>
   </div>
@@ -79,7 +80,8 @@
 
   <!------View update Modal------>
 
-  <div class="modal modal-lg fade"  
+  <div class="modal modal-lg fade" 
+    *ngIf="isModalOpen"
     id="viewUpdateModal" 
     aria-labelledby="viewUpdateModalLabel"
     aria-hidden="true"
@@ -94,15 +96,15 @@
             
             <!-- HEADER -->
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="addProductModalLabel">View/Updare PRODUCT</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h1 class="modal-title fs-5" id="addProductModalLabel">View/Update Product</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="closeModal()" aria-label="Close"></button>
             </div>
 
             <!-- BODY -->
             <div class="modal-body">
 
               <!-- the component should be here -->
-              <app-view-update-product-form></app-view-update-product-form>
+              <app-view-update-product-form [selectedProduct]="productData"></app-view-update-product-form>
               
             </div>
 
