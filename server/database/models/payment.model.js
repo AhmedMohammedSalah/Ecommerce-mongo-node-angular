@@ -29,7 +29,7 @@ const paymentSchema = new Schema(
     // for paypal or stripe gatway
     paymentGatewayId: {
         type: String,
-        required: true
+        // required: true
         
     }
   },

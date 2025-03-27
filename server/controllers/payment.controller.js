@@ -2,6 +2,7 @@ import orderModel from "../database/models/order.model.js";
 import { paymentModel } from "../database/models/payment.model.js";
 import sellerModel from "../database/models/seller.model.js";
 import { collectSellersAndTheirProducts } from "./order.controller.js";
+import paypal from "@paypal/checkout-server-sdk";
 
 export async function getAllPayments(req, res) {
   if (req.user.role !== "admin") {
@@ -44,7 +45,7 @@ export async function getPayment(req, res) {
 
 export async function createPayment(req, res) {
   try {
-    const { orderId, paymentGatewayId } = req.body;
+    const { orderId } = req.body;
     const customerId = req.user._id;
 
     // Authorization check
@@ -55,7 +56,7 @@ export async function createPayment(req, res) {
     }
 
     // Validate required fields
-    if (!orderId || !paymentGatewayId) {
+    if (!orderId) {
       return res
         .status(400)
         .send({ message: "Order ID and Payment Gateway ID are required" });
@@ -78,7 +79,6 @@ export async function createPayment(req, res) {
       orderId,
       amount,
       customerId,
-      paymentGatewayId,
       paymentStatus: "success", // Assuming payment is successful for this example
     });
     await payment.save();
@@ -105,7 +105,7 @@ export async function createPayment(req, res) {
 
         // Deduct 10% as platform fee and update seller's balance
         seller.balance += totalMoney - totalMoney / 10;
-        
+
         await seller.save();
       }
     }
@@ -119,5 +119,62 @@ export async function createPayment(req, res) {
     res
       .status(500)
       .send({ message: "Error creating payment", error: error.message });
+  }
+}
+const configureEnvironment = () => {
+  const clientId =
+    "AbLRWLm3NZT8Ine3miqGN5QaiEmvh4ZkthhI3I1-vsXS2M8xc59M361uPy83F_U5GOxhMuBstTUgwL38";
+  const clientSecret =
+    "EBRPDw43t5bkzqhb4TDqt5RqIX4rOy9QDwqLboj10IRGcbqCalitKICs6UnP4uab23S7ZGV8ezGYeWK2";
+  return process.env.NODE_ENV === "production"
+    ? new paypal.core.LiveEnvironment(clientId, clientSecret)
+    : new paypal.core.SandboxEnvironment(clientId, clientSecret);
+};
+
+const client = new paypal.core.PayPalHttpClient(configureEnvironment());
+
+export async function executePaypal(req, res) {
+  try {
+    const { orderID } = req.body;
+
+    const request = new paypal.orders.OrdersCaptureRequest(orderID);
+  request.requestBody({
+    // intent: "CAPTURE",
+    // purchase_units: [
+    //   {
+    //     amount: {
+    //       currency_code: "USD",
+    //       value: "10.00",
+    //     },
+    //   },
+    // ],
+  });
+
+    // Execute the capture request
+    const captureResponse = await client.execute(request);
+
+    // Optionally update your Payment record in your database.
+    // Example: Find the Payment record by orderID (or similar field) and update its status.
+    const updatedPayment = await Payment.findOneAndUpdate(
+      { paymentGatewayId: orderID },
+      {
+        paymentStatus: "success",
+        paymentGatewayId: captureResponse.result.id,
+        orderId: captureResponse.result.purchase_units[0].reference_id,
+      },
+      { new: true }
+    );
+
+    res.json({
+      success: true,
+      orderId: updatedPayment.orderId,
+      paymentId: updatedPayment.paymentGatewayId,
+    });
+  } catch (error) {
+    console.error("PayPal execution error:", error);
+    res.status(500).json({
+      success: false,
+      error: "Payment processing failed",
+    });
   }
 }

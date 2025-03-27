@@ -1,0 +1,70 @@
+/* styles.css */
+.btn-danger, .bg-danger {
+  background-color: #ff3a44 !important;
+  border-color: #ff3a44 !important;
+}
+
+.checkout-card {
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+.checkout-card:hover {
+  transform: translateY(-5px);
+  -webkit-transform: translateY(-5px);
+  -moz-transform: translateY(-5px);
+  -ms-transform: translateY(-5px);
+  -o-transform: translateY(-5px);
+}
+
+.payment-method-card {
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.payment-method-card.selected {
+  border-color: #ff3a44;
+}
+
+.order-summary-item {
+  border-bottom: 1px solid #eee;
+  padding: 1rem 0;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255,255,255,0.8);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Currency pipe formatting */
+.currency::before {
+  content: '$';
+}
+
+/* Form validation styles */
+.ng-invalid.ng-touched {
+  border-color: #ff3a44;
+  box-shadow: 0 0 0 0.2rem rgba(255,58,68,.25);
+}
+
+/* Loading overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255,255,255,0.8);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -73,9 +73,12 @@
                 calculateTotal() | currency
               }}</span>
             </div>
-            <button class="btn btn-danger w-100 py-3">
-              <i class="fas fa-lock me-2"></i>Proceed to Checkout
-            </button>
+            <!-- Add to cart.component.html -->
+<button
+  class="btn btn-danger w-100 py-3"
+  (click)="handleCheckout()">
+  <i class="fas fa-lock me-2"></i>Proceed to Checkout
+</button>
             <div class="text-center mt-3">
               <a routerLink="/products" class="text-danger">
                 <i class="fas fa-arrow-left me-2"></i>Continue Shopping

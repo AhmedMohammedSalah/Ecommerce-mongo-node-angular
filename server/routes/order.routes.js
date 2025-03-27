@@ -4,6 +4,7 @@ import {
   getOrders,
   getAllOrders,
   updateDeliverStatus,
+  getOrderById,
 } from "../controllers/order.controller.js";
 
 import { tokenVerify } from "../middleware/tokenVerify.js";
@@ -25,5 +26,5 @@ orderRoutes.get("/orders/",tokenVerify, getOrders);
 // READ ALL ORDERS
 orderRoutes.get("/orders/admin", getAllOrders);
 
-
+orderRoutes.get("/orders/:id",getOrderById)
 export default orderRoutes

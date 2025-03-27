@@ -1,0 +1,22 @@
+<app-header></app-header>
+<div class="container py-4">
+  <h1 class="mb-4 text-danger">
+    <i class="fab fa-paypal me-2"></i>PayPal Payment
+  </h1>
+
+  <!-- ngx-paypal component renders the PayPal button using the configuration -->
+  <ngx-paypal [config]="payPalConfig"></ngx-paypal>
+
+  <!-- Optionally, display messages -->
+  <div *ngIf="loading" class="my-3 text-center">
+    <div class="spinner-border text-danger" role="status"></div>
+    <p>Processing payment...</p>
+  </div>
+  <div *ngIf="error" class="alert alert-danger mt-3">
+    {{ error }}
+  </div>
+  <div *ngIf="success" class="alert alert-success mt-3">
+    {{ success }}
+  </div>
+</div>
+<app-footer></app-footer>

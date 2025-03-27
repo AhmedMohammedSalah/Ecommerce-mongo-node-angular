@@ -34,7 +34,7 @@ const orderSchema = new Schema(
       required: true,
       enum: ["Credit Card", "PayPal", "Cash on Delivery"],
     },
-    paymentId: { type: String, required: true }, // Transaction ID
+    paymentId: { type: String }, // Transaction ID
     status: {
       type: String,
       enum: [

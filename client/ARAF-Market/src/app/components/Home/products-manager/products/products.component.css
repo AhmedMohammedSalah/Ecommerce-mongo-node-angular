@@ -1,13 +1,15 @@
 /* Custom CSS for the collapsible filters button */
 .btn-primary {
   background-color: #ff3a44;
-  /* Primary color */
-  border: none;
+  /*Primarycolor*/border: none;
   padding: 10px 20px;
   border-radius: 4px;
-  /* Rounded corners */
-  font-size: 1rem;
+  /*Roundedcorners*/font-size: 1rem;
   transition: background-color 0.3s ease;
+  -webkit-transition: background-color 0.3s ease;
+  -moz-transition: background-color 0.3s ease;
+  -ms-transition: background-color 0.3s ease;
+  -o-transition: background-color 0.3s ease;
 }
 
 .btn-primary:hover {
@@ -18,10 +20,12 @@
 /* Ensure proper spacing for filters in collapsed mode */
 #filtersCollapse {
   background-color: #f8f9fa;
-  /* Light background for filters */
-  padding: 15px;
+  /*Lightbackgroundforfilters*/padding: 15px;
   border-radius: 8px;
-  /* Rounded corners */
+  /*Roundedcorners*/
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  /* Subtle shadow */
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
 }

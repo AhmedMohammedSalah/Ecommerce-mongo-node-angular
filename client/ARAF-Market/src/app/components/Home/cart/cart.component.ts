@@ -5,30 +5,41 @@ import { AuthServiceService } from '../../../services/DATA/auth-service.service'
 import { ProductService } from '../../../services/API/product.service';
 import { CartItemComponent } from './cart-item/cart-item.component';
 import { Subject, takeUntil } from 'rxjs';
-import { HeaderComponent } from "../header/header.component";
-import { FooterComponent } from "../footer/footer.component";
+import { HeaderComponent } from '../header/header.component';
+import { FooterComponent } from '../footer/footer.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cart',
-  imports: [NgIf, NgFor, CurrencyPipe, CartItemComponent, HeaderComponent, FooterComponent],
+  imports: [
+    NgIf,
+    NgFor,
+    CurrencyPipe,
+    CartItemComponent,
+    HeaderComponent,
+    FooterComponent,
+  ],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css',
 })
 export class CartComponent {
   cartItems: any[] = [];
-  loading = true;
   productsIds: any[] = [];
   products: any[] = [];
+  loading = true;
+  isLogged: boolean = false;
 
   private destroy$ = new Subject<void>();
   constructor(
-    public cartService: CartService,
     public authService: AuthServiceService,
-    public productService: ProductService
+    public cartService: CartService,
+    public productService: ProductService,
+    public router: Router
   ) {}
 
   ngOnInit(): void {
     this.loadCart();
+    this.authService.isLoggedIn$.subscribe((res) => (this.isLogged = res));
   }
 
   ngOnDestroy(): void {
@@ -93,5 +104,12 @@ export class CartComponent {
       (total, item) => total + item.price * item.quantity,
       0
     );
+  }
+  handleCheckout() {
+    if (!this.authService.isLoggedIn()) {
+      this.authService.redirectToLoginWithReturnUrl('/checkout');
+      return;
+    }
+    this.router.navigate(['/checkout']);
   }
 }

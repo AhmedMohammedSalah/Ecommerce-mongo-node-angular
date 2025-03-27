@@ -15,9 +15,26 @@ import { WhichlistComponent } from './components/Home/whichlist/whichlist.compon
 import { CartComponent } from './components/Home/cart/cart.component';
 import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
 import { ProductsComponent } from './components/admin/products/products.component';
+<<<<<<< HEAD
 import { AdminOrdersComponent } from './components/admin/orders/admin-orders/admin-orders.component'; // [FM] Edit
 import { ProductSellerPageComponent } from './components/seller/pages/product-seller-page/product-seller-page.component';
+import { OrderComponent } from './components/Home/order-management/order/order.component';
+import { OrderDetailComponent } from './components/Home/order-management/order-detail/order-detail.component';
+import { CheckoutComponent } from './components/Home/order-management/checkout/checkout.component';
+import { PaymentComponent } from './components/Home/order-management/payment/payment.component';
+import { PaypalComponent } from './components/Home/order-management/paypal/paypal.component';
+import { OrderSuccessComponent } from './components/Home/order-management/order-success/order-success.component';
+import { authGuard } from './guards/auth.guard';
 
+=======
+import { CheckoutComponent } from './components/Home/order-management/checkout/checkout.component';
+import { PaymentComponent } from './components/Home/order-management/payment/payment.component';
+import { OrderSuccessComponent } from './components/Home/order-management/order-success/order-success.component';
+import { authGuard } from './guards/auth.guard';
+import { OrderComponent } from './components/Home/order-management/order/order.component';
+import { OrderDetailComponent } from './components/Home/order-management/order-detail/order-detail.component';
+import { PaypalComponent } from './components/Home/order-management/paypal/paypal.component';
+>>>>>>> 2fcdac2 (customer senario fished ✅)
 export const routes: Routes = [
   {
     path: '',
@@ -114,6 +131,21 @@ export const routes: Routes = [
       }, // [FM] Edit
     ],
   },
+  {
+    path: 'orders',
+    component: OrderComponent,
+    title: 'My Orders',
+  },
+  {
+    path: 'orders/:id',
+    component: OrderDetailComponent,
+    title: 'Order Details',
+  },
+  { path: 'checkout', component: CheckoutComponent, canActivate: [authGuard] },
+  { path: 'payment', component: PaymentComponent },
+
+  { path: 'paypal', component: PaypalComponent },
+  { path: 'order-success/:id', component: OrderSuccessComponent },
 
   {
     path: '**',

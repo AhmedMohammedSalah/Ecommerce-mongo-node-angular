@@ -91,8 +91,8 @@ export const getSellerByPID = async (PID) =>
 /**helper function take the itemscart and
  * send the sellers and product in dictionary
  * key is the seller id and the value is array of product
- * {"sid": [{},{}], "sid": [{}]} 
- * @reuse in payment controller by [AMS] 
+ * {"sid": [{},{}], "sid": [{}]}
+ * @reuse in payment controller by [AMS]
  */
 // export const collectSellersAndTheirProducts = async (items) => {
 //   const sellersProducts = {};
@@ -196,7 +196,6 @@ const sendOrder2sellers = async (items, parentOrderId, UID) => {
 
 export const createOrder = async (req, res) => {
   let promoDiscount = 0;
-;
   // DECRYPT TOKEN
   const userData = req.user;
 
@@ -238,7 +237,9 @@ export const createOrder = async (req, res) => {
     paymentMethod: req.body.paymentMethod,
     paymentId: req.body.paymentId,
   });
-
+  //EMPTY USER CART FROM ITEMS
+  userCart.items = [];
+  await userCart.save();
   // SAVE ORDER TO DATABASE
   const savedOrder = await orderDetails.save();
 
@@ -257,11 +258,11 @@ export const createOrder = async (req, res) => {
   savedOrder.stateList = stateList;
 
   // [NEW] store order id in the customer's orders array
-    
-    const customerProfile = await customerModel.findById( userData.id );
-    // [AMS] For debug only
-    //  await createCustomerProfile(userData.id);
-    // console.log(userData.id);
+
+  const customerProfile = await customerModel.findById(userData.id);
+  // [AMS] For debug only
+  //  await createCustomerProfile(userData.id);
+  // console.log(userData.id);
   if (!customerProfile) {
     return res.json({ err: "createOrder: customer not exist. check token" });
   }
@@ -316,7 +317,7 @@ export const updateDeliverStatus = async (req, res) => {
   const newStatus = req.body.status;
 
   // decrypt token
-  const userData = req.user ;
+  const userData = req.user;
   if (!userData) {
     res.json({
       msg: "updateDeliverStatus: user not exist, check id in the token",
@@ -597,80 +598,95 @@ export const updateDeliverStatus = async (req, res) => {
 
 ///////////////////READING///////////////////////
 
+export const getOrders = async (req, res) => {
+  // get user
+  const userData = req.user;
+  const role = userData.role;
+  const id = userData.id;
 
-
-export const getOrders =  async (req, res) =>{
-    
-    // get user
-    const userData = req.user;
-    const role = userData.role;
-    const id = userData.id
-
-    // role
-    if( role == "user"){
-
-        // profile [CUSTOMER]
-        const customerProfile = await  customerModel.findById(id);
-        if(!customerProfile){ return res.json({msg:"coudn't find customer, check token"}) };
-
-        // read
-        const customerOrders = customerProfile.orders;
-        const orders = await orderModel.find({ _id: { $in: customerOrders } });
-        if(!orders){return res.json({mag:"error related to find the orders!. check it"})};
-        res.json(orders);
-        return
-
-
-    }
-    else if(role == "seller" ){
-
-        // profile [SELLER]
-        const sellerProfile = await sellerModel.findOne({userId: id});
-        if(!sellerProfile){ return res.json({msg:"coudn't find seller, check token"}) };
-
-        // read
-        const sellerOrders = sellerProfile.orders;
-        if(sellerOrders.length == 0){return res.json({msg:"no order yet"})};
-        res.json(sellerOrders);
-        return
-
-    }
-    else if(role == "admin"){
-
-        //profile [ADMIN AS A SELLER]
-        const adminProfile = await adminModel.findById(id);
-        if(!adminProfile){ return res.json({msg:"coudn't find admin[as a seller], check token"}) };
-
-        // read
-        const adminOrders = adminProfile.orders;
-        if(adminOrders.length == 0){return res.json({msg:"no order yet"})};
-        res.json(adminOrders);
-        return
-
+  // role
+  if (role == "user") {
+    // profile [CUSTOMER]
+    const customerProfile = await customerModel.findById(id);
+    if (!customerProfile) {
+      return res.json({ msg: "coudn't find customer, check token" });
     }
 
-    // wrong in role
-    res.json({msg:"unfound role check id"});
-}
+    // read
+    const customerOrders = customerProfile.orders;
+    const orders = await orderModel.find({ _id: { $in: customerOrders } });
+    if (!orders) {
+      return res.json({ mag: "error related to find the orders!. check it" });
+    }
+    res.json(orders);
+    return;
+  } else if (role == "seller") {
+    // profile [SELLER]
+    const sellerProfile = await sellerModel.findOne({ userId: id });
+    if (!sellerProfile) {
+      return res.json({ msg: "coudn't find seller, check token" });
+    }
 
+    // read
+    const sellerOrders = sellerProfile.orders;
+    if (sellerOrders.length == 0) {
+      return res.json({ msg: "no order yet" });
+    }
+    res.json(sellerOrders);
+    return;
+  } else if (role == "admin") {
+    //profile [ADMIN AS A SELLER]
+    const adminProfile = await adminModel.findById(id);
+    if (!adminProfile) {
+      return res.json({ msg: "coudn't find admin[as a seller], check token" });
+    }
 
+    // read
+    const adminOrders = adminProfile.orders;
+    if (adminOrders.length == 0) {
+      return res.json({ msg: "no order yet" });
+    }
+    res.json(adminOrders);
+    return;
+  }
+
+  // wrong in role
+  res.json({ msg: "unfound role check id" });
+};
 
 /** [FOR ADMIN ONLY]
  * check all orders
  */
-export const getAllOrders = async(req, res) => {
+export const getAllOrders = async (req, res) => {
+  // check admin
+  const userData = req.user;
+  if (!userData) {
+    return res.json({ msg: "getAllOrders: check token" });
+  }
 
-    // check admin
-    const userData = req.user;
-    if(!userData){ return res.json({msg:"getAllOrders: check token"})} 
+  if (userData.role != "admin") {
+    return res.json({
+      msg: "getAllOrders: UNAUTHORIZED ACCESS, CHECK USER ROLE",
+    });
+  }
 
-    if(userData.role != "admin"){ return res.json({msg:"getAllOrders: UNAUTHORIZED ACCESS, CHECK USER ROLE"})}
-
-    const allOrders = await orderModel.find({});
-    if(!allOrders) {return res.json({msg: "getAllOrders: coudn't get the orders from orderModel"});}
-    res.json(allOrders);
-}
+  const allOrders = await orderModel.find({});
+  if (!allOrders) {
+    return res.json({
+      msg: "getAllOrders: coudn't get the orders from orderModel",
+    });
+  }
+  res.json(allOrders);
+};
 // --------------------------------------------------------
 // |||||||    [AMS]🤑 Payment  Addition           |||||||||
 // --------------------------------------------------------
-  
+
+export async function getOrderById(req, res) {
+  const id = req.params.id;
+  const order = await orderModel.findById(id);
+  if (!order) {
+    return res.json({ msg: "order not found" });
+  }
+  res.json(order);
+}

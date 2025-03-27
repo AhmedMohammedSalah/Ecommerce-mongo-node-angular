@@ -362,6 +362,8 @@ export async function removeItemFromCart(req, res) {
   }
 }
 export async function syncCart(req, res) {
+    console.log("Request received:", req.body);
+    console.log("User:", req.user);
   const { sessionId } = req.body;
   const user = req.user;
 

@@ -1,0 +1,53 @@
+<app-header></app-header>
+<div class="container py-4">
+  <h1 class="mb-4 text-danger">
+    <i class="fas fa-credit-card me-2"></i>Payment Details
+  </h1>
+
+  <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()">
+    <!-- Order ID Field -->
+    <div class="mb-3">
+      <label for="orderId" class="form-label">Order ID</label>
+      <input
+        type="text"
+        id="orderId"
+        formControlName="orderId"
+        class="form-control"
+        placeholder="Order ID"
+        readonly
+      />
+    </div>
+
+    <!-- Payment Gateway ID Field -->
+    <!-- <div class="mb-3">
+      <label for="paymentGatewayId" class="form-label">Payment Gateway ID</label>
+      <input
+        type="text"
+        id="paymentGatewayId"
+        formControlName="paymentGatewayId"
+        class="form-control"
+        placeholder="Enter your payment gateway ID"
+      />
+    </div> -->
+
+    <!-- Submit Button -->
+    <button
+      type="submit"
+      class="btn btn-danger w-100 py-3"
+      [disabled]="loading"
+    >
+      <i class="fas fa-lock me-2"></i>complete Payment
+    </button>
+
+    <!-- Success Message -->
+    <div *ngIf="paymentSuccess" class="alert alert-success mt-3">
+      {{ paymentSuccess }}
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="paymentError" class="alert alert-danger mt-3">
+      {{ paymentError }}
+    </div>
+  </form>
+</div>
+<app-footer></app-footer>

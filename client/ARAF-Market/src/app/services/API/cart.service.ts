@@ -19,7 +19,6 @@ export class CartService {
   private cartItems: any[] = [];
   private sessionId: string;
   private isLoggedIn: boolean = false;
-
   private cartCountSubject = new BehaviorSubject<number>(0);
   public cartCount$ = this.cartCountSubject.asObservable();
   constructor(
@@ -102,33 +101,33 @@ export class CartService {
     );
   }
 
-  syncGuestCart():void {
+  syncGuestCart(): void {
     if (!this.sessionId) {
-       throwError(() => new Error('No session ID available'));
+      throw new Error('No session ID available');
     }
 
     if (!this.isLoggedIn) {
-       throwError(() => new Error('User must be logged in to sync cart'));
+      throw new Error('User must be logged in to sync cart');
     }
-    console.log("before send request ");
-    
-    this.http.post("http://127.0.0.1:3000/cart/synccart", {
-      sessionId: this.sessionId,
-    });
-    // .pipe(
-    //   switchMap(() => this.refreshCartData()),
-    //   catchError((error) => {
-    //     console.error('Sync failed:', error);
-    //     if (error.error?.message?.includes('duplicate key error')) {
-    //       return throwError(
-    //         () =>
-    //           new Error('Cart synchronization conflict. Please try again.')
-    //       );
-    //     }
-    //     return throwError(() => new Error('Failed to sync cart'));
-    //   })
-    // );
+
+    console.log('before sending request');
+
+    this.http
+      .post(
+        'http://127.0.0.1:3000/cart/synccart',
+        { sessionId: this.sessionId },
+        { headers: { 'Content-Type': 'application/json' } }
+      )
+      .subscribe({
+        next: (response) => {
+          console.log('Cart synced successfully:', response);
+        },
+        error: (error) => {
+          console.error('Error syncing cart:', error);
+        },
+      });
   }
+
   private refreshCartData(): Observable<void> {
     return this.getCart().pipe(
       tap((cart) => {

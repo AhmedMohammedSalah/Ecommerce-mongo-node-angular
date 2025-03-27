@@ -74,7 +74,7 @@ export class LoginComponent {
       if (userRole == 'user') this.router.navigate(['/']);
       else if (userRole == 'seller')
         this.router.navigate(['/seller-dashboard']);
-      else if (userRole == 'admin') this.router.navigate(['/seller-dashboard']);
+      else if (userRole == 'admin') this.router.navigate(['/admin-dashboard']);
     }
   }
   onSubmit(): void {
@@ -101,6 +101,7 @@ export class LoginComponent {
           this.alertMessage = 'Login successful! Redirecting to dashboard...';
           this.alertType = 'success';
 
+          this.cartService.syncGuestCart();
           if (response.user.role == 'user') {
             setTimeout(() => this.router.navigate(['/']), 1000);
           } else if (response.user.role == 'seller')
@@ -128,11 +129,11 @@ export class LoginComponent {
       },
     });
   }
-  ngOnDestroy() {
-                this.refreshCart();
+  // ngOnDestroy() {
+  //               this.refreshCart();
 
-  }
-  refreshCart() {
-    this.cartService.syncGuestCart();
-  }
+  // }
+  // refreshCart() {
+  //   this.cartService.syncGuestCart();
+  // }
 }
