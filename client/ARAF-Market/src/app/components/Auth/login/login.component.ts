@@ -107,7 +107,7 @@ export class LoginComponent {
           } else if (response.user.role == 'seller')
             this.router.navigate(['/seller-dashboard']);
           else if (response.user.role == 'admin')
-            this.router.navigate(['/admin-dashboard']);
+            this.router.navigate(['/admin']);
         }
       },
       error: (error) => {
