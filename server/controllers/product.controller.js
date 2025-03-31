@@ -5,6 +5,7 @@ import User from "../database/models/user.model.js";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import { catModel } from "../database/models/category.model.js";
+import fs from 'fs';
 
 // FOR CONTEXT [SENU COMMENT]
 const userModel = User;
@@ -63,6 +64,9 @@ export const updateProduct = async (req, res) => {
     { new: true, runValidators: true }
   );
 
+  updatedProduct.imagePath = req.foundProduct.imagePath;
+  updatedProduct.save();
+
   // FEEDBACK
   res.json({ msg: "Product updated successfully", product: updatedProduct });
 };
@@ -78,9 +82,8 @@ export const updateProduct = async (req, res) => {
 export const hardDelProduct = async (req, res) => {
   // get id from URL
   const PID = req.params.id;
-
   
-  // get seller data +  delete from its list
+  // get seller data +  delete product from its list
   const sellerData = await sellerModel.findById(req.userData._id);
   if(!sellerData) res.json({msg:"seller not exist"});
   sellerData.products = sellerData.products.filter(existPID => existPID != PID);
@@ -90,6 +93,12 @@ export const hardDelProduct = async (req, res) => {
 
   // find and delete + feedback------------------------------------
   const deletedProduct = await productModel.findByIdAndDelete(PID);
+
+  // remove image from deleted product
+  try { fs.unlinkSync(deletedProduct.imagePath); }
+  catch { console.log("error occur during deletion") }
+  
+
   res.json({ msg: "product deleted from DB" });
 };
 
@@ -217,15 +226,11 @@ export const getAdminProducts = async (req, res) => {
 /** function to get the seller product for all user, admin and the seller(made for them) */
 export const getSellerProducts = async (req, res) => {
 
-  console.log("getSellerProducts : entered"); //debug
-
   // get id (for user/seller)
   let sellerId = req.params.sellerId;
   // --------------------------------------------------------------------
   // [AMS] 🫰🏻 update the code to get seller id from token if it's exsists  |
   // --------------------------------------------------------------------
-
-  console.log("[SALAH]seller id got from params = ", sellerId); //deubg
 
   if (req.headers["token"]) {
     jwt.verify(req.headers["token"], "ARAF", (err, decoded) => {
@@ -236,12 +241,9 @@ export const getSellerProducts = async (req, res) => {
     });
   }
 
-  console.log("[header] seller id from token again I don't know why  =", sellerId );//debug
-
   // get admin
   const seller = await sellerModel.findOne({ userId: sellerId });
   if (!seller) return res.json({ error: "Seller not found, check ID" });
-
 
   // get products
   const prodctsIDs = seller.products;

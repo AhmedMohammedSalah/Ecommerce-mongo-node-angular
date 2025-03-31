@@ -30,7 +30,14 @@ const productValidSchema = Joi.object({
         "number.min": "PRICE CANNOT BE NEGATIVE",
     }),
 
-    isDeleted: Joi.boolean().default(false)
+    isDeleted: Joi.boolean().default(false),
+
+
+
+    discount: Joi.number().min(0).max(100).messages({
+        "number.min": "DISCOUNT CANNOT BE NEGATIVE",
+        "numer.max" : "DISCOUNT  CANNOT BE EXCEED 100"
+    })
     
 })
 

@@ -64,6 +64,8 @@ const updateImg = (req, res) => {
   // GOAL: UPDATE IMAGE
   const originalImgPath = req.foundProduct.imagePath;
 
+  console.log("\n\noriginal image path that we wil remove the image from = ", originalImgPath, "\n\n"); //debug
+
   // CHECK PATH EXISTENCE FIRST
   if (fs.existsSync(originalImgPath)) {
     // REMOVE IMAGE IN OLD PATH
@@ -76,6 +78,7 @@ const updateImg = (req, res) => {
     });
   }
 
+
   // ADD THE NEW ONE
 
   // [AMS] ✅ Correct Naming
@@ -83,11 +86,18 @@ const updateImg = (req, res) => {
   const dirPath = path.dirname(originalImgPath);
   const newImgPath = `${dirPath}/${req.foundProduct.productName}.${ext}`;
 
+
+  console.log("\n\n the new image path that is based on the original path = ", newImgPath, "\n\n");
+
+
   // WRITE FILE TO DISK FROM BUFFER
   fs.writeFileSync(newImgPath, req.file.buffer);
+  
+  console.log("\nafter adding the new image \n"); //debug
 
   // UPDATE IMAGE PATH ON FOUND PRODUCT
   req.foundProduct.imagePath = newImgPath;
+  console.log("req.foundProduct.imagePath = ", req.foundProduct.imagePath);
 };
 
 /**
@@ -123,6 +133,7 @@ const validateUpdatedImg = (req, res) => {
  * - validate image and update it (store new image + change image path in DB)
  */
 export const validateUpdatedProduct = (req, res, next) => {
+
   // convert string to json object
   req.body = JSON.parse(req.body.data);
 
