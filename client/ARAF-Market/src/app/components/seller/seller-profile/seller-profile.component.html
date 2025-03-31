@@ -49,10 +49,14 @@
                     }
                     @else {
 
-                        <!-- our work will be here -->
-                         <h5>🔥Latest Product Added</h5>
 
-                         <app-product-card [productData]="latestSellerProdct" ></app-product-card>
+                        
+                         @if(latestSellerProdct){
+
+                            <h5>🔥Latest Product Added</h5>
+                            <app-product-card [productData]="latestSellerProdct" ></app-product-card>
+                         }
+                         
 
 
                     }

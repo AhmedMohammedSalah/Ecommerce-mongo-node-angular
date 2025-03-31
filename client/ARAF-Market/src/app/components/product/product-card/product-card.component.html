@@ -3,7 +3,7 @@
   
     <!-- Remove Button -->
     <button class="btn btn-danger rounded-circle border-0 m-2 position-absolute top-0 end-0"
-            (click)="setSelectedProduct(productData); openModal(rmProductModal)">
+            (click)="openModal(rmProductModal)">
         <i class="fa-solid fa-xmark"></i>
     </button>
   
@@ -37,7 +37,7 @@
             <!-- View Update Button -->
             <button 
             class="btn btn-primary w-100 mt-2"
-            (click)="setSelectedProduct(productData); openModal(viewUpdateModal)">View Product</button>
+            (click)="openModal(viewUpdateModal)">View Product</button>
   
         </div>
     </div>
@@ -106,7 +106,7 @@
 
           <!--========PARENT CHILD BINDING HEEEEEEEEEEERE=============-->
           <app-view-update-product-form 
-          [product]="selectedProduct"
+          [product]="productData"
           [selectedCategory]="productData.category"
           [isUpdate]="isUpdate"
           (defaultUpdateValue)="onCloseModal($event)"

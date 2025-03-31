@@ -19,8 +19,6 @@ export class ProductCardComponent {
     @Input() productData : any;
     @Output() sentProduct = new EventEmitter<any>();
     isUpdate : boolean = true;                        // the button in the parent so, this is the signal for the child
-    selectedProduct : any = null;                     // store selected product: used in removal
-
 
 
   //=Services=============================
@@ -30,12 +28,6 @@ export class ProductCardComponent {
 
   //#region===METHODS===========================
    
-
-    /* [METHOD]: onClick update selected 
-    --------------------------------------*/
-    setSelectedProduct(product: any) {
-      this.selectedProduct = product;
-    }
 
     /* [NEW] [METHOD]: Open modal using NgbModal
     ----------------------------------------------*/
@@ -47,8 +39,10 @@ export class ProductCardComponent {
     -------------------------------------------------*/
     rmProduct(){
       // remove from DB + from the seen list
-      this.productService.removeProduct(this.selectedProduct._id);
-      this.sentProduct.emit(this.selectedProduct);
+      this.productService.removeProduct(this.productData._id).subscribe(
+        res => console.log("response = ", res)
+      );
+      this.sentProduct.emit(this.productData);
     }
 
     /* [METHOD]: update*/

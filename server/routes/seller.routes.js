@@ -15,6 +15,7 @@ const sellerRoutes = express.Router();
 // sellerRoutes.get("/seller/:sellerId", getSeller);
 // [AMS] 🪪 using of verify token on all routes
 sellerRoutes.use(tokenVerify);
+sellerRoutes.get("/seller/:sellerId", getSeller); //[SENU]: GET SELLER ENDPOINT
 sellerRoutes.get("/seller/mydraws", getMyDraws);
 sellerRoutes.put("/seller", updateSeller);
 sellerRoutes.put("/seller/:sellerId", updateSeller);

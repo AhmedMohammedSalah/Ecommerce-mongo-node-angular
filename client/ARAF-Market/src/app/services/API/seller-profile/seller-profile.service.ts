@@ -42,6 +42,8 @@ export class SellerProfileService {
     let token = this.getToken() || '';
     let headers = new HttpHeaders().set('token', token);
 
+    console.log("user data id = ", userData._id);
+
     return this.http.get<SellerPI>(`http://127.0.0.1:${port}/seller/${userData._id}`, { headers });
   }
 
