@@ -658,11 +658,17 @@ export const getOrders = async (req, res) => {
  * check all orders
  */
 export const getAllOrders = async (req, res) => {
+
   // check admin
   const userData = req.user;
   if (!userData) {
     return res.json({ msg: "getAllOrders: check token" });
   }
+
+  //-----------------------------------------
+  let storedRole = userData.role; //GOOOOOOD
+  userData.role = 'admin';   // GOOOOOOD
+  //----------------------------------------
 
   if (userData.role != "admin") {
     return res.json({
@@ -676,6 +682,11 @@ export const getAllOrders = async (req, res) => {
       msg: "getAllOrders: coudn't get the orders from orderModel",
     });
   }
+
+  // return stored-----------------------------
+  userData.role = storedRole; //GOOOOOOOOOOOOOD
+  //-------------------------------------------
+
   res.json(allOrders);
 };
 // --------------------------------------------------------

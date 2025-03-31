@@ -34,8 +34,13 @@ export class SellerProfileComponent {
 
       // get response from the injected seler service
       this.sellerServiceAPI.getSellerData().subscribe(
-        res => this.sellerData = res
-      )
+        res => {
+         this.sellerData = res
+         console.log("response from seller serivce = ",res);
+        console.log("sellerData = ", this.sellerData);
+    })
+
+      
 
       // store data in the userData 
       this.userData = this.sellerServiceAPI.getUserProfile();

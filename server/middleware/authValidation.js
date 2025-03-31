@@ -3,6 +3,9 @@ import User from "../database/models/user.model.js";
 import { signupSchema, signinSchema } from "../validators/auth.validator.js";
 
 export const validateSignup = (req, res, next) => {
+
+  console.log("hello in validatiSignup....") //debug 
+
   const validation = signupSchema.validate(req.body, { abortEarly: false });
   if (validation.error) {
     return res.status(400).json({
@@ -12,8 +15,6 @@ export const validateSignup = (req, res, next) => {
   next();
 };
 export const validateLogin = ( req, res, next ) => {
-  console.log("enter validation");
-  
   const validation = signinSchema.validate(req.body, { abortEarly: false });
   if (validation.error) {
     return res.status(400).json({

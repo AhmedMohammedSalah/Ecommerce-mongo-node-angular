@@ -71,6 +71,7 @@ productRoutes.put(
 //------------------------------------------------------------
 productRoutes.delete(
   "/products/hardDel/:id",
+  verifyUser,
   checkProductExist,
   hardDelProduct
 ); // [Controller]

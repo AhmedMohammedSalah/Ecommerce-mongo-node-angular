@@ -67,6 +67,11 @@ export const updateProduct = async (req, res) => {
   res.json({ msg: "Product updated successfully", product: updatedProduct });
 };
 
+
+
+
+
+
 /** function to hard delete the prodct: remove it from db
  * @param: on URL: you need to add the product id to delete
  */
@@ -74,18 +79,37 @@ export const hardDelProduct = async (req, res) => {
   // get id from URL
   const PID = req.params.id;
 
-  // find and delete
-  const deletedProduct = await productModel.findByIdAndDelete(PID);
+  
+  // get seller data +  delete from its list
+  const sellerData = await sellerModel.findById(req.userData._id);
+  if(!sellerData) res.json({msg:"seller not exist"});
+  sellerData.products = sellerData.products.filter(existPID => existPID != PID);
+  console.log("sellerData.products = ", sellerData.products);
+  sellerData.save();
 
-  // feedback
+
+  // find and delete + feedback------------------------------------
+  const deletedProduct = await productModel.findByIdAndDelete(PID);
   res.json({ msg: "product deleted from DB" });
 };
+
+// NOTE
+// you need to make another version for deleting product for seller by admin as this api 
+// will need to search on the seller that its id is passed 
+
+
+
+
+
+
 
 /** function: return all products */
 export const getAllProducts = async (req, res) => {
   const products = await productModel.find();
   res.json(products);
 };
+
+
 
 // [SOFT-DELETE ADDED] [SENU]
 /** function to search products by names [regex]*/

@@ -44,6 +44,7 @@ export class ProductSellerPageComponent {
   // [METHOD] remove removed product from product [4 real time]
   rmProductFromSellerProduct(recievedProduct: any){
     this.sellerProducts = this.sellerProducts.filter((product: any) => product._id !== recievedProduct._id )
+
   }
 
 }
