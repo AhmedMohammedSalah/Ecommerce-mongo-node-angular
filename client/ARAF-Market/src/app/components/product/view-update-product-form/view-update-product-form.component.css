@@ -1,0 +1,14 @@
+.disabeleInput{
+    cursor: default;
+}
+
+.hiddneObject{
+    visibility: hidden;
+}
+
+
+.removePointerClass {
+    cursor: not-allowed; /* disabled */
+    pointer-events: none; /* prevent clicking */
+
+}

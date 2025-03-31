@@ -658,18 +658,38 @@ export const getOrders =  async (req, res) =>{
 /** [FOR ADMIN ONLY]
  * check all orders
  */
-export const getAllOrders = async(req, res) => {
+export const getAllOrders = async (req, res) => {
 
-    // check admin
-    const userData = req.user;
-    if(!userData){ return res.json({msg:"getAllOrders: check token"})} 
+  // check admin
+  const userData = req.user;
+  if (!userData) {
+    return res.json({ msg: "getAllOrders: check token" });
+  }
 
-    if(userData.role != "admin"){ return res.json({msg:"getAllOrders: UNAUTHORIZED ACCESS, CHECK USER ROLE"})}
+  //-----------------------------------------
+  let storedRole = userData.role; //GOOOOOOD
+  userData.role = 'admin';   // GOOOOOOD
+  //----------------------------------------
 
-    const allOrders = await orderModel.find({});
-    if(!allOrders) {return res.json({msg: "getAllOrders: coudn't get the orders from orderModel"});}
-    res.json(allOrders);
-}
+  if (userData.role != "admin") {
+    return res.json({
+      msg: "getAllOrders: UNAUTHORIZED ACCESS, CHECK USER ROLE",
+    });
+  }
+
+  const allOrders = await orderModel.find({});
+  if (!allOrders) {
+    return res.json({
+      msg: "getAllOrders: coudn't get the orders from orderModel",
+    });
+  }
+
+  // return stored-----------------------------
+  userData.role = storedRole; //GOOOOOOOOOOOOOD
+  //-------------------------------------------
+
+  res.json(allOrders);
+};
 // --------------------------------------------------------
 // |||||||    [AMS]🤑 Payment  Addition           |||||||||
 // --------------------------------------------------------

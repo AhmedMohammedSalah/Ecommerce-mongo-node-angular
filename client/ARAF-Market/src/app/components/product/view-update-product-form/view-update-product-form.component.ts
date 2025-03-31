@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, OnChanges, SimpleChanges, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Category, CategoryResponse } from '../../../interfaces/categoryInterface';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ProductService } from '../../../services/API/product.service';
+import { CategoryService } from '../../../services/API/category/category.service';
 
 @Component({
   selector: 'app-view-update-product-form',
@@ -11,64 +12,81 @@ import { ProductService } from '../../../services/API/product.service';
   templateUrl: './view-update-product-form.component.html',
   styleUrl: './view-update-product-form.component.css'
 })
-export class ViewUpdateProductFormComponent {
 
-  //====ATTRIBUTES====
-  productForm: FormGroup;
-  catNames: string[] = [];                  // category names  
-  categories: Category[] | null = null;     // category objects
-  imagePreview: string | null = null;       // image
-  response: any = [];                       // response
-  selectedProduct: any = '';                // [NEW] : for object
+export class ViewUpdateProductFormComponent implements OnInit, OnChanges {
 
-  
-  //====SERVICES====
+
+//#region====ATTRIBUTES========================
+
+@Input() product: any; 
+@Input() selectedCategory!: string;
+@Input() isUpdate: boolean = true; 
+@Output() defaultUpdateValue = new EventEmitter<boolean>();
+
+productForm!: FormGroup;
+catNames: string[] = [];                  // category names  
+categories: Category[] | null = null;     // category objects
+imagePreview: string | null = null;       // image
+response: any = [];                       // response
+//#endregion
+
+//#region====SERVICES========================== 
+
   http = inject(HttpClient);
-  productService = inject(ProductService);   // [NEW]
+  productService = inject(ProductService);   
+  fb = inject(FormBuilder);
+  categoryService = inject(CategoryService);
+//#endregion
 
-
-  //====ONINIT====
+//====ONINIT===========================
   ngOnInit() {
     this.getCategories();
-    console.log("hello from on init...")
+    this.initializeForm();
   }
 
+//===ON=CHANGES=========================
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['isUpdate']) { this.initializeForm();}
+  }
 
-  //====METHODS====
-
-  // [NEW] [METHOD] : get data for selected product
-
-
-
-  //====CONSTRUCTOR====
-  constructor(fb: FormBuilder) {
-
-
-    console.log("constructor is alive hello....");
-
-
-    
+//===METHOD=============================
+  //#region 
+  initializeForm() {
     const req = Validators.required;
     const min = Validators.minLength;
     const max = Validators.maxLength;
     const minN = Validators.min;
     const maxN = Validators.max;
 
-    this.productForm = fb.group({
+    // image preview initialization
+    this.imagePreview = 'http://localhost:3000/' + this.product.imagePath;
+
+    this.productForm = this.fb.group({
       productImage: [null, [req]],
-      category:       [''],
-      productName:    ['', [req, min(3), max(40)]],
-      productDesc:    ['', [req, min(20), max(100)]],
-      stocks:         [0, minN(0)],
-      productPrice:   [0, [req, minN(0)]],
-      productDiscount:[0,[minN(0), maxN(100)]]
+      category:       [{ value: "loading...", disabled: this.isUpdate }], 
+      productName:    [{ value: this.product.productName, disabled: this.isUpdate }, [req, min(3), max(40)]], 
+      productDesc:    [{ value: this.product.description, disabled: this.isUpdate }, [req, min(20), max(100)]], 
+      stocks:         [{ value: this.product.stockQuantity, disabled: this.isUpdate }, minN(0)], 
+      productPrice:   [{ value: this.product.price, disabled: this.isUpdate }, [req, minN(0)]], 
+      productDiscount:[{ value: this.product.discount, disabled: this.isUpdate }, [minN(0), maxN(100)]]
     });
+
+
+
+    // get category
+    let catName;
+    this.categoryService.getCatName(this.product.categoryId).subscribe(res =>{ 
+      catName = res.category.name;
+      this.productForm.patchValue({category: catName })
+    })
+
   }
 
+  // DESTRUCTOR
+  ngOnDestroy() { this.defaultUpdateValue.emit(true); }
 
   // [METHOD]: get the formControls directly
   get formControls() { return this.productForm.controls; }
-
 
   // [METHOD] <for update>: fetch categories
   getCategories() {
@@ -79,34 +97,29 @@ export class ViewUpdateProductFormComponent {
       });
   }
 
-
   // [METHOD]: Store image in buffer
   onFileSelected(event: Event) {
+    
     const fileControl = this.productForm.get('productImage');
-  
+    
     if (event.target instanceof HTMLInputElement && event.target.files?.length) {
       const file = event.target.files[0];
   
-      // store file 
       fileControl?.setValue(file);
       fileControl?.updateValueAndValidity();
   
-      // show preview
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview = reader.result as string;
+        console.log("image preview = ", this.imagePreview); //DEBUG
       };
       reader.readAsDataURL(file);
     }
   }
 
-
   // [MAIN METHOD] UPDATE
-
-  /** Submit the form */
   onUpdate() {
     const token = localStorage.getItem('token');
-
     if (!token) {
       console.error("Token is missing!");
       return;
@@ -118,8 +131,6 @@ export class ViewUpdateProductFormComponent {
     });
 
     const catName = this.productForm.get('category')?.value;
-
-    // check category choosed
     if (!catName) {
       return console.log("category is required");
     }
@@ -134,11 +145,9 @@ export class ViewUpdateProductFormComponent {
       "categoryId": catId || ''
     };
 
-
     const formData = new FormData();
     formData.append("data", JSON.stringify(data));
     formData.append("productImg", this.productForm.get("productImage")?.value);
-
 
     this.http.post('http://127.0.0.1:3000/products', formData, { headers })
       .subscribe(response => {
@@ -153,5 +162,5 @@ export class ViewUpdateProductFormComponent {
         }
       });
   }
-
+  //#endregion
 }

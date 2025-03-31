@@ -1,29 +1,40 @@
 <form [formGroup]="productForm" (ngSubmit)="onUpdate()" class="container p-0 ">
 
-    <!-- clickable Card as File Input -->
-    <div class="card w-100 p-0" style="cursor: pointer;" (click)="fileInput.click()">
-        <div class="card-img-top d-flex justify-content-center align-items-center overflow-hidden"
-            [ngStyle]="{'background': imagePreview ? '#D9D9D9' : `url(https://cdn.vectorstock.com/i/500p/44/24/dotted-line-geometric-seamless-pattern-vector-7274424.jpg)`, 'height': '250px'}">
+    <!-- clickable div as file input --> 
+    <div class="d-flex justify-content-center align-items-center bg-light overflow-hidden w-100" 
+        style="cursor: pointer; height: 250px;" 
+        (click)="!isUpdate && fileInput.click()"
+        [ngClass]="{ 'removePointerClass': isUpdate}">
 
-            
-            @if (imagePreview) {
-                <img [src]="imagePreview" class="img-fluid"
-                    style="max-width: 100%; max-height: 100%; object-fit: contain;" />
-            } @else {
-                <i class="fa-solid fa-upload text-white fa-4x"></i>
-            }
-        </div>
+        @if(isUpdate){
+            <img [src]="'http://localhost:3000/' + product.imagePath" class="img-fluid" 
+            style="max-width: 100%; max-height: 100%; object-fit: contain;" />
+        }
+        @else {
+            <img [src]="imagePreview" class="img-fluid" 
+            style="max-width: 100%; max-height: 100%; object-fit: contain;" />        }
+
+ 
+
     </div>
 
+
     <div class="container p-3">
+
     <!-- Hidden File Input : the only way to make div as input type file -->
-    <input type="file" #fileInput [hidden]="true" (change)="onFileSelected($event)" />
+    <input 
+    type="file" 
+    #fileInput 
+    [hidden]="true" 
+    (change)="onFileSelected($event)"
+    class="disabeleInput"
+    [disabled]="isUpdate"/> 
         
 
     <!-- category -->
     <div class="mt-3 ">
         <label for="categorySelect" class="form-label fw-bold">Category</label>
-        <select class="form-select" formControlName="category" id="categorySelect">
+        <select class="form-select" formControlName="category" id="categorySelect" [disabled]="isUpdate">
             <option value="" disabled selected>Select a category</option>
             @for (c of catNames; track $index) { <option>{{c}}</option> }
         </select>
@@ -34,7 +45,7 @@
     <!-- Product name -->
     <div class="mt-3">
         <label class="form-label fw-bold" for="productName">Product Name:</label>
-        <input type="text" formControlName="productName" class="form-control" placeholder="type here...">
+        <input type="text" formControlName="productName" class="form-control" placeholder="type here..." [disabled]="isUpdate">
 
         <div class="text-danger">
             <!-- errors -->
@@ -170,8 +181,8 @@
         <div class="row">
    
             <!-- Submit Button -->
-            <div class="col-12 col-lg-4">
-                <button type="submit" class="btn btn-primary w-100" [disabled]="productForm.invalid"> Add </button>
+            <div class="col-12 col-lg-4" [ngClass]="{ 'hiddneObject': isUpdate}">
+                <button type="submit" class="btn btn-primary w-100" [disabled]="productForm.invalid"> Save Changes </button>
             </div>
 
             <!-- Message -->

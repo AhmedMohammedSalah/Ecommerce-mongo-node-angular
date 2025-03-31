@@ -1,48 +1,62 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, ViewChild, TemplateRef } from '@angular/core';
 import { ProductService } from '../../../services/API/product.service';
 import { CommonModule } from '@angular/common';
 import { ViewUpdateProductFormComponent } from '../view-update-product-form/view-update-product-form.component';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-product-card',
-  imports: [CommonModule, ViewUpdateProductFormComponent],
+  standalone: true, 
+  imports: [CommonModule, ViewUpdateProductFormComponent], 
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.css'
 })
+
+
 export class ProductCardComponent {
 
-  //=Attributes============
-  @Input() productData : any;
-  @Output() sentProduct = new EventEmitter<any>();
-  selectedProduct : any = null; //store selected product
+  //=Attributes=================================
+    @Input() productData : any;
+    @Output() sentProduct = new EventEmitter<any>();
+    isUpdate : boolean = true;                        // the button in the parent so, this is the signal for the child
+    selectedProduct : any = null;                     // store selected product: used in removal
 
 
-  //=Service=============================
-  productService = inject(ProductService);
 
+  //=Services=============================
+    productService = inject(ProductService);
+    private modalService = inject(NgbModal); // Inject NgbModal properly
+
+
+  //#region===METHODS===========================
+   
+
+    /* [METHOD]: onClick update selected 
+    --------------------------------------*/
+    setSelectedProduct(product: any) {
+      this.selectedProduct = product;
+    }
+
+    /* [NEW] [METHOD]: Open modal using NgbModal
+    ----------------------------------------------*/
+    openModal(content: TemplateRef<any>) {
+      this.modalService.open(content, { centered: true, size: 'lg' });
+    }
+
+    /* [METHOD]: remove the product using the service
+    -------------------------------------------------*/
+    rmProduct(){
+      // remove from DB + from the seen list
+      this.productService.removeProduct(this.selectedProduct._id);
+      this.sentProduct.emit(this.selectedProduct);
+    }
+
+    /* [METHOD]: update*/
+    update(){ this.isUpdate = (this.isUpdate == true)?  false : true; }
+
+
+    /* [METHOD]: return value to default */
+    onCloseModal(defaultUpdateValue : boolean){ this.isUpdate = defaultUpdateValue; }
   
-  /* [METHOD]: onClick update selected 
-  --------------------------------------*/
-  setSelectedProduct(product: any) {
-    localStorage.setItem('selectedProduct', JSON.stringify(product)); //😭😭😭😭😭
-  }
-
-  /*[METOHD]: remove the product using the service
-  ------------------------------------------------*/
-  rmProduct(){
-
-    let selectedProductString = localStorage.getItem('selectedProduct'); //😭😭😭😭😭
-    let selectedProduct = selectedProductString ? JSON.parse(selectedProductString) : null;
-
-    // remove from DB
-    let PID = selectedProduct?._id;
-    this.productService.removeProduct(PID).subscribe(
-      res => console.log("response = ", res)
-    )
-
-    // send to parent to remove from productSeller
-    this.sentProduct.emit(selectedProduct);
-  }
-
-
+  //#endregion
 }
