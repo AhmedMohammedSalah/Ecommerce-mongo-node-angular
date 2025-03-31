@@ -62,7 +62,7 @@ response: any = [];                       // response
     this.imagePreview = 'http://localhost:3000/' + this.product.imagePath;
 
     this.productForm = this.fb.group({
-      productImage: [null, [req]],
+      productImage: [this.product.imagePath, [req]],
       category:       [{ value: "loading...", disabled: this.isUpdate }], 
       productName:    [{ value: this.product.productName, disabled: this.isUpdate }, [req, min(3), max(40)]], 
       productDesc:    [{ value: this.product.description, disabled: this.isUpdate }, [req, min(20), max(100)]], 
@@ -119,23 +119,18 @@ response: any = [];                       // response
 
   // [MAIN METHOD] UPDATE
   onUpdate() {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      console.error("Token is missing!");
-      return;
-    }
-  
-    let headers = new HttpHeaders({
-      'token': token,
-      'enctype': 'multipart/form-data'
-    });
 
+    // get token + insert it in the header
+    const token = localStorage.getItem('token');
+    if (!token) { console.error("Token is missing!"); return;}
+    let headers = new HttpHeaders({ 'token': token,'enctype': 'multipart/form-data'});
+
+    // get category id for the chosen one
     const catName = this.productForm.get('category')?.value;
-    if (!catName) {
-      return console.log("category is required");
-    }
+    if (!catName) { return console.log("category is required");}
     const catId = this.categories?.find(c => c.name == catName)?._id;
 
+    // collect data
     const data = {
       "productName": this.productForm.get("productName")?.value,
       "description": this.productForm.get("productDesc")?.value,
@@ -145,22 +140,22 @@ response: any = [];                       // response
       "categoryId": catId || ''
     };
 
+    console.log("product image = ", this.productForm.get("productImage")?.value);
+
+    // put them in form-data body
     const formData = new FormData();
     formData.append("data", JSON.stringify(data));
     formData.append("productImg", this.productForm.get("productImage")?.value);
 
-    this.http.post('http://127.0.0.1:3000/products', formData, { headers })
+    console.log("product id = ", this.product._id); //DEBUG
+
+    // use the update service 
+    this.http.put(`http://127.0.0.1:3000/products/${this.product._id}`, formData, { headers })
       .subscribe(response => {
         this.response = response;
-        
-        if ("msg" in response) {
-          setTimeout(() => { 
-            this.productForm.reset();
-            this.imagePreview = null;
-            this.response.msg = '';
-          }, 3000);
-        }
+        if ("msg" in response) { setTimeout(() => { this.response.msg = '' }, 3000);}
       });
   }
+
   //#endregion
 }
