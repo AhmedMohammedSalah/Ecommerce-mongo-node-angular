@@ -3,84 +3,63 @@ import { SellerProfileService } from '../../../../services/API/seller-profile/se
 import { ProfileService } from '../../../../services/API/customer-profile/customer-profile.service';
 import { ProductService } from '../../../../services/API/product.service';
 import { CategoryService } from '../../../../services/API/category/category.service';
+import { OrderService } from '../../../../services/API/order.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-orders-seller-page',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './orders-seller-page.component.html',
   styleUrl: './orders-seller-page.component.css'
 })
+
 export class OrdersSellerPageComponent {
 
-  sellerServiceAPI = inject(SellerProfileService);  // inject seller service
-  customerServiceAPI = inject(ProfileService);      // inject customer service
-  productService = inject(ProductService);          // inject product service
-  categoryService = inject(CategoryService);
+  //=ATTRIBUTES======= 
+  orders: any[] = [];
+  isLoading = true;
+  error: string | null = null;
 
-  sellerData : any;
-  customerData : any;
-  sellerOrders : Array<any> = [];
-  detailedSellerOrders: Array<any> = [];
-
-  ngOnInit(){
-
-    console.log("beginning of ng on init..."); //debug
-
-    // get response from the injected seler service
-    this.sellerServiceAPI.getSellerData().subscribe( res => { 
-
-      this.sellerOrders = res.orders
-      for(let order of this.sellerOrders){
-
-        let detailedOrder : any = {}; 
-
-        // get details of the user
-        this.customerServiceAPI.getUserInfoById(order.userId).subscribe(
-          res => {
-            detailedOrder["customerEmail"] = res.email;
-            detailedOrder["customerName"] = res.name;
-        })
-
-        let detailedProductsArray :any = [];
-        for(let p of order.products){//==============================
-
-          let detailedProduct: any= {}; 
-
-          // get product data
-          this.productService.getProductById(p.productId).subscribe(
-            res => {
-              detailedProduct["productName"] = res.productName;
-              detailedProduct["productImagePath"] =res.imagePath;
-              
-              // get category name
-              this.categoryService.getCatName(res.categoryId).subscribe(
-                res => detailedProduct['categoryName'] = res.category.name
-              )
-
-          })
-
-          // add residual product data from what exist
-          detailedProduct["productPrice"] = p.price;
-          detailedProduct['quantity'] = p.quantity;
-          detailedProduct['discount'] = p.discount;
-          detailedProductsArray.push(detailedProduct);
-
-        }//==============================================================
-
-        // push the product array to the detailed order
-        detailedOrder["detailedProducts"]=detailedProductsArray;
-        detailedOrder['status']= order.status;
-        this.detailedSellerOrders.push(detailedOrder);
-      }
-
-      console.log("detailed seller orders = ", this.detailedSellerOrders);
-  });
-
-  
+  //=SERVICE========================================
+  sellerService = inject(SellerProfileService);
 
 
+  //=NOINIT=========
+  ngOnInit(): void {
+    this.loadOrders();
+  }
 
-  } 
+
+  //=METHODS==========
+  loadOrders(): void {
+    this.sellerService.getSellerData().subscribe({
+      next: (data: any) => {
+        this.orders = data.orders;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.error = 'Failed to load orders.';
+        this.isLoading = false;
+        console.error('Error loading orders:', err);
+      },
+    });
+  }
+
+  getStatusBadgeClass(status: string): string {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return 'bg-warning';
+      case 'completed':
+        return 'bg-success';
+      case 'cancelled':
+        return 'bg-danger';
+      case 'shipped':
+        return 'bg-info';
+      default:
+        return 'bg-secondary';
+    }
+  }
+
 
 
 }

@@ -1,0 +1,104 @@
+.fixed-anchor {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    height: 80px;
+    width: 80px;
+    top: 20px;
+    left: 20px;
+    border-radius: 50%;
+    text-decoration: none;
+    background: white;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3); /* Increased opacity */
+    transition: box-shadow 0.3s ease-in-out; 
+}
+
+.fixed-anchor:hover {
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3); 
+}
+
+:root {
+    --primary-color: #dc3545;
+    --primary-light: rgba(220, 53, 69, 0.1);
+  }
+  
+  /* Primary color overrides */
+  .bg-primary {
+    background-color: var(--primary-color) !important;
+  }
+  .text-primary {
+    color: var(--primary-color) !important;
+  }
+  .bg-primary-light {
+    background-color: var(--primary-light);
+  }
+  
+  /* Order card hover effect */
+  .order-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: none;
+    border-radius: 10px;
+  }
+  .order-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  /* Status badges */
+  .badge-processing {
+    background-color: #ffc107;
+  }
+  .badge-shipped {
+    background-color: #0d6efd;
+  }
+  .badge-delivered {
+    background-color: #198754;
+  }
+  .badge-cancelled {
+    background-color: #6c757d;
+  }
+  
+  /* Timeline styling */
+  .timeline {
+    position: relative;
+    padding-left: 20px;
+  }
+  .timeline-item {
+    position: relative;
+    padding-bottom: 20px;
+  }
+  .timeline-badge {
+    position: absolute;
+    left: -20px;
+    top: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+  }
+  .timeline-content {
+    padding-left: 20px;
+  }
+  .timeline-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: -15px;
+    top: 12px;
+    height: 100%;
+    width: 2px;
+    background-color: #e9ecef;
+  }
+  
+  /* Icon circles */
+  .icon-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Empty state styling */
+  
