@@ -1,0 +1,54 @@
+<p>Orders Seller Page</p>
+
+<div class="container mt-4">
+    <div class="accordion" id="ordersAccordion">
+        @for (order of detailedSellerOrders; track $index) {
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading{{ $index }}">
+                    <button class="accordion-button collapsed" 
+                            type="button" 
+                            data-bs-toggle="collapse" 
+                            [attr.data-bs-target]="'#collapse' + $index" 
+                            aria-expanded="false" 
+                            [attr.aria-controls]="'collapse' + $index">
+                        Order #{{ $index + 1 }} - Status: {{ order.status }}
+                    </button>
+                </h2>
+                <div [id]="'collapse' + $index" class="accordion-collapse collapse" 
+                     [attr.aria-labelledby]="'heading' + $index" 
+                     data-bs-parent="#ordersAccordion">
+                    <div class="accordion-body">
+                        <p><strong>Customer Email:</strong> {{ order.customerEmail }}</p>
+                        <p><strong>Customer Name:</strong> {{ order.customerName }}</p>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover mt-3">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Image</th>
+                                        <th>Product Name</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Discount</th>
+                                        <th>Total Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (p of order.detailedProducts; track $index) {
+                                        <tr>
+                                            <td><img src="{{ p.imagePath }}" alt="{{ p.productName }}" class="img-fluid" style="width: 50px; height: 50px;"></td>
+                                            <td>{{ p.productName }}</td>
+                                            <td>{{ p.quantity }}</td>
+                                            <td>${{ p.productPrice }}</td>
+                                            <td>{{ p.discount }}%</td>
+                                            <td>${{ (p.productPrice - (p.productPrice * p.discount / 100)) * p.quantity }}</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

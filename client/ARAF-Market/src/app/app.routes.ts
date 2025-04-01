@@ -25,6 +25,7 @@ import { authGuard } from './guards/auth.guard';
 import { OrderComponent } from './components/Home/order-management/order/order.component';
 import { OrderDetailComponent } from './components/Home/order-management/order-detail/order-detail.component';
 import { PaypalComponent } from './components/Home/order-management/paypal/paypal.component';
+import { OrdersSellerPageComponent } from './components/seller/pages/orders-seller-page/orders-seller-page.component';
 export const routes: Routes = [
   {
     path: '',
@@ -40,6 +41,11 @@ export const routes: Routes = [
     path: 'seller-dashboard/products',
     component: ProductSellerPageComponent,
     title: 'seller products page',
+  },
+  {
+    path: 'seller-dashboatd/orders',
+    component: OrdersSellerPageComponent,
+    title: "seller orders page",
   },
 
   {

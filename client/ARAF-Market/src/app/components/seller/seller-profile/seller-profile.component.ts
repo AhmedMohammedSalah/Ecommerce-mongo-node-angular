@@ -1,4 +1,4 @@
-import { Component, inject, NgModule } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { SellerProfileService } from '../../../services/API/seller-profile/seller-profile.service';
 import { SellerPI } from '../../../interfaces/sellerInterfaces';
 import { CommonModule } from '@angular/common';
@@ -21,7 +21,7 @@ export class SellerProfileComponent {
   // ATTRIBUTES=======================
   sellerData : SellerPI | null = null;
   userData: any;
-  latestSellerProdct : any = null; 
+  latestSellerProdct : any = null;
 
 
   //=SERVICE=====================================
@@ -39,7 +39,7 @@ export class SellerProfileComponent {
          console.log("response from seller serivce = ",res);
         console.log("sellerData = ", this.sellerData);
     })
-
+//
       
 
       // store data in the userData 
@@ -73,7 +73,6 @@ export class SellerProfileComponent {
   constructor(private router: Router) {}
 
 
-
   // handle bubbling
   openAddProductModal(event: MouseEvent){
     event.stopPropagation();
@@ -83,6 +82,11 @@ export class SellerProfileComponent {
   // redirect to hanle bubbling
   redirectToComponent() {
     this.router.navigate(['/seller-dashboard/products']);
+  }
+
+  // redirect to orders
+  redirectToOrders() {
+    this.router.navigate(['seller-dashboatd/orders']);
   }
   
 }

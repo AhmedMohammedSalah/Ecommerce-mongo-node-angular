@@ -3,3 +3,10 @@
     transition: box-shadow 0.3s ease-in-out;
     cursor: pointer;
 }
+
+
+.blueHovering:hover {
+    box-shadow: 0 0 30px #008cff !important;
+    transition: box-shadow 0.3s ease-in-out;
+    cursor: pointer;
+}

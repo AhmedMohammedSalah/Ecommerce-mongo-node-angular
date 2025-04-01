@@ -3,6 +3,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 
+
+export interface userInfo {
+  email: string,
+  name: string
+
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -55,12 +62,15 @@ export class ProfileService {
 
   updateCustomerProfile(profileData: any): Observable<any> {
 
-      let tokenStr = localStorage.getItem('token') || ''
+    let tokenStr = localStorage.getItem('token') || ''
     return this.http.put(`${this.apiUrl}/customer/update-profile`, profileData,
-      {headers:{
-						token:tokenStr
-      }
-      }
-    );
+      { headers:{ token:tokenStr} });
   }
+
+  // [SENU]: get customer info by id
+  getUserInfoById(userId : string): Observable<userInfo>{
+    return this.http.get<userInfo>(`${this.apiUrl}/user/${userId}`);
+  }
+
+
 }

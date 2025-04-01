@@ -1,3 +1,5 @@
+@if(userData.role === "seller" || userData.role === "admin"){
+
 <div class="container mt-4">
     <!-- Name and Balance in the same row -->
     <div class="row align-items-center">
@@ -13,7 +15,7 @@
     <div class="row mt-4 justify-content-center">
         <!-- Orders -->
         <div class="col-lg-4 col-md-6 mb-3">
-            <div class="card shadow-lg">
+            <div class="card shadow-lg blueHovering" (click)="redirectToOrders()">
                 <div class="card-header bg-primary text-white text-center">
                     <h4 class="mb-0">Orders 📦</h4>
                 </div>
@@ -26,7 +28,6 @@
         </div>
 
         <!-- Products -->
-  
         <div class="col-lg-4 col-md-6 mb-3">
             <div class="card shadow-lg hovering" (click)="redirectToComponent()">
                 <div class="card-header bg-success text-white">
@@ -48,17 +49,12 @@
                         <p class="text-muted">No Products Added Yet</p>
                     }
                     @else {
-
-
-                        
+     
                          @if(latestSellerProdct){
 
                             <h5>🔥Latest Product Added</h5>
                             <app-product-card [productData]="latestSellerProdct" ></app-product-card>
                          }
-                         
-
-
                     }
                 </div> 
             </div>
@@ -119,3 +115,16 @@
 
   </div>
   
+}
+@else{
+
+    <div class="container d-flex flex-column justify-content-center align-items-center text-center text-danger min-vh-100">
+        <i class="fa-solid fa-hand fa-10x text-danger m-3"></i>
+        <h1>you are not allowed<br/> to view this website section</h1>
+    </div>
+
+}
+
+
+<!------------Order-Modal------------------->
+<!-- scrollable order modal + contain orders and button to change the action -->
