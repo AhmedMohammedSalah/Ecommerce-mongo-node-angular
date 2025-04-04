@@ -4,9 +4,7 @@ import User from "../database/models/user.model.js";
 import { sendEmail } from "../Email/email.js";
 import { createCustomerProfile } from "./customer.controller.js";
 import { createSellerProfile } from "./seller.controller.js";
-
 const userModel = User; // [AMS] 😒 correct naming
-
 export async function signup(req, res) {
   try {
     const { name, email, password, role } = req.body;
