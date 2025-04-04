@@ -38,6 +38,7 @@ export class AuthServiceService {
   logout() {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
+    localStorage.removeItem('guestSessionId');
     this.isLoggedInSubject.next(false);
   }
 }
